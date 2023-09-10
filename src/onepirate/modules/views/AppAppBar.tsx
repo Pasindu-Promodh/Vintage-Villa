@@ -4,6 +4,7 @@ import Link from "@mui/material/Link";
 import AppBar from "../components/AppBar";
 import Toolbar from "../components/Toolbar";
 import { Link as RouterLink } from "react-router-dom";
+import logo from "../../../assets/Logo_transparent_60.png";
 
 const rightLink = {
   fontSize: 16,
@@ -25,7 +26,13 @@ function AppAppBar() {
             to="/"
             sx={{ fontSize: 24 }}
           >
-            {"Vintage Villa"}
+            {/* {"Vintage Villa"} */}
+            <Box
+              component="img"
+              src={logo}
+              alt="suitcase"
+              sx={{ height: 60 }}
+            />
           </Link>
           <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
             <Link

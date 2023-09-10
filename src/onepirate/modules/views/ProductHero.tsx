@@ -24,7 +24,7 @@ export default function ProductHero() {
         alt="increase priority"
       />
       <Typography color="inherit" align="center" variant="h2" marked="center">
-        Upgrade your Holidays
+        Vintage Luxury in the Heart of Nature
       </Typography>
       <Typography
         color="inherit"
@@ -33,7 +33,7 @@ export default function ProductHero() {
         sx={{ mb: 4, mt: { sx: 4, sm: 10 } }}
       >
         Step back in time to a bygone era of elegance and charm. Embrace the
-        vintage allure of our Kabana amidst the breathtaking Knuckles Mountain
+        vintage allure of our villa amidst the breathtaking Knuckles Mountain
         Range.
       </Typography>
       <Button
@@ -44,7 +44,7 @@ export default function ProductHero() {
         to="/sign-up/"
         sx={{ minWidth: 200 }}
       >
-        Book Now
+        Reserve now
       </Button>
       <Typography variant="body2" color="inherit" sx={{ mt: 2 }}>
         Discover the experience
