@@ -6,18 +6,11 @@ import Toolbar from "../components/Toolbar";
 import { Link as RouterLink } from "react-router-dom";
 import logo from "../../../assets/Logo_transparent_60.png";
 
-const rightLink = {
-  fontSize: 16,
-  color: "common.white",
-  ml: 3,
-};
-
 function AppAppBar() {
   return (
     <div>
       <AppBar position="fixed">
-        <Toolbar sx={{ justifyContent: "space-between" }}>
-          <Box sx={{ flex: 1 }} />
+        <Toolbar sx={{ justifyContent: "center" }}>
           <Link
             variant="h6"
             underline="none"
@@ -26,7 +19,6 @@ function AppAppBar() {
             to="/"
             sx={{ fontSize: 24 }}
           >
-            {/* {"Vintage Villa"} */}
             <Box
               component="img"
               src={logo}
@@ -34,27 +26,6 @@ function AppAppBar() {
               sx={{ height: 60 }}
             />
           </Link>
-          <Box sx={{ flex: 1, display: "flex", justifyContent: "flex-end" }}>
-            <Link
-              color="inherit"
-              variant="h6"
-              underline="none"
-              component={RouterLink}
-              to="/sign-in/"
-              sx={rightLink}
-            >
-              {"Sign In"}
-            </Link>
-            <Link
-              variant="h6"
-              underline="none"
-              component={RouterLink}
-              to="/sign-up/"
-              sx={{ ...rightLink, color: "secondary.main" }}
-            >
-              {"Sign Up"}
-            </Link>
-          </Box>
         </Toolbar>
       </AppBar>
       <Toolbar />

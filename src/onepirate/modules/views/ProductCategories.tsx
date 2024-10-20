@@ -91,21 +91,6 @@ const images = [
     title: "Mini Worlds End",
     width: "24%",
   },
-  {
-    url: "https://images.unsplash.com/photo-1506941433945-99a2aa4bd50a?auto=format&fit=crop&w=400&q=80",
-    title: "Walking",
-    width: "40%",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1533727937480-da3a97967e95?auto=format&fit=crop&w=400&q=80",
-    title: "Fitness",
-    width: "20%",
-  },
-  {
-    url: "https://images.unsplash.com/photo-1518136247453-74e7b5265980?auto=format&fit=crop&w=400&q=80",
-    title: "Reading",
-    width: "40%",
-  },
 ];
 
 export default function ProductCategories() {
