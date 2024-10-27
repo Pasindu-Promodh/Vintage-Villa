@@ -41,7 +41,7 @@ export default function ProductHero() {
         variant="contained"
         size="large"
         component={RouterLink}
-        to="/sign-up/"
+        to="/reservations/"
         sx={{ minWidth: 200 }}
       >
         Reserve now

@@ -3,6 +3,7 @@ import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
 import Typography from "../components/Typography";
+import { Link as RouterLink } from "react-router-dom";
 
 function ProductSmokingHero() {
   return (
@@ -15,7 +16,7 @@ function ProductSmokingHero() {
         my: 9,
       }}
     >
-      <Button
+      <Box
         sx={{
           border: "4px solid currentColor",
           borderRadius: 0,
@@ -25,18 +26,28 @@ function ProductSmokingHero() {
         }}
       >
         <Typography variant="h4" component="span">
-          Got any questions? Need help?
+          Vintage Hospitality Begins with You
         </Typography>
-      </Button>
-      <Typography variant="subtitle1" sx={{ my: 3 }}>
-        We are here to help. Get in touch!
-      </Typography>
+      </Box>
+
       <Box
-        component="img"
-        src="/producBuoy.svg"
-        alt="buoy"
-        sx={{ width: 60 }}
-      />
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          mt: 5,
+        }}
+      >
+        <Button
+          color="secondary"
+          variant="contained"
+          size="large"
+          component={RouterLink}
+          to="/contact/"
+          sx={{ minWidth: 200 }}
+        >
+          Contact Us
+        </Button>
+      </Box>
     </Container>
   );
 }

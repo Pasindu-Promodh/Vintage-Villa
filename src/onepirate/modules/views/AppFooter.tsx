@@ -4,18 +4,25 @@ import Grid from "@mui/material/Grid";
 import Link from "@mui/material/Link";
 import Container from "@mui/material/Container";
 import Typography from "../components/Typography";
-//import TextField from "../components/TextField";
-//import { Link as RouterLink } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
+
+import logo from "../../../assets/Logo_transparent1.png";
 
 function Copyright() {
   return (
-    <React.Fragment>
+    <Typography
+      variant="body2"
+      color="textSecondary"
+      align="center"
+      sx={{ mt: 2 }}
+    >
       {"© "}
-      <Link color="inherit" href="https://mui.com/">
-        Your Website
-      </Link>{" "}
+      <Link color="inherit" href="www.vintagevilla.lk">
+        vintage villa
+      </Link>
+      {" "}
       {new Date().getFullYear()}
-    </React.Fragment>
+    </Typography>
   );
 }
 
@@ -32,88 +39,148 @@ const iconStyle = {
   },
 };
 
-// const LANGUAGES = [
-//   {
-//     code: "en-US",
-//     name: "English",
-//   },
-//   {
-//     code: "fr-FR",
-//     name: "Français",
-//   },
-// ];
-
 export default function AppFooter() {
   return (
     <Typography
       component="footer"
-      sx={{ display: "flex", bgcolor: "secondary.light" }}
+      sx={{ display: "flex", bgcolor: "secondary.light", py: 5 }}
     >
-      <Container sx={{ my: 8, display: "flex" }}>
-        <Grid container spacing={5}>
-          <Grid item xs={6} sm={4} md={3}>
-            <Grid
-              container
-              direction="column"
-              justifyContent="flex-end"
-              spacing={2}
-              sx={{ height: 120 }}
+      <Container sx={{ display: "flex", justifyContent: "space-between" }}>
+        <Grid container spacing={5} alignItems="flex-start">
+          {/* Logo Section */}
+          <Grid item xs={12} sm={3} md={3}>
+            <Box
+              component="a"
+              href="/"
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+              }}
             >
-              <Grid item sx={{ display: "flex" }}>
-                <Box component="a" href="https://mui.com/" sx={iconStyle}>
-                  <img src="/appFooterFacebook.png" alt="Facebook" />
-                </Box>
-                <Box
-                  component="a"
-                  href="https://twitter.com/MUI_hq"
-                  sx={iconStyle}
-                >
-                  <img src="/appFooterTwitter.png" alt="Twitter" />
-                </Box>
-              </Grid>
-              <Grid item>
-                <Copyright />
-              </Grid>
-            </Grid>
+              <img
+                src={logo}
+                alt="Vintage Villa Logo"
+                style={{ height: 200, backgroundColor: "black" }}
+              />
+              {/* Copyright below the logo */}
+              <Copyright />
+            </Box>
           </Grid>
-          {/* <Grid item xs={6} sm={4} md={2}>
+
+          {/* Social Media Icons Section */}
+          <Grid item xs={12} sm={3} md={3}>
+            <Typography variant="h6" marked="left" gutterBottom>
+              Follow Us
+            </Typography>
+            <Box sx={{ display: "flex", mt: 2 }}>
+              <Box
+                component="a"
+                href="https://www.facebook.com/"
+                sx={iconStyle}
+              >
+                <img
+                  src="https://img.icons8.com/?size=48&id=85024&format=png&color=000000"
+                  alt="Facebook"
+                />
+              </Box>
+              <Box
+                component="a"
+                href="https://www.instagram.com/"
+                sx={iconStyle}
+              >
+                <img
+                  src="https://img.icons8.com/?size=48&id=85154&format=png&color=000000"
+                  alt="Instagram"
+                />
+              </Box>
+              <Box component="a" href="https://www.tiktok.com/" sx={iconStyle}>
+                <img
+                  src="https://img.icons8.com/?size=48&id=soupkpLfTkZi&format=png&color=000000"
+                  alt="TikTok"
+                />
+              </Box>
+              {/* <Box component="a" href="https://twitter.com/" sx={iconStyle}>
+                <img src="/appFooterTwitter.png" alt="Twitter" />
+              </Box> */}
+            </Box>
+          </Grid>
+
+          {/* Navigation Section */}
+          <Grid item xs={12} sm={3} md={3}>
+            <Typography variant="h6" marked="left" gutterBottom>
+              Navigation
+            </Typography>
+            <Box component="ul" sx={{ m: 0, listStyle: "none", p: 0 }}>
+              <Box component="li" sx={{ py: 0.5 }}>
+                <Link component={RouterLink} to="/">
+                  Home
+                </Link>
+              </Box>
+              <Box component="li" sx={{ py: 0.5 }}>
+                <Link component={RouterLink} to="/our-story/">
+                  Our Story
+                </Link>
+              </Box>
+              <Box component="li" sx={{ py: 0.5 }}>
+                <Link component={RouterLink} to="/things-todo/">
+                  Things to Do
+                </Link>
+              </Box>
+              <Box component="li" sx={{ py: 0.5 }}>
+                <Link component={RouterLink} to="/srilankan-cuisine/">
+                  Sri Lankan Cuisine
+                </Link>
+              </Box>
+              <Box component="li" sx={{ py: 0.5 }}>
+                <Link component={RouterLink} to="/reservations/">
+                  Reservations
+                </Link>
+              </Box>
+              <Box component="li" sx={{ py: 0.5 }}>
+                <Link component={RouterLink} to="/gallery/">
+                  Gallery
+                </Link>
+              </Box>
+              <Box component="li" sx={{ py: 0.5 }}>
+                <Link component={RouterLink} to="/contact/">
+                  Contact Us
+                </Link>
+              </Box>
+              <Box component="li" sx={{ py: 0.5 }}>
+                <Link component={RouterLink} to="/faq/">
+                  FAQ
+                </Link>
+              </Box>
+            </Box>
+          </Grid>
+
+          {/* Legal Section */}
+          <Grid item xs={12} sm={3} md={3}>
             <Typography variant="h6" marked="left" gutterBottom>
               Legal
             </Typography>
             <Box component="ul" sx={{ m: 0, listStyle: "none", p: 0 }}>
               <Box component="li" sx={{ py: 0.5 }}>
-                <Link component={RouterLink} to="/terms/">
-                  Terms
+                <Link component={RouterLink} to="/privacy-policy/">
+                  Privacy Policy
                 </Link>
               </Box>
               <Box component="li" sx={{ py: 0.5 }}>
-                <Link component={RouterLink} to="/privacy/">
-                  Privacy
+                <Link component={RouterLink} to="/terms-of-use/">
+                  Terms of Use
+                </Link>
+              </Box>
+              <Box component="li" sx={{ py: 0.5 }}>
+                <Link component={RouterLink} to="/refund-policy/">
+                  Cancellation and Refund Policy
                 </Link>
               </Box>
             </Box>
           </Grid>
-          <Grid item xs={6} sm={8} md={4}>
-            <Typography variant="h6" marked="left" gutterBottom>
-              Language
-            </Typography>
-            <TextField
-              select
-              size="medium"
-              variant="standard"
-              SelectProps={{
-                native: true,
-              }}
-              sx={{ mt: 1, width: 150 }}
-            >
-              {LANGUAGES.map((language) => (
-                <option value={language.code} key={language.code}>
-                  {language.name}
-                </option>
-              ))}
-            </TextField>
-          </Grid> */}
-          {/* <Grid item>
+
+          {/* Icon Attribution */}
+          {/* <Grid item xs={12} sx={{ mt: 4 }}>
             <Typography variant="caption">
               {"Icons made by "}
               <Link

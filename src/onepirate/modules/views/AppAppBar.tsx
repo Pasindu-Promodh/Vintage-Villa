@@ -15,11 +15,22 @@ const rightLink = {
   fontSize: 16,
   color: "common.white",
   mx: 3,
-  // backgroundColor: "black",
 };
 
-const leftMenu = ["HOME", "OUR STORY", "THINGS TO DO", "SRILANKAN CUISINE"];
-const rightMenu = ["RESERVATIONS", "GALLERY", "CONTACT", "FAQ"];
+const leftMenu = [
+  { name: "HOME", path: "/" },
+  { name: "OUR STORY", path: "/our-story/" },
+  { name: "THINGS TO DO", path: "/things-todo/" },
+  { name: "SRILANKAN CUISINE", path: "/srilankan-cuisine/" },
+];
+
+const rightMenu = [
+  { name: "RESERVATIONS", path: "/reservations/" },
+  { name: "GALLERY", path: "/gallery/" },
+  { name: "CONTACT", path: "/contact/" },
+  { name: "FAQ", path: "/faq/" },
+];
+
 
 function AppAppBar() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -31,16 +42,16 @@ function AppAppBar() {
   const menuItems = (menu: any[]) => (
     <List>
       {menu.map((item) => (
-        <ListItem key={item}>
+        <ListItem key={item.name}>
           <Link
             color="inherit"
             variant="h6"
             underline="none"
             component={RouterLink}
-            to="/sign-in/"
+            to={item.path}
             sx={{ width: "100%", textAlign: "left" }}
           >
-            {item}
+            {item.name}
           </Link>
         </ListItem>
       ))}
@@ -66,7 +77,6 @@ function AppAppBar() {
               display: { xs: "none", md: "flex" },
               flex: 1,
               justifyContent: "space-between",
-              // backgroundColor: "pink",
             }}
           >
             {/* Show left menu items on larger screens */}
@@ -76,11 +86,11 @@ function AppAppBar() {
                 variant="h6"
                 underline="none"
                 component={RouterLink}
-                to="/sign-in/"
+                to={item.path}
                 sx={rightLink}
-                key={item}
+                key={item.name}
               >
-                {item}
+                {item.name}
               </Link>
             ))}
           </Box>
@@ -109,7 +119,6 @@ function AppAppBar() {
               display: { xs: "none", md: "flex" },
               flex: 1,
               justifyContent: "space-between",
-              // backgroundColor: "pink",
             }}
           >
             {/* Show right menu items on larger screens */}
@@ -119,11 +128,11 @@ function AppAppBar() {
                 variant="h6"
                 underline="none"
                 component={RouterLink}
-                to="/sign-in/"
+                to={item.path}
                 sx={rightLink}
-                key={item}
+                key={item.name}
               >
-                {item}
+                {item.name}
               </Link>
             ))}
           </Box>

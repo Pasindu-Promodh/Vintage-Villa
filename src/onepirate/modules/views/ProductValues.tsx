@@ -5,6 +5,7 @@ import Typography from "../components/Typography";
 import { Grid, Button } from "@mui/material"; // Import Button from MUI
 import { styled } from "@mui/material/styles";
 import ButtonBase from "@mui/material/ButtonBase";
+import { Link as RouterLink } from "react-router-dom";
 
 import img1 from "../../../assets/Room1.jpg";
 import img2 from "../../../assets/clock-2663148.jpg";
@@ -150,7 +151,7 @@ function ProductValues() {
             mt: 5,
           }}
         >
-          <Button
+          {/* <Button
             variant="contained"
             color="primary"
             size="large"
@@ -159,6 +160,16 @@ function ProductValues() {
               paddingX: 4,
               paddingY: 1.5,
             }}
+          >
+            Visit the Gallery
+          </Button> */}
+          <Button
+            color="secondary"
+            variant="contained"
+            size="large"
+            component={RouterLink}
+            to="/gallery/"
+            sx={{ minWidth: 200 }}
           >
             Visit the Gallery
           </Button>

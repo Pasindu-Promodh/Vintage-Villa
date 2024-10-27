@@ -38,10 +38,10 @@ function ProductCTA() {
               sx={{ maxWidth: 400 }}
             >
               <Typography variant="h2" component="h2" gutterBottom>
-                Receive offers
+                Join us
               </Typography>
               <Typography variant="h5">
-                Taste the holidays of the everyday close to home.
+                Stay Updated on Vintage Elegance – Subscribe to Our Updates.
               </Typography>
               <TextField
                 noBorder

@@ -6,11 +6,13 @@ const rawTheme = createTheme({
     primary: {
       light: "#69696a",
       main: "#28282a",
+      // light: "#E8AA33",
       dark: "#1e1e1f",
     },
     secondary: {
       light: "#fff5f8",
       main: "#ff3366",
+      // main: "#D94E3F",
       dark: "#e62958",
     },
     warning: {

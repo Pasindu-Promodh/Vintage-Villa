@@ -4,6 +4,8 @@ import Box from "@mui/material/Box";
 import ButtonBase from "@mui/material/ButtonBase";
 import Container from "@mui/material/Container";
 import Typography from "../components/Typography";
+import Link from "@mui/material/Link";
+import { Link as RouterLink } from "react-router-dom";
 
 const ImageBackdrop = styled("div")(({ theme }) => ({
   position: "absolute",
@@ -55,38 +57,31 @@ const ImageIconButton = styled(ButtonBase)(({ theme }) => ({
 
 const images = [
   {
-    //url: "https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?auto=format&fit=crop&w=400&q=80",
-    url: "https://triadfoot.com/wp-content/uploads/2017/08/Going-On-A-Hike-3-Tips-For-Happier-Feet-.jpg",
+    url: "https://i.natgeofe.com/n/7afda449-1780-4938-8342-2abe32326c86/Montblanchike.jpg",
     title: "Hiking",
     width: "40%",
   },
   {
-    //url: "https://images.unsplash.com/photo-1534081333815-ae5019106622?auto=format&fit=crop&w=400&q=80",
     url: "https://duqjpivknq39s.cloudfront.net/2019/07/Huluganga-falls-knuckles.jpg",
     title: "Waterfalls",
     width: "40%",
   },
   {
-    //url: "https://images.unsplash.com/photo-1531299204812-e6d44d9a185c?auto=format&fit=crop&w=400&q=80",
     url: "https://duqjpivknq39s.cloudfront.net/2018/12/meemure.jpg",
     title: "Meemure",
     width: "20%",
   },
-
   {
-    //url: "https://images.unsplash.com/photo-1453747063559-36695c8771bd?auto=format&fit=crop&w=400&q=80",
     url: "https://duqjpivknq39s.cloudfront.net/2019/01/Corbets-Gap.jpg",
     title: "Corbets Gap",
     width: "38%",
   },
   {
-    //url: "https://images.unsplash.com/photo-1523309996740-d5315f9cc28b?auto=format&fit=crop&w=400&q=80",
     url: "https://deih43ym53wif.cloudfront.net/temple-tooth-kandy-sri-lanka-shutterstock_1037797372_24beb3388c.jpeg",
     title: "Kandy",
     width: "38%",
   },
   {
-    //url: "https://images.unsplash.com/photo-1534452203293-494d7ddbf7e0?auto=format&fit=crop&w=400&q=80",
     url: "https://duqjpivknq39s.cloudfront.net/2018/12/mini-worlds-end.jpg",
     title: "Mini Worlds End",
     width: "24%",
@@ -107,42 +102,51 @@ export default function ProductCategories() {
               width: image.width,
             }}
           >
-            <Box
-              sx={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-                backgroundSize: "cover",
-                backgroundPosition: "center 40%",
-                backgroundImage: `url(${image.url})`,
-              }}
-            />
-            <ImageBackdrop className="imageBackdrop" />
-            <Box
-              sx={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "common.white",
-              }}
+            <Link
+              to="/things-todo/"
+              key={image.title}
+              component={RouterLink}
+              style={{ textDecoration: "none" }}
             >
-              <Typography
-                component="h3"
-                variant="h6"
-                color="inherit"
-                className="imageTitle"
+              <Box
+                sx={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  backgroundImage: `url(${image.url})`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  backgroundRepeat: "no-repeat",
+                  height: "100%", // Make sure the height is set
+                }}
+              />
+              <ImageBackdrop className="imageBackdrop" />
+              <Box
+                sx={{
+                  position: "absolute",
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "common.white",
+                }}
               >
-                {image.title}
-                <div className="imageMarked" />
-              </Typography>
-            </Box>
+                <Typography
+                  component="h3"
+                  variant="h6"
+                  color="inherit"
+                  className="imageTitle"
+                >
+                  {image.title}
+                  <div className="imageMarked" />
+                </Typography>
+              </Box>
+            </Link>
           </ImageIconButton>
         ))}
       </Box>

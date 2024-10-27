@@ -28,7 +28,7 @@ function Terms() {
       <Container>
         <Box sx={{ mt: 7, mb: 12 }}>
           <Typography variant="h3" gutterBottom marked="center" align="center">
-            Terms
+            Terms of Use
           </Typography>
           <Markdown>{markdown}</Markdown>
         </Box>
