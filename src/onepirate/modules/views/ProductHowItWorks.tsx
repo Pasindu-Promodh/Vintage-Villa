@@ -177,7 +177,10 @@ function ProductHowItWorks() {
   return (
     <Box
       component="section"
-      sx={{ display: "flex", bgcolor: "secondary.light", overflow: "hidden" }}
+      sx={{ display: "flex", 
+        // bgcolor: "secondary.light", 
+        bgcolor: "background.paper",
+        overflow: "hidden" }}
     >
       <Container
         sx={{
@@ -261,7 +264,7 @@ function ProductHowItWorks() {
         </Box>
         {/* Get Directions Link */}
         <a
-          href="https://www.google.com/maps/dir/?api=1&destination=The+Vintage+Villa,Sri+Lanka"
+          href="https://www.google.com/maps/dir/?api=1&destination=The+Vintage+Villa,+Thangappuwa+Road,+Rangala"
           target="_blank"
           rel="noopener noreferrer"
           style={{ textDecoration: "none" }}

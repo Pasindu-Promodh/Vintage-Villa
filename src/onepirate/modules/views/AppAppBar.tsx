@@ -4,7 +4,6 @@ import Link from "@mui/material/Link";
 import AppBar from "../components/AppBar";
 import Toolbar from "../components/Toolbar";
 import { Link as RouterLink } from "react-router-dom";
-import logo from "../../../assets/Logo_transparent_60.png";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import Drawer from "@mui/material/Drawer";
@@ -30,7 +29,6 @@ const rightMenu = [
   { name: "CONTACT", path: "/contact/" },
   { name: "FAQ", path: "/faq/" },
 ];
-
 
 function AppAppBar() {
   const [drawerOpen, setDrawerOpen] = React.useState(false);
@@ -61,7 +59,11 @@ function AppAppBar() {
   return (
     <div>
       <AppBar position="fixed">
-        <Toolbar sx={{ justifyContent: "space-between" }}>
+        <Toolbar
+          sx={{
+            justifyContent: "space-between",
+          }}
+        >
           <IconButton
             edge="start"
             color="inherit"
@@ -102,15 +104,16 @@ function AppAppBar() {
             component={RouterLink}
             to="/"
             sx={{
-              fontSize: 24,
-              mx:3
+              mx: 3,
             }}
           >
             <Box
               component="img"
-              src={logo}
-              alt="suitcase"
-              sx={{ height: 60 }}
+              src={"/logo.png"}
+              alt="logo"
+              sx={{
+                height: 60,
+              }}
             />
           </Link>
 
@@ -156,4 +159,3 @@ function AppAppBar() {
 }
 
 export default AppAppBar;
-

@@ -6,8 +6,6 @@ import Container from "@mui/material/Container";
 import Typography from "../components/Typography";
 import { Link as RouterLink } from "react-router-dom";
 
-import logo from "../../../assets/Logo_transparent1.png";
-
 function Copyright() {
   return (
     <Typography
@@ -59,9 +57,9 @@ export default function AppFooter() {
               }}
             >
               <img
-                src={logo}
+                src={"/logo.png"}
                 alt="Vintage Villa Logo"
-                style={{ height: 200, backgroundColor: "black" }}
+                style={{ height: 200, backgroundColor: "#28282a" }}
               />
               {/* Copyright below the logo */}
               <Copyright />
@@ -80,7 +78,7 @@ export default function AppFooter() {
                 sx={iconStyle}
               >
                 <img
-                  src="https://img.icons8.com/?size=48&id=85024&format=png&color=000000"
+                  src="https://img.icons8.com/?size=48&id=85024&format=png&color=28282a"
                   alt="Facebook"
                 />
               </Box>
@@ -90,13 +88,13 @@ export default function AppFooter() {
                 sx={iconStyle}
               >
                 <img
-                  src="https://img.icons8.com/?size=48&id=85154&format=png&color=000000"
+                  src="https://img.icons8.com/?size=48&id=85154&format=png&color=28282a"
                   alt="Instagram"
                 />
               </Box>
               <Box component="a" href="https://www.tiktok.com/" sx={iconStyle}>
                 <img
-                  src="https://img.icons8.com/?size=48&id=soupkpLfTkZi&format=png&color=000000"
+                  src="https://img.icons8.com/?size=48&id=soupkpLfTkZi&format=png&color=28282a"
                   alt="TikTok"
                 />
               </Box>

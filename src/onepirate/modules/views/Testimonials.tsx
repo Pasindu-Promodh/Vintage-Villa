@@ -42,7 +42,7 @@ function Testimonials() {
   return (
     <Box
       component="section"
-      sx={{ display: "flex", bgcolor: "background.paper", overflow: "hidden" }}
+      sx={{ display: "flex", bgcolor: "secondary.light", overflow: "hidden" }}
     >
       <Container
         sx={{
@@ -63,34 +63,43 @@ function Testimonials() {
         >
           What Our Guests Say
         </Typography>
-        <div>
-          <Grid container spacing={5}>
-            {testimonials.map((testimonial, index) => (
-              <Grid item xs={12} md={4} key={index}>
-                <Box sx={item}>
-                  {/* Using background image as a fallback for image loading */}
-                  <Box
-                    sx={{
-                      width: 120,
-                      height: 120,
-                      borderRadius: "50%",
-                      mb: 4,
-                      backgroundImage: `url(${testimonial.image})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}
-                  />
-                  <Typography variant="h6" component="p" sx={{ mb: 2 }}>
-                    {testimonial.name}
-                  </Typography>
-                  <Typography variant="body1" color="text.secondary">
-                    "{testimonial.quote}"
-                  </Typography>
-                </Box>
-              </Grid>
-            ))}
-          </Grid>
-        </div>
+        <Box
+          component="img"
+          src="/productCurvyLines.png"
+          alt="curvy lines"
+          sx={{
+            pointerEvents: "none",
+            position: "absolute",
+            top: -180,
+            zIndex: 0,
+          }}
+        />
+        <Grid container spacing={5}>
+          {testimonials.map((testimonial, index) => (
+            <Grid item xs={12} md={4} key={index}>
+              <Box sx={item}>
+                {/* Using background image as a fallback for image loading */}
+                <Box
+                  sx={{
+                    width: 120,
+                    height: 120,
+                    borderRadius: "50%",
+                    mb: 4,
+                    backgroundImage: `url(${testimonial.image})`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                />
+                <Typography variant="h6" component="p" sx={{ mb: 2 }}>
+                  {testimonial.name}
+                </Typography>
+                <Typography variant="body1" color="text.secondary">
+                  "{testimonial.quote}"
+                </Typography>
+              </Box>
+            </Grid>
+          ))}
+        </Grid>
       </Container>
     </Box>
   );

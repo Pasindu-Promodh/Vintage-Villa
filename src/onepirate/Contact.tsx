@@ -42,7 +42,7 @@ function ContactUs() {
           <Typography variant="body1">Email: info@vintagevilla.com</Typography>
           <Typography variant="body1">Phone: +94 77 302 0635</Typography>
           <Typography variant="body1">
-            Address: Vintage Villa, Knuckles Mountain Range, Sri Lanka
+            Address: Vintage Villa, Thangappuwa Rd, Rangala, Sri Lanka
           </Typography>
           <Typography variant="body1">Follow us on Social Media:</Typography>
           <Typography variant="body1">
