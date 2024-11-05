@@ -253,15 +253,15 @@ function Reservations() {
     dinner: false,
   });
 
-  const basePrices = {
-    "Standard Room": 100,
-    "Deluxe Room": 150,
-    "Family Suite": 220,
-    "Luxury Suite": 350,
-    "Honeymoon Package": 400,
-  };
+  // const basePrices = {
+  //   "Standard Room": 100,
+  //   "Deluxe Room": 150,
+  //   "Family Suite": 220,
+  //   "Luxury Suite": 350,
+  //   "Honeymoon Package": 400,
+  // };
 
-  const mealPrices = { breakfast: 10, lunch: 15, dinner: 20 };
+  // const mealPrices = { breakfast: 10, lunch: 15, dinner: 20 };
 
   const calculatePrice = () => {
     if (!selectedRoom) return 0;
