@@ -7,21 +7,17 @@ import { styled } from "@mui/material/styles";
 import ButtonBase from "@mui/material/ButtonBase";
 import { Link as RouterLink } from "react-router-dom";
 
-import img1 from "../../../assets/Room1.jpg";
-import img2 from "../../../assets/clock-2663148.jpg";
-import img3 from "../../../assets/balcony-6901032.jpg";
-
 const images = [
   {
-    src: img1,
+    src: "/home/IMG-20241013-WA0014.jpg",
     text: "Each of our luxury rooms at the vintage-themed villa is a masterpiece of design, offering an immersive journey into a bygone era while pampering you with modern comforts.",
   },
   {
-    src: img2,
+    src: "/home/IMG-20241013-WA0028.jpg",
     text: "Antique furnishings and period-inspired decor transport you to a time of refined elegance. Our vintage rooms are a symphony of muted hues, ornate accents, and soft lighting, creating an ambiance of intimate grandeur.",
   },
   {
-    src: img3,
+    src: "/home/IMG-20241013-WA0022.jpg",
     text: "Whether you choose a room with a forest view or a private balcony overlooking the mountains, each luxury space offers a tranquil escape. Allow the gentle rustling of leaves and the scent of fresh mountain air to lull you into a peaceful slumber.",
   },
 ];

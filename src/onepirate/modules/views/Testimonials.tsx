@@ -54,7 +54,7 @@ function Testimonials() {
           alignItems: "center",
         }}
       >
-        {/* <Typography
+        <Typography
           variant="h4"
           marked="center"
           align="center"
@@ -62,7 +62,7 @@ function Testimonials() {
           sx={{ mb: 14 }}
         >
           What Our Guests Say
-        </Typography> */}
+        </Typography>
         <Box
           component="img"
           src="/productCurvyLines.png"

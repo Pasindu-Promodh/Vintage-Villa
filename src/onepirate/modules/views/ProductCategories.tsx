@@ -62,7 +62,7 @@ const images = [
     width: "40%",
   },
   {
-    url: "https://duqjpivknq39s.cloudfront.net/2019/07/Huluganga-falls-knuckles.jpg",
+    url: "/home/IMG-20241013-WA0036.jpg",
     title: "Waterfalls",
     width: "40%",
   },
