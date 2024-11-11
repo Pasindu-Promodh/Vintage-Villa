@@ -30,8 +30,7 @@ const thingsToDoContent = [
     title: "Hiking Trails and Waterfalls",
     description:
       "Embark on unforgettable journeys through the lush hiking trails of the Knuckles Mountain Range. Our hotel provides easy access to some of the most scenic and well-preserved paths, taking you through ancient forests, tea plantations, and captivating landscapes. Along the way, be sure to discover the hidden gems of this region, including breathtaking waterfalls that cascade down from the misty heights.",
-    image:
-      "https://i.natgeofe.com/n/7afda449-1780-4938-8342-2abe32326c86/Montblanchike.jpg",
+    image: "/home/IMG_0325.JPG",
     alt: "Hiking Trails and Waterfalls",
     imageOrder: 1,
   },

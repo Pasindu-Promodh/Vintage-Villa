@@ -57,7 +57,7 @@ const ImageIconButton = styled(ButtonBase)(({ theme }) => ({
 
 const images = [
   {
-    url: "https://i.natgeofe.com/n/7afda449-1780-4938-8342-2abe32326c86/Montblanchike.jpg",
+    url: "./home/IMG_0325.JPG",
     title: "Hiking",
     width: "40%",
   },

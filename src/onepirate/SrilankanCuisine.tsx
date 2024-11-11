@@ -77,7 +77,7 @@ const sriLankanCuisineContent = [
     description:
       "No exploration of Sri Lankan cuisine is complete without a nod to the world-famous Ceylon tea. Indulge in the soothing aroma and rich taste of freshly brewed Ceylon tea, sourced from the verdant tea plantations that adorn the Sri Lankan hills. As you savor a cup of this exquisite tea, you'll experience the heritage and tradition that have made Ceylon tea a global favorite.",
     images: [
-      "/srilankancuisine/mountains-5112952.jpg",
+      "/srilankancuisine/IMG_0286.JPG",
       "https://www.summerhouseseniorliving.com/wp-content/uploads/2022/06/tea-pouring-into-cup.jpg",
     ],
     alt: ["Tea Leaves", "Tea"],

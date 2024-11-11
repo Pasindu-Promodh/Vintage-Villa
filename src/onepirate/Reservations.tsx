@@ -211,35 +211,35 @@ const roomPackages = [
     description:
       "Our cozy Standard Room offers a comfortable stay with all the essential amenities, perfect for travelers who value simplicity and comfort. Enjoy a queen-sized bed, complimentary Wi-Fi, and a stunning view of the garden.",
     price: 100,
-    image: "/rooms/standard-room.jpg",
+    image: "/reservations/IMG_0354.JPG",
   },
   {
     title: "Deluxe Room",
     description:
       "Upgrade your experience with our Deluxe Room. Featuring a king-sized bed, a private balcony with mountain views, a luxurious bathroom, and premium linens, it's an ideal choice for couples or small families.",
     price: 150,
-    image: "/rooms/deluxe-room.jpg",
+    image: "/reservations/IMG_0339.JPG",
   },
   {
     title: "Family Suite",
     description:
       "The spacious Family Suite is designed for families or groups, offering two interconnected rooms, a cozy living area, and a private balcony. Perfect for those who need a bit more space to relax and unwind.",
     price: 220,
-    image: "/rooms/family-suite.jpg",
+    image: "/reservations/IMG_0339.JPG",
   },
   {
     title: "Luxury Suite",
     description:
       "Experience ultimate luxury in our top-tier suite. With a separate living area, two bedrooms, a private jacuzzi, and a panoramic view of the Knuckles Mountains, this suite offers the pinnacle of comfort and elegance.",
     price: 350,
-    image: "/rooms/luxury-suite.jpg",
+    image: "/reservations/IMG_0339.JPG",
   },
   {
     title: "Honeymoon Package",
     description:
       "Celebrate your love in our specially curated Honeymoon Suite. This package includes a private dinner under the stars, complimentary champagne, and spa access. Perfect for newlyweds seeking a romantic escape.",
     price: 400,
-    image: "/rooms/honeymoon-suite.jpg",
+    image: "/reservations/IMG_0339.JPG",
   },
 ];
 
@@ -308,7 +308,7 @@ function Reservations() {
             <Grid item xs={12} sm={6} md={4} key={index}>
               <RoomCard>
                 <RoomCardMedia
-                  image="https://www.vanorohotel.com/wp-content/uploads/2021/07/drz-vanoro_6737.jpg"
+                  image={room.image}
                   title={room.title}
                 />
                 <CardContent>
