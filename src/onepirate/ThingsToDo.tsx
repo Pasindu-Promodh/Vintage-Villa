@@ -242,7 +242,7 @@ const thingsToDoContent = [
     title: "Heel-Oya Village",
     description:
       "Immerse yourself in the culture and traditions of Sri Lanka by visiting the nearby Meemure Village. This picturesque rural hamlet, nestled amidst the mountains, offers a glimpse into the lives of its welcoming residents. Explore the village's rich history, try your hand at traditional crafts, and savor authentic Sri Lankan cuisine prepared by local families.",
-    image: "https://duqjpivknq39s.cloudfront.net/2018/12/meemure.jpg",
+    image: "/home/WhatsApp Image 2024-11-15 at 15.30.12_fa144f86.jpg",
     alt: "Heel Oya Village",
     imageOrder: 2,
     packageDetailsFile: "/packages/heeloya-village-package.md", // path to markdown file

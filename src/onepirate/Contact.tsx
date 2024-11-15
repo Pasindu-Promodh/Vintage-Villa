@@ -40,9 +40,9 @@ function ContactUs() {
         <ContactDetailsContainer>
           <Typography variant="h6">Contact Details</Typography>
           <Typography variant="body1">Email: info@vintagevilla.com</Typography>
-          <Typography variant="body1">Phone: +94 77 302 0635</Typography>
+          <Typography variant="body1">Phone / Whatsapp: +94 77 302 0635</Typography>
           <Typography variant="body1">
-            Address: Vintage Villa, Thangappuwa Rd, Rangala, Sri Lanka
+            Address: The Vintage Villa Knuckles, Thangappuwa, Rangala, Sri Lanka
           </Typography>
           <Typography variant="body1">Follow us on Social Media:</Typography>
           <Typography variant="body1">
@@ -51,7 +51,7 @@ function ContactUs() {
         </ContactDetailsContainer>
 
         {/* Contact Form */}
-        <ContactFormContainer>
+        {/* <ContactFormContainer>
           <Typography variant="h6">Send Us a Message</Typography>
           <TextField
             label="Your Name"
@@ -82,7 +82,7 @@ function ContactUs() {
           <Button variant="contained" color="primary" sx={{ mt: 2 }}>
             Send Message
           </Button>
-        </ContactFormContainer>
+        </ContactFormContainer> */}
       </Container>
       <AppFooter />
     </React.Fragment>

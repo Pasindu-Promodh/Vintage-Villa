@@ -38,8 +38,8 @@ const sriLankanCuisineContent = [
       "Sri Lankan cuisine is a delightful tapestry of diverse flavors, influenced by the island's rich history and multicultural heritage. From aromatic rice and fragrant curries to mouthwatering seafood, our culinary offerings showcase the best of Sri Lanka's gastronomic treasures. Explore the bold flavors of traditional dishes like 'Rice and Curry,' 'Hoppers,' and 'Kottu Roti,' all expertly prepared to tantalize your taste buds.",
     images: [
       "/srilankancuisine/asian-6308470.jpg",
-      "/srilankancuisine/indiappa-6303118.jpg",
-      "/srilankancuisine/kottu-6319363_1280.jpg",
+      "/home/WhatsApp Image 2024-11-15 at 15.18.55_85afa36c.jpg",
+      "/home/IMG-20241013-WA0031.jpg",
       "/srilankancuisine/rice-6305704.jpg",
     ],
     alt: [

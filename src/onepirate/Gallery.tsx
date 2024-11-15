@@ -64,7 +64,6 @@
 // ];
 
 // function Gallery() {
-  
 
 //   return (
 //     <React.Fragment>
@@ -107,17 +106,6 @@
 
 // export default withRoot(Gallery);
 
-
-
-
-
-
-
-
-
-
-
-
 import * as React from "react";
 import AppFooter from "./modules/views/AppFooter";
 import AppAppBar from "./modules/views/AppAppBar";
@@ -157,45 +145,184 @@ const SectionTitle = styled(Typography)(({ theme }) => ({
 
 // Array of images for the gallery
 const galleryImages = [
+  { src: "/gallery/IMG_0327.JPG", alt: "Property View 1" },
+  { src: "/gallery/IMG-20241013-WA0015.jpg", alt: "Property View 1" },
+  { src: "/gallery/IMG-20241013-WA0016.jpg", alt: "Property View 1" },
+  { src: "/gallery/IMG-20241013-WA0017.jpg", alt: "Property View 1" },
+  { src: "/gallery/IMG-20241013-WA0018.jpg", alt: "Property View 1" },
+  { src: "/gallery/IMG-20241013-WA0022.jpg", alt: "Property View 1" },
+  { src: "/gallery/IMG-20241013-WA0024.jpg", alt: "Property View 1" },
+  { src: "/gallery/IMG-20241013-WA0026.jpg", alt: "Property View 1" },
+  { src: "/gallery/IMG-20241013-WA0030.jpg", alt: "Property View 1" },
+  { src: "/gallery/IMG-20241013-WA0033.jpg", alt: "Property View 1" },
+  { src: "/gallery/IMG-20241013-WA0034.jpg", alt: "Property View 1" },
+  { src: "/gallery/IMG-20241013-WA0040.jpg", alt: "Property View 1" },
   {
-    src: "/home/IMG_0325.JPG",
+    src: "/gallery/WhatsApp Image 2024-11-04 at 16.53.12_4c7e20c4.jpg",
     alt: "Property View 1",
   },
   {
-    src: "/home/IMG_0325.JPG",
-    alt: "Property View 2",
+    src: "/gallery/WhatsApp Image 2024-11-04 at 17.20.51_59267bfe.jpg",
+    alt: "Property View 1",
   },
   {
-    src: "/home/IMG_0325.JPG",
-    alt: "Property View 3",
+    src: "/gallery/WhatsApp Image 2024-11-04 at 17.31.44_70547462.jpg",
+    alt: "Property View 1",
   },
   {
-    src: "/home/IMG_0325.JPG",
-    alt: "Property View 4",
+    src: "/gallery/WhatsApp Image 2024-11-04 at 19.45.25_f0795898.jpg",
+    alt: "Property View 1",
   },
   {
-    src: "/home/IMG_0325.JPG",
-    alt: "Surroundings View 1",
+    src: "/gallery/WhatsApp Image 2024-11-04 at 19.50.14_9ec58fb4.jpg",
+    alt: "Property View 1",
   },
   {
-    src: "/home/IMG_0325.JPG",
-    alt: "Surroundings View 2",
+    src: "/gallery/WhatsApp Image 2024-11-04 at 19.52.50_38e0297c.jpg",
+    alt: "Property View 1",
   },
   {
-    src: "/home/IMG_0325.JPG",
-    alt: "Surroundings View 3",
+    src: "/gallery/WhatsApp Image 2024-11-04 at 19.55.05_89bfcdd5.jpg",
+    alt: "Property View 1",
   },
   {
-    src: "/home/IMG_0325.JPG",
-    alt: "Surroundings View 4",
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.18_18c31bca.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.22_64376673.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.27_ed03e58d.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.32_6a60ec53.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.35_c934f32b.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.40_a5433c71.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.43_988fbcd0.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.57_70263001.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.59_845c51d7.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.18.06_ea7f0ba4.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.18.10_f9eff0d2.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.35.23_66d83d13.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.35.48_8be6d0f4.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.35.54_217f049d.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.36.00_7bc1c8d8.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.36.01_27de7c60.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.36.01_f15c8215.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.36.10_367c78ee.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.36.32_34aeef4a.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.36.33_8a38c380.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.36.34_99bde407.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 15.36.35_1f2166d9.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 20.35.20_9a70988b.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 20.35.20_a46fdc51.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 20.35.20_bd027da1.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 20.35.21_0ec1eeea.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 20.35.21_95a1ffef.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 20.35.22_7fe78125.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 20.46.34_be436fa7.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 20.46.34_61071ed7.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 20.46.36_ef76c72d.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 20.46.36_1b9d01d4.jpg",
+    alt: "Property View 1",
+  },
+  {
+    src: "/gallery/WhatsApp Image 2024-11-15 at 20.46.37_f3946a13.jpg",
+    alt: "Property View 1",
   },
 ];
-
 function Gallery() {
   const [open, setOpen] = React.useState(false);
   const [selectedImage, setSelectedImage] = React.useState<any>(null);
 
-  const handleClickOpen = (image:any) => {
+  const handleClickOpen = (image: any) => {
     setSelectedImage(image);
     setOpen(true);
   };
