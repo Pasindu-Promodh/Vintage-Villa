@@ -3,6 +3,8 @@ import Button from "../components/Button";
 import Typography from "../components/Typography";
 import ProductHeroLayout from "./ProductHeroLayout";
 import { Link as RouterLink } from "react-router-dom";
+// import "@fontsource/Metal"; // Defaults to 400 weight
+
 
 const backgroundImage =
   //"https://images.unsplash.com/photo-1534854638093-bada1813ca19?auto=format&fit=crop&w=1400&q=80"
@@ -23,8 +25,14 @@ export default function ProductHero() {
         src={backgroundImage}
         alt="increase priority"
       />
-      <Typography color="inherit" align="center" variant="h2" marked="center">
-        Vintage Luxury in the Heart of Nature
+      <Typography
+        color="inherit"
+        align="center"
+        variant="h2"
+        marked="center"
+        sx={{ fontFamily: "'Metal', serif" }}
+      >
+        THE VINTAGE VILLA KNUCKLES
       </Typography>
       <Typography
         color="inherit"
@@ -32,6 +40,8 @@ export default function ProductHero() {
         variant="h5"
         sx={{ mb: 4, mt: { sx: 4, sm: 10 } }}
       >
+        Vintage Luxury in the Heart of Nature <br />
+        <br />
         Step back in time to a bygone era of elegance and charm. Embrace the
         vintage allure of our villa amidst the breathtaking Knuckles Mountain
         Range.

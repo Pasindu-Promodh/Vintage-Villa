@@ -65,10 +65,7 @@ const sriLankanCuisineContent = [
     title: "Tropical Fruits, Vegetables, and Leafy Greens",
     description:
       "Our dedication to authentic Sri Lankan cuisine means embracing the bounty of tropical fruits, vegetables, and leafy greens that flourish in our lush surroundings. You'll find yourself indulging in sweet and succulent mangoes, creamy avocados, aromatic jackfruits, and vibrant greens like gotu kola and kankun, all meticulously prepared to enhance your dining experience.",
-    images: [
-      "/srilankancuisine/life-863705.jpg",
-      "/srilankancuisine/fruits-82524.jpg",
-    ],
+    images: ["/home/IMG_0427.JPG", "/home/IMG_0683.JPG"],
     alt: ["Vegetables", "Fruits"],
     imageOrder: 1,
   },
@@ -76,10 +73,7 @@ const sriLankanCuisineContent = [
     title: "The Elegance of Ceylon Tea",
     description:
       "No exploration of Sri Lankan cuisine is complete without a nod to the world-famous Ceylon tea. Indulge in the soothing aroma and rich taste of freshly brewed Ceylon tea, sourced from the verdant tea plantations that adorn the Sri Lankan hills. As you savor a cup of this exquisite tea, you'll experience the heritage and tradition that have made Ceylon tea a global favorite.",
-    images: [
-      "/srilankancuisine/IMG_0286.JPG",
-      "https://www.summerhouseseniorliving.com/wp-content/uploads/2022/06/tea-pouring-into-cup.jpg",
-    ],
+    images: ["/srilankancuisine/IMG_0286.JPG", "/home/IMG_0400.JPG"],
     alt: ["Tea Leaves", "Tea"],
     imageOrder: 2,
   },

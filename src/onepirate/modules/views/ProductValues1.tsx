@@ -8,19 +8,17 @@ import ButtonBase from "@mui/material/ButtonBase";
 import Link from "@mui/material/Link";
 import { Link as RouterLink } from "react-router-dom";
 
-import img1 from "../../../assets/food-2424541.jpg";
 import img2 from "../../../assets/food-6884523.jpg";
-import img3 from "../../../assets/tea-1770423.jpg";
 
 const images = [
   {
-    src: img1,
+    src: "/home/IMG-20241013-WA0012.jpg",
   },
   {
     src: img2,
   },
   {
-    src: img3,
+    src: "/home/IMG_0316.JPG",
   },
 ];
 
