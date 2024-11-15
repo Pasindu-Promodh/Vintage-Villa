@@ -51,7 +51,7 @@ function ContactUs() {
         </ContactDetailsContainer>
 
         {/* Contact Form */}
-        {/* <ContactFormContainer>
+        <ContactFormContainer sx={{ display:"none" }}>
           <Typography variant="h6">Send Us a Message</Typography>
           <TextField
             label="Your Name"
@@ -82,7 +82,7 @@ function ContactUs() {
           <Button variant="contained" color="primary" sx={{ mt: 2 }}>
             Send Message
           </Button>
-        </ContactFormContainer> */}
+        </ContactFormContainer>
       </Container>
       <AppFooter />
     </React.Fragment>

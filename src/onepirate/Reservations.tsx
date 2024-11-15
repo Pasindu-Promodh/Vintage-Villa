@@ -21,7 +21,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import Link from "@mui/material/Link";
-import { Link as RouterLink, useLocation } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 
 // Styled Components for visual enhancement
 const RoomCard = styled(Card)(({ theme }) => ({
@@ -102,8 +102,8 @@ function Reservations() {
   };
 
   const handleOpen = (room: any) => {
-    // setSelectedRoom(room);
-    // setOpen(true);
+    setSelectedRoom(room);
+    setOpen(true);
   };
 
   const handleClose = () => {
@@ -145,14 +145,14 @@ function Reservations() {
                   <PriceTypography variant="h6">
                     ${room.price} / night
                   </PriceTypography>
-                  {/* <Button
+                  <Button
                     variant="contained"
                     color="primary"
-                    sx={{ mt: 2 }}
+                    sx={{ mt: 2, display: "none" }}
                     onClick={() => handleOpen(room)}
                   >
                     Book Now
-                  </Button> */}
+                  </Button>
                   <Link
                     underline="none"
                     color="primary"
