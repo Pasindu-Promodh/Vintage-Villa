@@ -39,7 +39,7 @@ function ContactUs() {
         {/* Contact Details */}
         <ContactDetailsContainer>
           <Typography variant="h6">Contact Details</Typography>
-          <Typography variant="body1">Email: info@vintagevilla.com</Typography>
+          <Typography variant="body1">Email: info@vintagevilla.lk</Typography>
           <Typography variant="body1">Phone / Whatsapp: +94 77 302 0635</Typography>
           <Typography variant="body1">
             Address: The Vintage Villa Knuckles, Thangappuwa, Rangala, Sri Lanka
