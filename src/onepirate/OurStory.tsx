@@ -40,11 +40,11 @@ function OurStory() {
             <SectionTitle variant="h4">Origins</SectionTitle>
             <Typography variant="body1" paragraph>
               Deep in the heart of Knuckles mountain range, where nature's
-              symphony reigns supreme, our boutique hotel, “The Vintage Villa”
+              symphony reigns supreme, our boutique hotel, “The Vintage Villa Knuckles (PVT) LTD”
               has its roots firmly embedded in a unique vision. Founded by Mr.
               Sumith Gunathilaka, an enthusiastic antique hobbyist and a
               passionate preservationist of nature and history, “The Vintage
-              Villa” was conceived as a sanctuary where the serenity of the
+              Villa Knuckles” was conceived as a sanctuary where the serenity of the
               wilderness harmoniously coexists with the charm of a bygone era.
             </Typography>
           </Grid>

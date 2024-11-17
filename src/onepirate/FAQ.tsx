@@ -33,7 +33,7 @@ const faqs = [
     question:
       "What is the check-in/check-out time at the vintage-themed boutique hotel?",
     answer:
-      "Check-in time is at 3:00 PM, and check-out time is at 11:00 AM. We do our best to accommodate early arrivals and late departures based on availability.",
+      "Check-in time is at 2:00 PM, and check-out time is at 11:00 AM. We do our best to accommodate early arrivals and late departures based on availability.",
   },
   {
     question: "Do you offer transportation to and from the hotel?",
@@ -57,9 +57,8 @@ const faqs = [
       "Yes, we take pride in accommodating dietary restrictions and special requests. Please inform us of your requirements in advance, and our culinary team will create a memorable dining experience for you.",
   },
   {
-    question: "Is there Wi-Fi available throughout the hotel?",
-    answer:
-      "Absolutely! Complimentary high-speed Wi-Fi is available throughout the hotel, allowing you to stay connected during your vintage-inspired getaway.",
+    question: "Is there Wi-Fi or 4G available throughout the hotel?",
+    answer: "Not providing Wi-Fi, 4G signal avialable in the balcony.",
   },
   {
     question: "Are pets allowed at the vintage-themed hotel?",
@@ -102,6 +101,11 @@ const faqs = [
     question: "Can I modify or cancel my reservation?",
     answer:
       "Yes, modifications and cancellations can be made according to our cancellation policy. Please refer to your booking confirmation for specific details.",
+  },
+  {
+    question: "Is there are parking near the villa?",
+    answer:
+      "Yes, there is a private parking free of charge and we are providing jeep to near villa, then ou have to walk 700m to villa (Thangappuwa Heel-Oya trail).",
   },
 ];
 

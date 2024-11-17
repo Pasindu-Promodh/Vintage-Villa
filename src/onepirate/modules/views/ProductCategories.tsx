@@ -72,7 +72,7 @@ const images = [
     width: "20%",
   },
   {
-    url: "https://duqjpivknq39s.cloudfront.net/2019/01/Corbets-Gap.jpg",
+    url: "/home/Corbets-Gap.jpg",
     title: "Corbets Gap",
     width: "38%",
   },
