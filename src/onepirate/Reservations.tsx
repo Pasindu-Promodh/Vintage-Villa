@@ -4,10 +4,6 @@ import AppAppBar from "./modules/views/AppAppBar";
 import withRoot from "./modules/withRoot";
 import {
   Container,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
   Box,
   Grid,
   Typography,
@@ -15,13 +11,12 @@ import {
   Card,
   CardContent,
   CardMedia,
-  TextField,
-  Checkbox,
-  FormControlLabel,
 } from "@mui/material";
 import { styled } from "@mui/system";
 import Link from "@mui/material/Link";
 import { Link as RouterLink } from "react-router-dom";
+import { useState } from "react";
+import BookingModal from "./BookingModal";
 
 // Styled Components for visual enhancement
 const RoomCard = styled(Card)(({ theme }) => ({
@@ -71,45 +66,12 @@ const roomPackages = [
 ];
 
 function Reservations() {
-  const [open, setOpen] = React.useState(false);
-  const [selectedRoom, setSelectedRoom] = React.useState<any>();
-  const [headCount, setHeadCount] = React.useState(1);
-  const [mealOptions, setMealOptions] = React.useState({
-    breakfast: false,
-    lunch: false,
-    dinner: false,
-  });
-
-  // const basePrices = {
-  //   "Standard Room": 100,
-  //   "Deluxe Room": 150,
-  //   "Family Suite": 220,
-  //   "Luxury Suite": 350,
-  //   "Honeymoon Package": 400,
-  // };
-
-  // const mealPrices = { breakfast: 10, lunch: 15, dinner: 20 };
-
-  const calculatePrice = () => {
-    if (!selectedRoom) return 0;
-    let totalPrice = selectedRoom.price * headCount;
-    // Object.keys(mealOptions).forEach((meal) => {
-    //   if (mealOptions[meal]) {
-    //     totalPrice += mealPrices[meal] * headCount;
-    //   }
-    // });
-    return totalPrice;
-  };
+  const [selectedRoom, setSelectedRoom] = useState<any>();
+  const [modalOpen, setModalOpen] = useState(false);
 
   const handleOpen = (room: any) => {
     setSelectedRoom(room);
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setHeadCount(1);
-    setMealOptions({ breakfast: false, lunch: false, dinner: false });
+    setModalOpen(true);
   };
 
   return (
@@ -169,77 +131,11 @@ function Reservations() {
           ))}
         </Grid>
 
-        {/* Booking Modal */}
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Book {selectedRoom?.title}</DialogTitle>
-          <DialogContent>
-            <Typography variant="subtitle1" gutterBottom>
-              Customize your booking:
-            </Typography>
-            <TextField
-              label="Head Count"
-              type="number"
-              InputProps={{ inputProps: { min: 1, max: 10 } }}
-              value={headCount}
-              onChange={(e) => setHeadCount(Number(e.target.value))}
-              fullWidth
-              margin="dense"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={mealOptions.breakfast}
-                  onChange={() =>
-                    setMealOptions((prev) => ({
-                      ...prev,
-                      breakfast: !prev.breakfast,
-                    }))
-                  }
-                />
-              }
-              label="Breakfast ($8 per person)"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={mealOptions.lunch}
-                  onChange={() =>
-                    setMealOptions((prev) => ({
-                      ...prev,
-                      lunch: !prev.lunch,
-                    }))
-                  }
-                />
-              }
-              label="Lunch ($10 per person)"
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={mealOptions.dinner}
-                  onChange={() =>
-                    setMealOptions((prev) => ({
-                      ...prev,
-                      dinner: !prev.dinner,
-                    }))
-                  }
-                />
-              }
-              label="Dinner ($12 per person)"
-            />
-            <Typography variant="h6" sx={{ mt: 2 }}>
-              Total Price: ${calculatePrice().toFixed(2)}
-            </Typography>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="secondary">
-              Cancel
-            </Button>
-            <Button variant="contained" color="primary">
-              Confirm Booking
-            </Button>
-          </DialogActions>
-        </Dialog>
+        <BookingModal
+          open={modalOpen}
+          handleClose={() => setModalOpen(false)}
+          selectedRoom={selectedRoom}
+        />
 
         {/* Closing Statement */}
         <Box sx={{ mt: 8, textAlign: "center" }}>
