@@ -13,8 +13,6 @@ import {
   CardMedia,
 } from "@mui/material";
 import { styled } from "@mui/system";
-import Link from "@mui/material/Link";
-import { Link as RouterLink } from "react-router-dom";
 import { useState } from "react";
 import BookingModal from "./BookingModal";
 
@@ -116,7 +114,7 @@ function Reservations() {
                   >
                     Book Now
                   </Button>
-                  <Link
+                  {/* <Link
                     underline="none"
                     color="primary"
                     component={RouterLink}
@@ -124,7 +122,7 @@ function Reservations() {
                     sx={{ mt: 2 }}
                   >
                     Book Now
-                  </Link>
+                  </Link> */}
                 </CardContent>
               </RoomCard>
             </Grid>

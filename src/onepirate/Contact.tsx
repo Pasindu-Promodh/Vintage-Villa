@@ -40,7 +40,10 @@ function ContactUs() {
         <ContactDetailsContainer>
           <Typography variant="h6">Contact Details</Typography>
           <Typography variant="body1">Email: info@vintagevilla.lk</Typography>
-          <Typography variant="body1">Phone / Whatsapp: +94 77 302 0635</Typography>
+          <Typography variant="body1">
+            Phone: +94 77 401 0635 / +94 77 302 0635
+          </Typography>
+          <Typography variant="body1">Whatsapp: +94 77 401 0635</Typography>
           <Typography variant="body1">
             Address: The Vintage Villa Knuckles, Thangappuwa, Rangala, Sri Lanka
           </Typography>
@@ -51,7 +54,7 @@ function ContactUs() {
         </ContactDetailsContainer>
 
         {/* Contact Form */}
-        <ContactFormContainer sx={{ display:"none" }}>
+        <ContactFormContainer sx={{ display: "none" }}>
           <Typography variant="h6">Send Us a Message</Typography>
           <TextField
             label="Your Name"

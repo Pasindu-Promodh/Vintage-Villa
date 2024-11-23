@@ -206,6 +206,10 @@ const galleryImages = [
     src: "/gallery/WhatsApp Image 2024-11-15 at 20.46.37_f3946a13.jpg",
     tags: ["All", "Garden"],
   },
+  {
+    src: "/home/IMG-20241013-WA0014.jpg",
+    tags: ["All", "Garden"],
+  },
 ];
 
 // Tags list
