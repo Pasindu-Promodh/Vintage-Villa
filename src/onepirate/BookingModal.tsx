@@ -47,95 +47,6 @@ const BookingModal = ({ open, handleClose, selectedRoom }: any) => {
     }
   };
 
-  // const calculateDiscount = () => {
-  //   const [checkInDate, checkOutDate] = dateRange;
-  //   if (!checkInDate || !checkOutDate) return 0;
-
-  //   const days = Math.ceil(
-  //     (new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) /
-  //       (1000 * 60 * 60 * 24)
-  //   );
-
-  //   const roomBasePrice = selectedRoom.price;
-  //   return days > 1 ? roomBasePrice * 0.25 * (days - 1) : 0; // 25% discount for additional days
-  // };
-
-  // const calculatePrice = () => {
-  //   const [checkInDate, checkOutDate] = dateRange;
-  //   if (!checkInDate || !checkOutDate) return 0;
-
-  //   const days = Math.ceil(
-  //     (new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) /
-  //       (1000 * 60 * 60 * 24)
-  //   );
-
-  //   const roomBasePrice = selectedRoom.price;
-  //   const additionalPersonPrice = (roomBasePrice / 2) * (headCount - 1);
-  //   const mealsPrice =
-  //     headCount *
-  //     (+mealOptions.breakfast * 0 +
-  //       +mealOptions.lunch * 8 +
-  //       +mealOptions.dinner * 10);
-
-  //   const roomCost = roomBasePrice + additionalPersonPrice;
-  //   const discount = calculateDiscount();
-
-  //   return roomCost * days + mealsPrice - discount;
-  // };
-
-
-  // const calculateDiscount = () => {
-  //   const [checkInDate, checkOutDate] = dateRange;
-  //   if (!checkInDate || !checkOutDate) return 0;
-
-  //   const days = Math.ceil(
-  //     (new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) /
-  //       (1000 * 60 * 60 * 24)
-  //   );
-
-  //   const roomBasePrice = selectedRoom.price;
-  //   const additionalPersonPrice = (roomBasePrice / 2) * (headCount - 1);
-
-  //   // Calculate the total room cost per day (base + additional persons)
-  //   const totalDailyRoomCost = roomBasePrice + additionalPersonPrice;
-
-  //   // Apply a 25% discount for each additional day
-  //   return days > 1 ? totalDailyRoomCost * 0.25 * (days - 1) : 0;
-  // };
-
-  // const calculatePrice = () => {
-  //   const [checkInDate, checkOutDate] = dateRange;
-  //   if (!checkInDate || !checkOutDate) return 0;
-
-  //   const days = Math.ceil(
-  //     (new Date(checkOutDate).getTime() - new Date(checkInDate).getTime()) /
-  //       (1000 * 60 * 60 * 24)
-  //   );
-
-  //   const roomBasePrice = selectedRoom.price;
-  //   const additionalPersonPrice = (roomBasePrice / 2) * (headCount - 1);
-
-  //   // Calculate the total room cost (base + additional persons)
-  //   const totalDailyRoomCost = roomBasePrice + additionalPersonPrice;
-
-  //   // Apply the discount
-  //   const discount = calculateDiscount();
-
-  //   // Calculate meals cost
-  //   const mealsPrice =
-  //     headCount *
-  //     (+mealOptions.breakfast * 0 +
-  //       +mealOptions.lunch * 8 +
-  //       +mealOptions.dinner * 10);
-
-  //   // Total room cost after discount
-  //   const totalRoomCost = totalDailyRoomCost * days - discount;
-
-  //   // Add meals price to the discounted room cost
-  //   return totalRoomCost + mealsPrice;
-  // };
-
-
   const calculateDiscount = () => {
     const [checkInDate, checkOutDate] = dateRange;
     if (!checkInDate || !checkOutDate) return 0;
@@ -173,15 +84,13 @@ const BookingModal = ({ open, handleClose, selectedRoom }: any) => {
 
     // Meal cost
     const mealsCost =
-      headCount *
+      headCount * days *
       (+mealOptions.breakfast * 0 +
         +mealOptions.lunch * 8 +
         +mealOptions.dinner * 10);
 
     return roomCost + mealsCost;
   };
-
-
 
   const handleConfirmBooking = () => {
     const [checkInDate, checkOutDate] = dateRange;
