@@ -186,7 +186,7 @@ const BookingModal = ({ open, handleClose, selectedRoom }: any) => {
               }
             />
           }
-          label="Lunch ($8 per person)"
+          label="Lunch ($6 per person)"
         />
         <FormControlLabel
           control={
@@ -197,7 +197,7 @@ const BookingModal = ({ open, handleClose, selectedRoom }: any) => {
               }
             />
           }
-          label="Dinner ($10 per person)"
+          label="Dinner ($8 per person)"
         />
 
         {/* Price Calculation */}
