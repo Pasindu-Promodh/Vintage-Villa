@@ -60,7 +60,7 @@ const BookingModal = ({ open, handleClose, selectedRoom }: any) => {
 
     // Calculate total room cost per day (base + additional persons)
     const dailyRoomCost =
-      selectedRoom.price + (selectedRoom.price / 2) * (headCount - 1);
+      selectedRoom.price + (selectedRoom.price_extra) * (headCount - 1);
 
     // Apply 25% discount for each additional day
     return dailyRoomCost * 0.25 * (days - 1);
@@ -77,7 +77,7 @@ const BookingModal = ({ open, handleClose, selectedRoom }: any) => {
 
     // Calculate total room cost per day (base + additional persons)
     const dailyRoomCost =
-      selectedRoom.price + (selectedRoom.price / 2) * (headCount - 1);
+      selectedRoom.price + (selectedRoom.price_extra) * (headCount - 1);
 
     // Total room cost for the stay, minus discount
     const roomCost = dailyRoomCost * days - calculateDiscount();
