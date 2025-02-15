@@ -51,7 +51,7 @@ const roomPackages = [
     title: "Standard Room",
     description:
       "Our cozy Standard Room offers a comfortable stay with all the essential amenities, perfect for travelers who value simplicity and comfort. Enjoy a queen-sized bed, and a stunning view of the garden.",
-    price: 30,
+    price: 50,
     price_extra: 10,
     image: "/gallery/WhatsApp Image 2024-11-15 at 20.46.36_1b9d01d4.jpg",
   },
@@ -59,7 +59,7 @@ const roomPackages = [
     title: "Luxury Family Suite",
     description:
       "Experience ultimate luxury in our top-tier suite. With a separate living area, two bedrooms, and a panoramic view of the Knuckles Mountains, this suite offers the pinnacle of comfort and elegance.",
-    price: 40,
+    price: 55,
     price_extra: 15,
     image: "/reservations/IMG_0339.JPG",
   },

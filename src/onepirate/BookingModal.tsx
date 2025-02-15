@@ -86,8 +86,8 @@ const BookingModal = ({ open, handleClose, selectedRoom }: any) => {
     const mealsCost =
       headCount * days *
       (+mealOptions.breakfast * 0 +
-        +mealOptions.lunch * 6 +
-        +mealOptions.dinner * 8);
+        +mealOptions.lunch * 8 +
+        +mealOptions.dinner * 10);
 
     return roomCost + mealsCost;
   };
