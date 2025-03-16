@@ -287,7 +287,7 @@ const thingsToDoContent = [
     imageOrder: 2,
     packageDetailsFile: "/packages/meemure-village-package.md",
     available: true,
-    tag: "Interior", // Single tag for filtering
+    tag: "Meemure", // Single tag for filtering
   },
   {
     title: "Heel-Oya Village",
@@ -297,7 +297,7 @@ const thingsToDoContent = [
     imageOrder: 2,
     packageDetailsFile: "/packages/heeloya-village-package.md",
     available: true,
-    tag: "Garden", // Single tag for filtering
+    tag: "Heel-Oya", // Single tag for filtering
   },
   {
     title: "Corbets Gap",
@@ -307,7 +307,7 @@ const thingsToDoContent = [
     imageOrder: 2,
     packageDetailsFile: "/packages/corbets-gap-package.md",
     available: true,
-    tag: "Landscape", // Single tag for filtering
+    tag: "Corbets Gap", // Single tag for filtering
   },
   {
     title: "Kandy",
@@ -318,7 +318,7 @@ const thingsToDoContent = [
     imageOrder: 1,
     packageDetailsFile: "/packages/kandy-package.md",
     available: false,
-    tag: "city", // Single tag for filtering
+    tag: "Kandy", // Single tag for filtering
   },
   {
     title: "Mini World's End",
@@ -328,7 +328,7 @@ const thingsToDoContent = [
     imageOrder: 2,
     packageDetailsFile: "/packages/mini-worlds-end-package.md",
     available: false,
-    tag: "mountains", // Single tag for filtering
+    tag: "Mini World's End", // Single tag for filtering
   },
 ];
 

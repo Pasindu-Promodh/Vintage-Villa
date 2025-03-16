@@ -14,219 +14,103 @@ import {
 import { styled } from "@mui/system";
 import CloseIcon from "@mui/icons-material/Close";
 import { useLocation } from "react-router-dom";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "./firebaseConfig";
+import { useEffect, useState } from "react";
+import { CircularProgress } from "@mui/material";
 
-// Update ImageContainer style to enforce consistent height for all images
+interface Tag {
+  id: string;
+  name: string;
+  count: number;
+  createdAt: number;
+}
+
+interface Photo {
+  id: string;
+  imageUrl: string;
+  thumbnailUrl: string;
+  tags: string[];
+  storagePath: string;
+  size: number;
+  filename: string;
+  uploadDate: number;
+  displayOrder: number;
+}
+
 const ImageContainer = styled(Box)(({ theme }) => ({
   aspectRatio: "16/10",
   overflow: "hidden",
+  position: "relative", // Add this line for proper positioning of absolute elements
   "& img": {
     width: "100%",
     height: "100%",
-    objectFit: "cover", // This ensures that the image fills the container without distortion
-    objectPosition: "center", // This centers the image
+    objectFit: "cover",
+    objectPosition: "center",
     borderRadius: theme.shape.borderRadius,
-    transition: "transform 0.3s ease-in-out",
+    transition: "transform 0.3s ease-in-out, opacity 0.3s ease", // Add opacity transition
     "&:hover": {
       transform: "scale(1.05)",
     },
   },
 }));
 
-// Array of images with tags
-const galleryImages = [
-  { src: "/gallery/IMG_0327.JPG", tags: ["All", "Exterior"] },
-  { src: "/gallery/IMG-20241013-WA0015.jpg", tags: ["All", "Interior"] },
-  { src: "/gallery/IMG-20241013-WA0016.jpg", tags: ["All", "Garden"] },
-  { src: "/gallery/IMG-20241013-WA0017.jpg", tags: ["All", "Interior"] },
-  { src: "/gallery/IMG-20241013-WA0018.jpg", tags: ["All", "Exterior"] },
-  { src: "/gallery/IMG-20241013-WA0022.jpg", tags: ["All", "Landscape"] },
-  { src: "/gallery/IMG-20241013-WA0024.jpg", tags: ["All", "Landscape"] },
-  { src: "/gallery/IMG-20241013-WA0026.jpg", tags: ["All", "Exterior"] },
-  { src: "/gallery/IMG-20241013-WA0030.jpg", tags: ["All", "Interior"] },
-  { src: "/gallery/IMG-20241013-WA0033.jpg", tags: ["All", "Garden"] },
-  { src: "/gallery/IMG-20241013-WA0034.jpg", tags: ["All", "Interior"] },
-  { src: "/gallery/IMG-20241013-WA0040.jpg", tags: ["All", "Exterior"] },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-04 at 16.53.12_4c7e20c4.jpg",
-    tags: ["All", "Landscape"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-04 at 17.20.51_59267bfe.jpg",
-    tags: ["All", "Interior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-04 at 17.31.44_70547462.jpg",
-    tags: ["All", "Garden"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-04 at 19.45.25_f0795898.jpg",
-    tags: ["All", "Exterior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-04 at 19.50.14_9ec58fb4.jpg",
-    tags: ["All", "Landscape"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-04 at 19.52.50_38e0297c.jpg",
-    tags: ["All", "Garden"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-04 at 19.55.05_89bfcdd5.jpg",
-    tags: ["All", "Interior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.18_18c31bca.jpg",
-    tags: ["All", "Landscape"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.22_64376673.jpg",
-    tags: ["All", "Garden"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.27_ed03e58d.jpg",
-    tags: ["All", "Interior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.32_6a60ec53.jpg",
-    tags: ["All", "Exterior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.35_c934f32b.jpg",
-    tags: ["All", "Landscape"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.40_a5433c71.jpg",
-    tags: ["All", "Interior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.43_988fbcd0.jpg",
-    tags: ["All", "Exterior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.57_70263001.jpg",
-    tags: ["All", "Garden"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.17.59_845c51d7.jpg",
-    tags: ["All", "Interior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.18.06_ea7f0ba4.jpg",
-    tags: ["All", "Landscape"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.18.10_f9eff0d2.jpg",
-    tags: ["All", "Garden"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.35.23_66d83d13.jpg",
-    tags: ["All", "Exterior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.35.48_8be6d0f4.jpg",
-    tags: ["All", "Interior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.35.54_217f049d.jpg",
-    tags: ["All", "Landscape"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.36.00_7bc1c8d8.jpg",
-    tags: ["All", "Garden"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.36.01_27de7c60.jpg",
-    tags: ["All", "Exterior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.36.01_f15c8215.jpg",
-    tags: ["All", "Interior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.36.10_367c78ee.jpg",
-    tags: ["All", "Landscape"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.36.32_34aeef4a.jpg",
-    tags: ["All", "Garden"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.36.33_8a38c380.jpg",
-    tags: ["All", "Interior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.36.34_99bde407.jpg",
-    tags: ["All", "Exterior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 15.36.35_1f2166d9.jpg",
-    tags: ["All", "Landscape"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 20.35.20_9a70988b.jpg",
-    tags: ["All", "Garden"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 20.35.20_a46fdc51.jpg",
-    tags: ["All", "Exterior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 20.35.20_bd027da1.jpg",
-    tags: ["All", "Interior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 20.35.21_0ec1eeea.jpg",
-    tags: ["All", "Landscape"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 20.35.21_95a1ffef.jpg",
-    tags: ["All", "Garden"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 20.35.22_7fe78125.jpg",
-    tags: ["All", "Exterior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 20.46.34_be436fa7.jpg",
-    tags: ["All", "Interior"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 20.46.34_61071ed7.jpg",
-    tags: ["All", "Landscape"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 20.46.36_ef76c72d.jpg",
-    tags: ["All", "Garden"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 20.46.36_1b9d01d4.jpg",
-    tags: ["All", "Garden"],
-  },
-  {
-    src: "/gallery/WhatsApp Image 2024-11-15 at 20.46.37_f3946a13.jpg",
-    tags: ["All", "Garden"],
-  },
-  {
-    src: "/home/IMG-20241013-WA0014.jpg",
-    tags: ["All", "Garden"],
-  },
-];
-
-// Tags list
-const tagsList = ["All", "Exterior", "Interior", "Garden", "Landscape"];
+const ImageLoadingContainer = styled(Box)(({ theme }) => ({
+  width: "100%",
+  height: "100%",
+  backgroundColor: "#000000", // Black background
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  borderRadius: theme.shape.borderRadius,
+  position: "absolute",
+  top: 0,
+  left: 0,
+  zIndex: 1,
+}));
 
 function Gallery() {
   const location = useLocation();
-
   const query = new URLSearchParams(location.search);
+  const tagFromUrl = query.get("tag");
 
-  const [open, setOpen] = React.useState(false);
-  const [selectedImage, setSelectedImage] = React.useState<any>(null);
-  const [selectedTag, setSelectedTag] = React.useState(
-    query.get("tag") || "All"
-  );
+  const [photos, setPhotos] = useState<Photo[]>([]);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [open, setOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<Photo | null>();
+  const [selectedTag, setSelectedTag] = useState("All"); // Default to All and update after tags are loaded
+  const [loading, setLoading] = useState(true);
 
-  const handleClickOpen = (image: any) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        await Promise.all([fetchTags(), fetchPhotos()]);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Handle tag from URL query after tags are loaded
+  useEffect(() => {
+    if (tagFromUrl && tags.length > 0) {
+      // Find the tag ID that matches the name from the URL
+      const matchingTag = tags.find((tag) => tag.name === tagFromUrl);
+      if (matchingTag) {
+        setSelectedTag(matchingTag.id);
+      } else {
+        // If no matching tag is found, default to "All"
+        setSelectedTag("All");
+      }
+    }
+  }, [tagFromUrl, tags]);
+
+  const handleClickOpen = (image: Photo) => {
     setSelectedImage(image);
     setOpen(true);
   };
@@ -236,14 +120,71 @@ function Gallery() {
     setSelectedImage(null);
   };
 
-  const handleTagClick = (tag: string) => {
-    setSelectedTag(tag);
+  const handleTagClick = (tagId: string) => {
+    setSelectedTag(tagId);
   };
 
+  // Fetch all tags from Firestore
+  const fetchTags = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "tags"));
+      const tagList = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          name: data.name || "",
+          count: data.count || 0,
+          createdAt: data.createdAt || Date.now(),
+        };
+      }) as Tag[];
+
+      // If tags were successfully fetched, use them
+      if (tagList.length > 0) {
+        setTags(tagList);
+      }
+    } catch (error) {
+      console.error("Error fetching tags:", error);
+    }
+  };
+
+  // Fetch Photos from Firestore
+  const fetchPhotos = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "photos"));
+      const photoList = querySnapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          ...data,
+          // Ensure tags is always an array (for backwards compatibility)
+          tags: Array.isArray(data.tags) ? data.tags : [],
+          // Ensure displayOrder exists
+          displayOrder: data.displayOrder || 0,
+        };
+      }) as Photo[];
+
+      // Sort photos by displayOrder
+      const sortedPhotos = [...photoList];
+      sortedPhotos.sort(
+        (a, b) => (a.displayOrder || 0) - (b.displayOrder || 0)
+      );
+
+      if (sortedPhotos.length > 0) {
+        setPhotos(sortedPhotos);
+      } else {
+        // Use fallback images if no photos were fetched
+      }
+    } catch (error) {
+      console.error("Error fetching photos:", error);
+      // Use fallback images if there was an error
+    }
+  };
+
+  // Filter images based on selected tag
   const filteredImages =
     selectedTag === "All"
-      ? galleryImages
-      : galleryImages.filter((image) => image.tags.includes(selectedTag));
+      ? photos
+      : photos.filter((photo) => photo.tags.includes(selectedTag));
 
   return (
     <React.Fragment>
@@ -257,50 +198,97 @@ function Gallery() {
             Discover the stunning beauty of our property and its surroundings.
           </Typography>
         </Box>
-        <Box sx={{ textAlign: "center", mb: 4 }}>
-          {tagsList.map((tag) => (
-            <Button
-              key={tag}
-              variant={selectedTag === tag ? "contained" : "outlined"}
-              onClick={() => handleTagClick(tag)}
+
+        {loading ? (
+          <Box sx={{ textAlign: "center", py: 4 }}>
+            <Typography>Loading gallery...</Typography>
+          </Box>
+        ) : (
+          <>
+            <Box sx={{ textAlign: "center", mb: 4 }}>
+              <Button
+                key="all-tag"
+                variant={selectedTag === "All" ? "contained" : "outlined"}
+                onClick={() => handleTagClick("All")}
+                sx={{
+                  mx: 1,
+                  my: 1,
+                }}
+              >
+                All
+              </Button>
+              {tags.map((tag) => (
+                <Button
+                  key={tag.id}
+                  variant={selectedTag === tag.id ? "contained" : "outlined"}
+                  onClick={() => handleTagClick(tag.id)}
+                  sx={{
+                    mx: 1,
+                    my: 1,
+                  }}
+                >
+                  {tag.name}
+                </Button>
+              ))}
+            </Box>
+            <Typography variant="h6" sx={{ textAlign: "center", mb: 4 }}>
+              {filteredImages.length} Images Showing
+            </Typography>
+            <Grid
+              container
+              spacing={4}
               sx={{
-                mx: 1,
-                my: 1, // Added vertical margin between tags
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))",
+                "@media (max-width: 600px)": {
+                  gridTemplateColumns: "repeat(2, 1fr)",
+                },
               }}
             >
-              {tag}
-            </Button>
-          ))}
-        </Box>
-        <Typography variant="h6" sx={{ textAlign: "center", mb: 4 }}>
-          {filteredImages.length} Images Showing
-        </Typography>
-        {/* Update Grid to use a more flexible layout (CSS grid style) */}
-        <Grid
-          container
-          spacing={4}
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", // Default for larger screens
-            // Mobile-specific adjustments (2 columns)
-            "@media (max-width: 600px)": {
-              gridTemplateColumns: "repeat(2, 1fr)", // 2 columns on small screens
-            },
-          }}
-        >
-          {filteredImages.map((image, index) => {
-            const altText = image.src.split("/").pop();
-            return (
-              <Grid item key={index}>
-                <ImageContainer onClick={() => handleClickOpen(image)}>
-                  <img src={image.src} alt={altText} />
-                </ImageContainer>
-              </Grid>
-            );
-          })}
-        </Grid>
+              {filteredImages.map((photo, index) => {
+                const altText = photo.filename;
+                return (
+                  <Grid item key={photo.id || index}>
+                    <ImageContainer onClick={() => handleClickOpen(photo)}>
+                      {/* Loading circle on black background */}
+                      <ImageLoadingContainer>
+                        <CircularProgress
+                          size={50}
+                          thickness={4}
+                          sx={{ color: "#D4AF37" }} // Gold color
+                        />
+                      </ImageLoadingContainer>
+
+                      {/* Image with fade-in effect */}
+                      <img
+                        src={photo.thumbnailUrl}
+                        alt={altText}
+                        style={{
+                          opacity: 0, // Start with invisible image
+                          zIndex: 2, // Place above loading indicator
+                          position: "relative",
+                        }}
+                        onLoad={(e) => {
+                          // When loaded, make visible with animation
+                          (e.target as HTMLImageElement).style.opacity = "1";
+                        }}
+                        onError={(e) => {
+                          // On error, try to use a fallback or show error state
+                          console.error(
+                            `Failed to load image: ${photo.thumbnailUrl}`
+                          );
+                          // You could set a default image here if needed
+                        }}
+                      />
+                    </ImageContainer>
+                  </Grid>
+                );
+              })}
+            </Grid>
+          </>
+        )}
       </Container>
-      <Dialog open={open} onClose={handleClose} maxWidth="md">
+      {/* <Dialog open={open} onClose={handleClose} maxWidth="md">
         <IconButton
           aria-label="close"
           onClick={handleClose}
@@ -316,23 +304,119 @@ function Gallery() {
         {selectedImage && (
           <Box
             component="img"
-            src={selectedImage.src}
-            alt={selectedImage.src.split("/").pop()}
-            sx={{ width: "100%" }}
+            src={selectedImage.imageUrl}
+            alt={selectedImage.filename}
+            sx={{ width: "100%", maxHeight: "90vh" }}
           />
         )}
-      </Dialog>
+      </Dialog> */}
+      <Dialog 
+  open={open} 
+  onClose={handleClose} 
+  maxWidth="xl"
+  PaperProps={{
+    sx: {
+      backgroundColor: "#000000",
+      overflow: "hidden", // Prevents scrollbars
+      maxHeight: "90vh",
+      maxWidth: "90vw",
+      height: "auto",
+      width: "auto",
+      margin: 2,
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center"
+    }
+  }}
+>
+  <IconButton
+    aria-label="close"
+    onClick={handleClose}
+    sx={{
+      position: "absolute",
+      right: 8,
+      top: 8,
+      color: "#ffffff",
+      zIndex: 3,
+      backgroundColor: "rgba(0,0,0,0.3)",
+      "&:hover": {
+        backgroundColor: "rgba(0,0,0,0.5)",
+      }
+    }}
+  >
+    <CloseIcon />
+  </IconButton>
+  
+  {selectedImage && (
+    <Box sx={{ 
+      position: "relative",
+      display: "flex",
+      justifyContent: "center",
+      alignItems: "center",
+      width: "100%",
+      height: "100%",
+      backgroundColor: "#000000"
+    }}>
+      {/* Loading indicator */}
+      <Box sx={{
+        position: "absolute",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        zIndex: 1
+      }}>
+        <CircularProgress 
+          size={80}
+          thickness={4}
+          sx={{ color: "#D4AF37" }}
+        />
+      </Box>
+      
+      {/* Full-size image with fade-in effect */}
+      <Box
+        component="img"
+        src={selectedImage.imageUrl}
+        alt={selectedImage.filename}
+        sx={{ 
+          maxWidth: "100%", 
+          maxHeight: "90vh",
+          objectFit: "contain",
+          position: "relative",
+          zIndex: 2,
+          opacity: 0,
+          transition: "opacity 0.5s ease",
+          display: "block", // Prevents extra space below image
+        }}
+        onLoad={(e) => {
+          // When image loads, adjust dialog size based on image dimensions
+          const img = e.target as HTMLImageElement;
+          img.style.opacity = "1";
+          
+          // Get aspect ratio and adjust dialog accordingly
+          const aspectRatio = img.naturalWidth / img.naturalHeight;
+          const isPortrait = aspectRatio < 1;
+          
+          // Find dialog paper element (parent container)
+          const dialogPaper = img.closest('.MuiPaper-root');
+          if (dialogPaper) {
+            // For portrait images, adjust width to fit the image height
+            if (isPortrait) {
+              (dialogPaper as HTMLElement).style.width = 'auto';
+              (dialogPaper as HTMLElement).style.maxWidth = '90vw';
+            }
+          }
+        }}
+      />
+    </Box>
+  )}
+</Dialog>
       <AppFooter />
     </React.Fragment>
   );
 }
 
 export default withRoot(Gallery);
-
-
-
-
-
-
-
-

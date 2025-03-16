@@ -7,8 +7,7 @@ import { Link as RouterLink } from "react-router-dom";
 
 
 const backgroundImage =
-  //"https://images.unsplash.com/photo-1534854638093-bada1813ca19?auto=format&fit=crop&w=1400&q=80"
-  "https://magnificentsrilanka.com/wp-content/uploads/2022/02/corbett-gap1.jpg";
+  "/gallery/IMG_0327.JPG";
 
 export default function ProductHero() {
   return (
