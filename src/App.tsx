@@ -40,7 +40,7 @@ const ScrollToTop = () => {
 function App() {
   return (
     <React.Fragment>
-      <SnackbarProvider maxSnack={3}>
+      <SnackbarProvider maxSnack={4}>
         <Router>
           <ScrollToTop />
           <Switch>
