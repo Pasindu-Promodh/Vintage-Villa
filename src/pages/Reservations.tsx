@@ -204,7 +204,6 @@ import { styled } from "@mui/material/styles";
 import BookingModal from "./BookingModal";
 import { db } from "./firebaseConfig"; // Import Firebase db
 import { collection, getDocs, doc, getDoc } from "firebase/firestore"; // Import Firestore methods
-import zIndex from "@mui/material/styles/zIndex";
 
 const RoomCard = styled(Card)(({ theme }) => ({
   display: "flex",
