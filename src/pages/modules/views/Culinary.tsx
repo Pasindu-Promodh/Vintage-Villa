@@ -10,13 +10,13 @@ import { Link as RouterLink } from "react-router-dom";
 
 const images = [
   {
-    src: "/home/IMG-20241013-WA0012.jpg",
+    src: "/images/home/IMG-20241013-WA0012.jpg",
   },
   {
-    src: "/home/food-6884523.jpg",
+    src: "/images/home/food-6884523.jpg",
   },
   {
-    src: "/home/IMG_0316.JPG",
+    src: "/images/home/IMG_0316.JPG",
   },
 ];
 

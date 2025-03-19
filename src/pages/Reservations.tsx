@@ -204,6 +204,7 @@ import { styled } from "@mui/material/styles";
 import BookingModal from "./BookingModal";
 import { db } from "./firebaseConfig"; // Import Firebase db
 import { collection, getDocs, doc, getDoc } from "firebase/firestore"; // Import Firestore methods
+import zIndex from "@mui/material/styles/zIndex";
 
 const RoomCard = styled(Card)(({ theme }) => ({
   display: "flex",
@@ -251,6 +252,7 @@ const ImageContainer = styled(Box)(({ theme }) => ({
     padding: `${theme.spacing(1)} ${theme.spacing(3)}`,
     borderRadius: "5px",
     textAlign: "center",
+    zIndex: 3,
   },
 }));
 
@@ -402,24 +404,6 @@ function Reservations() {
               <Grid item xs={12} sm={6} md={4} key={room.id}>
                 <RoomCard>
                   <ImageContainer>
-                    {/* <Button
-                      onClick={() => handleImageClick(room.title)}
-                      sx={{
-                        p: 0,
-                        width: "100%",
-                        height: "200px",
-                        borderRadius: "8px",
-                      }}
-                    >
-                      <img
-                        src={room.image || "/logo.png"}
-                        alt={room.title}
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).src =
-                            "/logo.png";
-                        }}
-                      />
-                    </Button> */}
                     <Button
                       onClick={() => handleImageClick(room.title)}
                       sx={{
@@ -427,18 +411,18 @@ function Reservations() {
                         width: "100%",
                         height: "200px",
                         borderRadius: "8px",
-                        position: "relative", // Ensures proper layering
+                        position: "relative",
                       }}
                     >
                       {/* Show loading state while image is loading or missing */}
                       <DefaultRoomImage>
                         <CircularProgress
-                          size={60} // Make it larger
-                          thickness={4} // Make it more visible
+                          size={60}
+                          thickness={4}
                           sx={{
-                            color: "#D4AF37", // Gold color
+                            color: "#D4AF37",
                             position: "absolute",
-                            zIndex: 1, // Ensure it appears above everything
+                            zIndex: 1,
                           }}
                         />
                       </DefaultRoomImage>
@@ -457,9 +441,9 @@ function Reservations() {
                             position: "absolute",
                             top: 0,
                             left: 0,
-                            zIndex: 2, // Will appear above loading spinner when loaded
-                            opacity: 0, // Start hidden
-                            transition: "opacity 0.3s ease", // Smooth transition
+                            zIndex: 2,
+                            opacity: 0,
+                            transition: "opacity 0.3s ease",
                           }}
                           onLoad={(e) => {
                             // When loaded, make visible
@@ -467,8 +451,7 @@ function Reservations() {
                           }}
                           onError={(e) => {
                             // On error, show default
-                            (e.target as HTMLImageElement).src =
-                              "/default-room-image.jpg";
+                            (e.target as HTMLImageElement).src = "/logo.png";
                             (e.target as HTMLImageElement).style.opacity = "1";
                           }}
                         />

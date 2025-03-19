@@ -4,7 +4,7 @@ import Typography from "../components/Typography";
 import IntroductionLayout from "./IntroductionLayout";
 import { Link as RouterLink } from "react-router-dom";
 
-const backgroundImage = "/gallery/IMG_0327.JPG";
+const backgroundImage = "/images/home/IMG_0327.JPG";
 
 export default function Introduction() {
   return (

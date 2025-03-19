@@ -57,12 +57,12 @@ const ImageIconButton = styled(ButtonBase)(({ theme }) => ({
 
 const images = [
   {
-    url: "./home/IMG_0325.JPG",
+    url: "./images/home/IMG_0325.JPG",
     title: "Hiking",
     width: "40%",
   },
   {
-    url: "/home/IMG-20241013-WA0036.jpg",
+    url: "/images/home/IMG-20241013-WA0036.jpg",
     title: "Waterfalls",
     width: "40%",
   },
@@ -72,7 +72,7 @@ const images = [
     width: "20%",
   },
   {
-    url: "/home/Corbets-Gap.jpg",
+    url: "/images/home/Corbets-Gap.jpg",
     title: "Corbets Gap",
     width: "38%",
   },

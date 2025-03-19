@@ -9,9 +9,9 @@ import Typography from "./modules/components/Typography";
 import { styled } from "@mui/system";
 
 const images = [
-  "/home/WhatsApp Image 2024-11-15 at 11.42.45_e26825f1.jpg",
-  "/home/IMG-20241013-WA0021.jpg",
-  "/home/IMG_0325.JPG",
+  "/images/ourstory/WhatsApp Image 2024-11-15 at 11.42.45_e26825f1.jpg",
+  "/images/ourstory/IMG-20241013-WA0021.jpg",
+  "/images/home/IMG_0325.JPG",
 ];
 
 // Styled Components for visual enhancement
