@@ -1,31 +1,23 @@
 import React, { useEffect } from "react";
 import "./App.css";
 import { SnackbarProvider } from "notistack";
-import Home from "./onepirate/Home";
+import Home from "./pages/Home";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   useLocation,
 } from "react-router-dom";
-import OurStory from "./onepirate/OurStory";
-import ThingsToDo from "./onepirate/ThingsToDo";
-import SrilankanCuisine from "./onepirate/SrilankanCuisine";
-import Reservations from "./onepirate/Reservations";
-import Gallery from "./onepirate/Gallery";
-import Contact from "./onepirate/Contact";
-import FAQ from "./onepirate/FAQ";
-import ForgotPassword from "./onepirate/ForgotPassword";
-import Privacy from "./onepirate/Privacy";
-import SignIn from "./onepirate/SignIn";
-import SignUp from "./onepirate/SignUp";
-import Terms from "./onepirate/Terms";
-import Refund from "./onepirate/Refund";
-import Admin from "./admin/Admin";
-import TagManagement from "./admin/TagManagement";
-import Bookings from "./admin/Bookings";
-import RoomManagement from "./admin/RoomManagement/RoomManagement";
-import GalleryManagement from "./admin/GalleryManagement/GalleryManagement";
+import OurStory from "./pages/OurStory";
+import ThingsToDo from "./pages/ThingsToDo";
+import SrilankanCuisine from "./pages/SrilankanCuisine";
+import Reservations from "./pages/Reservations";
+import Gallery from "./pages/Gallery";
+import Contact from "./pages/Contact";
+import FAQ from "./pages/FAQ";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
+import Refund from "./pages/Refund";
 
 const ScrollToTop = () => {
   const { pathname } = useLocation();
@@ -44,15 +36,6 @@ function App() {
         <Router>
           <ScrollToTop />
           <Switch>
-            <Route path="/forgot-password">
-              <ForgotPassword />
-            </Route>
-            <Route path="/sign-up">
-              <SignUp />
-            </Route>
-            <Route path="/sign-in">
-              <SignIn />
-            </Route>
             <Route path="/privacy-policy">
               <Privacy />
             </Route>
@@ -82,21 +65,6 @@ function App() {
             </Route>
             <Route path="/faq">
               <FAQ />
-            </Route>
-            <Route path="/admin">
-              <Admin />
-            </Route>
-            <Route path="/tag-management">
-              <TagManagement />
-            </Route>
-            <Route path="/bookings">
-              <Bookings />
-            </Route>
-            <Route path="/room-management">
-              <RoomManagement />
-            </Route>
-            <Route path="/gallery-management">
-              <GalleryManagement />
             </Route>
             <Route path="/">
               <Home />
