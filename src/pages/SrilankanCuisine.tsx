@@ -37,10 +37,10 @@ const sriLankanCuisineContent = [
     description:
       "Sri Lankan cuisine is a delightful tapestry of diverse flavors, influenced by the island's rich history and multicultural heritage. From aromatic rice and fragrant curries to mouthwatering seafood, our culinary offerings showcase the best of Sri Lanka's gastronomic treasures. Explore the bold flavors of traditional dishes like 'Rice and Curry,' 'Hoppers,' and 'Kottu Roti,' all expertly prepared to tantalize your taste buds.",
     images: [
-      "/images/srilankancuisine/asian-6308470.jpg",
-      "/images/srilankancuisine/WhatsApp Image 2024-11-15 at 15.18.55_85afa36c.jpg",
-      "/images/srilankancuisine/IMG-20241013-WA0031.jpg",
-      "/images/srilankancuisine/rice-6305704.jpg",
+      "/images/srilankancuisine/asian-6308470.webp",
+      "/images/srilankancuisine/WhatsApp Image 2024-11-15 at 15.18.55_85afa36c.webp",
+      "/images/srilankancuisine/IMG-20241013-WA0031.webp",
+      "/images/srilankancuisine/rice-6305704.webp",
     ],
     alt: [
       "Sri Lankan Hoppers",
@@ -55,8 +55,8 @@ const sriLankanCuisineContent = [
     description:
       "Central to the brilliance of Sri Lankan cuisine is the artful use of spices. Sri Lanka is renowned for its spices, and our chefs take pride in incorporating these authentic flavors into every dish. From the fiery kick of chili peppers to the warmth of cinnamon and the earthy depth of cardamom, our culinary creations are a celebration of the spice-rich heritage of this island nation.",
     images: [
-      "/images/srilankancuisine/spices-1191945.jpg",
-      "/images/srilankancuisine/spices-370114.jpg",
+      "/images/srilankancuisine/spices-1191945.webp",
+      "/images/srilankancuisine/spices-370114.webp",
     ],
     alt: ["Spices 1", "Spices 2"],
     imageOrder: 2,
@@ -65,7 +65,7 @@ const sriLankanCuisineContent = [
     title: "Tropical Fruits, Vegetables, and Leafy Greens",
     description:
       "Our dedication to authentic Sri Lankan cuisine means embracing the bounty of tropical fruits, vegetables, and leafy greens that flourish in our lush surroundings. You'll find yourself indulging in sweet and succulent mangoes, creamy avocados, aromatic jackfruits, and vibrant greens like gotu kola and kankun, all meticulously prepared to enhance your dining experience.",
-    images: ["/images/srilankancuisine/IMG_0427.JPG", "/images/srilankancuisine/IMG_0683.JPG"],
+    images: ["/images/srilankancuisine/IMG_0427.webp", "/images/srilankancuisine/IMG_0683.webp"],
     alt: ["Vegetables", "Fruits"],
     imageOrder: 1,
   },
@@ -73,7 +73,7 @@ const sriLankanCuisineContent = [
     title: "The Elegance of Ceylon Tea",
     description:
       "No exploration of Sri Lankan cuisine is complete without a nod to the world-famous Ceylon tea. Indulge in the soothing aroma and rich taste of freshly brewed Ceylon tea, sourced from the verdant tea plantations that adorn the Sri Lankan hills. As you savor a cup of this exquisite tea, you'll experience the heritage and tradition that have made Ceylon tea a global favorite.",
-    images: ["/images/srilankancuisine/IMG_0286.JPG", "/images/srilankancuisine/IMG_0400.JPG"],
+    images: ["/images/srilankancuisine/IMG_0286.webp", "/images/srilankancuisine/IMG_0400.webp"],
     alt: ["Tea Leaves", "Tea"],
     imageOrder: 2,
   },

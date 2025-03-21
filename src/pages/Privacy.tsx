@@ -10,7 +10,6 @@ import withRoot from "./modules/withRoot";
 function Privacy() {
   const [markdown, setMarkdown] = useState("");
 
-  // https://github.com/webpack/webpack/issues/6680
   useEffect(() => {
     import("../md/privacy.md")
       .then((content) => fetch(content.default))

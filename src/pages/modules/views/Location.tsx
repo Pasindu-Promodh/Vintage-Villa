@@ -6,9 +6,6 @@ import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
 import Button from "../components/Button";
 import Typography from "../components/Typography";
-// import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
-// import RouteIcon from "@mui/icons-material/Route";
-// import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 const item: SxProps<Theme> = {
   display: "flex",
@@ -23,17 +20,6 @@ const number = {
   color: "secondary.main",
   fontWeight: "medium",
 };
-
-// const iconBox = {
-//   display: "flex",
-//   justifyContent: "center",
-//   alignItems: "center",
-//   height: 80,
-//   width: 80,
-//   borderRadius: "50%",
-//   backgroundColor: "secondary.light",
-//   my: 4,
-// };
 
 function Location() {
   return (
@@ -60,11 +46,6 @@ function Location() {
             <Grid item xs={12} md={4}>
               <Box sx={item}>
                 <Box sx={number}>1.</Box>
-                {/* <Box sx={iconBox}>
-                  <DirectionsCarIcon
-                    sx={{ fontSize: 40, color: "secondary.dark" }}
-                  />
-                </Box> */}
                 <Typography variant="h5" align="center">
                   Kandy to Theldeniya (20 km) via the Kandy-Mahiyangana road.
                 </Typography>
@@ -74,9 +55,6 @@ function Location() {
             <Grid item xs={12} md={4}>
               <Box sx={item}>
                 <Box sx={number}>2.</Box>
-                {/* <Box sx={iconBox}>
-                  <RouteIcon sx={{ fontSize: 40, color: "secondary.dark" }} />
-                </Box> */}
                 <Typography variant="h5" align="center">
                   Theldeniya to Thangappuwa via Rangala town (20 km).
                 </Typography>
@@ -86,11 +64,6 @@ function Location() {
             <Grid item xs={12} md={4}>
               <Box sx={item}>
                 <Box sx={number}>3.</Box>
-                {/* <Box sx={iconBox}>
-                  <LocationOnIcon
-                    sx={{ fontSize: 40, color: "secondary.dark" }}
-                  />
-                </Box> */}
                 <Typography variant="h5" align="center">
                   Thangappuwa to Aanamale road (1.5 km).
                 </Typography>

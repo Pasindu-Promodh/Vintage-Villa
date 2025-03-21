@@ -20,19 +20,19 @@ function Testimonials() {
       name: "Meghan Fitz-James",
       quote:
         "Staying at Vintage Villa in the Knuckles Mountains was a memorable experience. The peaceful atmosphere, with birds singing and mist over the valley, made it a perfect retreat. Sumith, the host, provided personalized service, organizing hikes and local trips. The off-grid, solar-powered guesthouse offered stunning views, crystal-clear river pools, and a delicious Sri Lankan breakfast on the balcony. It was a tranquil haven for relaxation and creativity. Highly recommended – 5 out of 5.",
-      image: "/images/reviews/meghan.jpg",
+      image: "/images/reviews/meghan.webp",
     },
     {
       name: "Virgile Vandewalle",
       quote:
         "We had a wonderful time in the knuckles thanks to Sumith. The place is magical, Sumith prepares excellent food and the room has an incredible view. Everything was perfect, thank you Sumith!",
-      image: "/images/reviews/virgile_vandewalle.jpg",
+      image: "/images/reviews/virgile_vandewalle.webp",
     },
     {
       name: "Marta Molins",
       quote:
         "The accommodation is in the heart of the Knuckles, the location cannot convey more peace and relaxation. The facilities are tastefully designed and have everything you need. Sumith, the owner of the accommodation is in charge of having everything ready for your arrival, he can also organise routes with the best guides in the region, as was our case, and he will offer you the best typical Sri Lankan food you can taste. No doubt a place to come back and recommend.",
-      image: "/images/reviews/martha.jpg",
+      image: "/images/reviews/martha.webp",
     },
   ];
 

@@ -10,7 +10,6 @@ import withRoot from "./modules/withRoot";
 function Terms() {
   const [markdown, setMarkdown] = useState("");
 
-  // https://github.com/webpack/webpack/issues/6680
   useEffect(() => {
     import("../md/refund.md")
       .then((content) => fetch(content.default))

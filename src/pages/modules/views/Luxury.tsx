@@ -9,15 +9,15 @@ import { Link as RouterLink } from "react-router-dom";
 
 const images = [
   {
-    src: "/images/home/IMG-20241013-WA0014.jpg",
+    src: "/images/home/IMG-20241013-WA0014.webp",
     text: "Each of our luxury rooms at the vintage-themed villa is a masterpiece of design, offering an immersive journey into a bygone era while pampering you with modern comforts.",
   },
   {
-    src: "/images/home/WhatsApp Image 2024-11-15 at 11.51.38_1a8f3ae6.jpg",
+    src: "/images/home/WhatsApp Image 2024-11-15 at 11.51.38_1a8f3ae6.webp",
     text: "Antique furnishings and period-inspired decor transport you to a time of refined elegance. Our vintage rooms are a symphony of muted hues, ornate accents, and soft lighting, creating an ambiance of intimate grandeur.",
   },
   {
-    src: "/images/home/IMG_0555.JPG",
+    src: "/images/home/IMG_0555.webp",
     text: "Whether you choose a room with a forest view or a private balcony overlooking the mountains, each luxury space offers a tranquil escape. Allow the gentle rustling of leaves and the scent of fresh mountain air to lull you into a peaceful slumber.",
   },
 ];

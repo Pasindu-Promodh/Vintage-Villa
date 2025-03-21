@@ -79,7 +79,7 @@ function JoinUs() {
           />
           <Box
             component="img"
-            src="/images/home/IMG_0390.JPG?auto=format&fit=crop&w=750&q=80"
+            src="/images/home/IMG_0390.webp?auto=format&fit=crop&w=750&q=80"
             alt="call to action"
             sx={{
               position: "absolute",

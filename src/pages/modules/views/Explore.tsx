@@ -57,32 +57,32 @@ const ImageIconButton = styled(ButtonBase)(({ theme }) => ({
 
 const images = [
   {
-    url: "./images/home/IMG_0325.JPG",
+    url: "./images/home/IMG_0325.webp",
     title: "Hiking",
     width: "40%",
   },
   {
-    url: "/images/home/IMG-20241013-WA0036.jpg",
+    url: "/images/home/IMG-20241013-WA0036.webp",
     title: "Waterfalls",
     width: "40%",
   },
   {
-    url: "https://duqjpivknq39s.cloudfront.net/2018/12/meemure.jpg",
+    url: "/images/home/meemure.webp",
     title: "Meemure",
     width: "20%",
   },
   {
-    url: "/images/home/Corbets-Gap.jpg",
+    url: "/images/home/Corbets-Gap.webp",
     title: "Corbets Gap",
     width: "38%",
   },
   {
-    url: "https://deih43ym53wif.cloudfront.net/temple-tooth-kandy-sri-lanka-shutterstock_1037797372_24beb3388c.jpeg",
+    url: "/images/home/kandy.webp",
     title: "Kandy",
     width: "38%",
   },
   {
-    url: "https://duqjpivknq39s.cloudfront.net/2018/12/mini-worlds-end.jpg",
+    url: "/images/home/mini-worlds-end.webp",
     title: "Mini Worlds End",
     width: "24%",
   },
