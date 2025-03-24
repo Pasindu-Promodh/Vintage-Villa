@@ -209,6 +209,8 @@ const RoomCard = styled(Card)(({ theme }) => ({
   display: "flex",
   flexDirection: "column",
   height: "100%",
+  width: "100%", // Ensure full width
+  maxWidth: "100%", // Prevent any constraints
   boxShadow: "0 16px 32px rgba(0, 0, 0, 0.3), 0 8px 16px rgba(0, 0, 0, 0.2)",
   transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
   "&:hover": {
@@ -235,24 +237,12 @@ const ImageContainer = styled(Box)(({ theme }) => ({
   marginBottom: theme.spacing(2),
   "& img": {
     width: "100%",
-    height: "200px",
+    height: "250px", // Changed from 200px to 250px
     objectFit: "cover",
     borderRadius: theme.shape.borderRadius,
     cursor: "pointer",
   },
-  "& .overlay": {
-    position: "absolute",
-    top: "10px",
-    left: "10px",
-    color: "#fff",
-    fontWeight: "bold",
-    fontSize: "18px",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    padding: `${theme.spacing(1)} ${theme.spacing(3)}`,
-    borderRadius: "5px",
-    textAlign: "center",
-    zIndex: 3,
-  },
+  // Remove the overlay styles since we'll use a button
 }));
 
 const ContentContainer = styled(CardContent)(({ theme }) => ({
@@ -278,13 +268,13 @@ const PriceContainer = styled(Box)(() => ({
 
 const DefaultRoomImage = styled(Box)(() => ({
   width: "100%",
-  height: "200px",
-  backgroundColor: "#000000", // Black background
+  height: "250px", // Changed from 200px to 250px
+  backgroundColor: "#000000",
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
   borderRadius: "8px",
-  position: "relative", // Ensure proper positioning
+  position: "relative",
 }));
 
 // Room Interface
@@ -400,7 +390,7 @@ function Reservations() {
         ) : (
           <Grid container spacing={4} justifyContent="center">
             {rooms.map((room) => (
-              <Grid item xs={12} sm={6} md={4} key={room.id}>
+              <Grid item xs={12} sm={6} md={5} key={room.id}>
                 <RoomCard>
                   <ImageContainer>
                     <Button
@@ -408,7 +398,7 @@ function Reservations() {
                       sx={{
                         p: 0,
                         width: "100%",
-                        height: "200px",
+                        height: "250px", // Changed from 200px to 250px
                         borderRadius: "8px",
                         position: "relative",
                       }}
@@ -456,7 +446,23 @@ function Reservations() {
                         />
                       )}
                     </Button>
-                    <Box className="overlay">More Photos</Box>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation(); // Prevent triggering the parent button click
+                        handleImageClick(room.title);
+                      }}
+                      sx={{
+                        position: "absolute",
+                        bottom: "10px",
+                        right: "10px",
+                        zIndex: 5,
+                      }}
+                    >
+                      More Photos
+                    </Button>
                   </ImageContainer>
                   <ContentContainer>
                     <Typography variant="h5" gutterBottom>
