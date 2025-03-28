@@ -4,7 +4,10 @@ import { SxProps } from "@mui/system";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Container from "@mui/material/Container";
+import Button from "@mui/material/Button";
 import Typography from "../components/Typography";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { useTheme } from "@mui/material/styles";
 
 const item: SxProps<Theme> = {
   display: "flex",
@@ -15,6 +18,9 @@ const item: SxProps<Theme> = {
 };
 
 function Testimonials() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  
   const testimonials = [
     {
       name: "Meghan Fitz-James",
@@ -31,10 +37,13 @@ function Testimonials() {
     {
       name: "Marta Molins",
       quote:
-        "The accommodation is in the heart of the Knuckles, the location cannot convey more peace and relaxation. The facilities are tastefully designed and have everything you need. Sumith, the owner of the accommodation is in charge of having everything ready for your arrival, he can also organise routes with the best guides in the region, as was our case, and he will offer you the best typical Sri Lankan food you can taste. No doubt a place to come back and recommend.",
+        "The accommodation is in the heart of the Knuckles, the location cannot convey more peace and relaxation. The facilities are tastefully designed and have everything you need. Sumith, the owner of the accommodation is in charge of having everything ready for your arrival, he can also organise routes with the best guides in the region, as was our case, and he will offer you the best typical Sri Lankan food you can taste. No doubt a place to come back and recommend.",
       image: "/images/reviews/martha.webp",
     },
   ];
+
+  const googleReviewsUrl = "https://maps.app.goo.gl/2rJ9nF5UJASXmK4V8";
+  const tripAdvisorUrl = "https://www.tripadvisor.com/Hotel_Review-g17782726-d27123668-Reviews-The_Vintage_Villa_Knuckles-Thangappuwa_Kandy_District_Central_Province.html?m=19905";
 
   return (
     <Box
@@ -75,7 +84,6 @@ function Testimonials() {
           {testimonials.map((testimonial, index) => (
             <Grid item xs={12} md={4} key={index}>
               <Box sx={item}>
-                {/* Using background image as a fallback for image loading */}
                 <Box
                   sx={{
                     width: 120,
@@ -98,6 +106,54 @@ function Testimonials() {
             </Grid>
           ))}
         </Grid>
+
+        {/* Review Buttons Container */}
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: isMobile ? "column" : "row",
+            justifyContent: "center",
+            alignItems: "center",
+            gap: isMobile ? 2 : 3,
+            mt: 5,
+            width: isMobile ? "100%" : "auto",
+          }}
+        >
+          <Button
+            variant="contained"
+            color="secondary"
+            href={googleReviewsUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            fullWidth={isMobile}
+            sx={{
+              px: isMobile ? 2 : 4,
+              py: 1.5,
+              fontSize: isMobile ? "0.9rem" : "1rem",
+              textTransform: "none",
+              minWidth: isMobile ? "auto" : 200,
+            }}
+          >
+            Read Our Google Reviews
+          </Button>
+          <Button
+            variant="outlined"
+            color="secondary"
+            href={tripAdvisorUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            fullWidth={isMobile}
+            sx={{
+              px: isMobile ? 2 : 4,
+              py: 1.5,
+              fontSize: isMobile ? "0.9rem" : "1rem",
+              textTransform: "none",
+              minWidth: isMobile ? "auto" : 200,
+            }}
+          >
+            See TripAdvisor Reviews
+          </Button>
+        </Box>
       </Container>
     </Box>
   );
