@@ -310,110 +310,114 @@ function Gallery() {
           />
         )}
       </Dialog> */}
-      <Dialog 
-  open={open} 
-  onClose={handleClose} 
-  maxWidth="xl"
-  PaperProps={{
-    sx: {
-      backgroundColor: "#000000",
-      overflow: "hidden", // Prevents scrollbars
-      maxHeight: "90vh",
-      maxWidth: "90vw",
-      height: "auto",
-      width: "auto",
-      margin: 2,
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center"
-    }
-  }}
->
-  <IconButton
-    aria-label="close"
-    onClick={handleClose}
-    sx={{
-      position: "absolute",
-      right: 8,
-      top: 8,
-      color: "#ffffff",
-      zIndex: 3,
-      backgroundColor: "rgba(0,0,0,0.3)",
-      "&:hover": {
-        backgroundColor: "rgba(0,0,0,0.5)",
-      }
-    }}
-  >
-    <CloseIcon />
-  </IconButton>
-  
-  {selectedImage && (
-    <Box sx={{ 
-      position: "relative",
-      display: "flex",
-      justifyContent: "center",
-      alignItems: "center",
-      width: "100%",
-      height: "100%",
-      backgroundColor: "#000000"
-    }}>
-      {/* Loading indicator */}
-      <Box sx={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 1
-      }}>
-        <CircularProgress 
-          size={80}
-          thickness={4}
-          sx={{ color: "#D4AF37" }}
-        />
-      </Box>
-      
-      {/* Full-size image with fade-in effect */}
-      <Box
-        component="img"
-        src={selectedImage.imageUrl}
-        alt={selectedImage.filename}
-        sx={{ 
-          maxWidth: "100%", 
-          maxHeight: "90vh",
-          objectFit: "contain",
-          position: "relative",
-          zIndex: 2,
-          opacity: 0,
-          transition: "opacity 0.5s ease",
-          display: "block", // Prevents extra space below image
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth="xl"
+        PaperProps={{
+          sx: {
+            backgroundColor: "#000000",
+            overflow: "hidden", // Prevents scrollbars
+            maxHeight: "90vh",
+            maxWidth: "90vw",
+            height: "auto",
+            width: "auto",
+            margin: 2,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          },
         }}
-        onLoad={(e) => {
-          // When image loads, adjust dialog size based on image dimensions
-          const img = e.target as HTMLImageElement;
-          img.style.opacity = "1";
-          
-          // Get aspect ratio and adjust dialog accordingly
-          const aspectRatio = img.naturalWidth / img.naturalHeight;
-          const isPortrait = aspectRatio < 1;
-          
-          // Find dialog paper element (parent container)
-          const dialogPaper = img.closest('.MuiPaper-root');
-          if (dialogPaper) {
-            // For portrait images, adjust width to fit the image height
-            if (isPortrait) {
-              (dialogPaper as HTMLElement).style.width = 'auto';
-              (dialogPaper as HTMLElement).style.maxWidth = '90vw';
-            }
-          }
-        }}
-      />
-    </Box>
-  )}
-</Dialog>
+      >
+        <IconButton
+          aria-label="close"
+          onClick={handleClose}
+          sx={{
+            position: "absolute",
+            right: 8,
+            top: 8,
+            color: "#ffffff",
+            zIndex: 3,
+            backgroundColor: "rgba(0,0,0,0.3)",
+            "&:hover": {
+              backgroundColor: "rgba(0,0,0,0.5)",
+            },
+          }}
+        >
+          <CloseIcon />
+        </IconButton>
+
+        {selectedImage && (
+          <Box
+            sx={{
+              position: "relative",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "100%",
+              height: "100%",
+              backgroundColor: "#000000",
+            }}
+          >
+            {/* Loading indicator */}
+            <Box
+              sx={{
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                zIndex: 1,
+              }}
+            >
+              <CircularProgress
+                size={80}
+                thickness={4}
+                sx={{ color: "#D4AF37" }}
+              />
+            </Box>
+
+            {/* Full-size image with fade-in effect */}
+            <Box
+              component="img"
+              src={selectedImage.imageUrl}
+              alt={selectedImage.filename}
+              sx={{
+                maxWidth: "100%",
+                maxHeight: "90vh",
+                objectFit: "contain",
+                position: "relative",
+                zIndex: 2,
+                opacity: 0,
+                transition: "opacity 0.5s ease",
+                display: "block", // Prevents extra space below image
+              }}
+              onLoad={(e) => {
+                // When image loads, adjust dialog size based on image dimensions
+                const img = e.target as HTMLImageElement;
+                img.style.opacity = "1";
+
+                // Get aspect ratio and adjust dialog accordingly
+                const aspectRatio = img.naturalWidth / img.naturalHeight;
+                const isPortrait = aspectRatio < 1;
+
+                // Find dialog paper element (parent container)
+                const dialogPaper = img.closest(".MuiPaper-root");
+                if (dialogPaper) {
+                  // For portrait images, adjust width to fit the image height
+                  if (isPortrait) {
+                    (dialogPaper as HTMLElement).style.width = "auto";
+                    (dialogPaper as HTMLElement).style.maxWidth = "90vw";
+                  }
+                }
+              }}
+            />
+          </Box>
+        )}
+      </Dialog>
       <AppFooter />
     </React.Fragment>
   );

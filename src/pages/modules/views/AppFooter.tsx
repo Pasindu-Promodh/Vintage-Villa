@@ -15,7 +15,12 @@ function Copyright() {
       sx={{ mt: 2 }}
     >
       {"© "}
-      <Link color="inherit" href="www.vintagevilla.lk">
+      <Link 
+        color="inherit" 
+        href="https://www.vintagevilla.lk" 
+        target="_blank" 
+        rel="noopener noreferrer"
+      >
         vintage villa
       </Link>
       {" "}
@@ -48,19 +53,19 @@ export default function AppFooter() {
           {/* Logo Section */}
           <Grid item xs={12} sm={3} md={3}>
             <Box
-              component="a"
-              href="/"
               sx={{
                 display: "flex",
                 alignItems: "center",
                 flexDirection: "column",
               }}
             >
-              <img
-                src={"/logo.png"}
-                alt="Vintage Villa Logo"
-                style={{ height: 200, backgroundColor: "#28282a" }}
-              />
+              <RouterLink to="/">
+                <img
+                  src={"/logo.png"}
+                  alt="Vintage Villa Logo"
+                  style={{ height: 200, backgroundColor: "#28282a" }}
+                />
+              </RouterLink>
               {/* Copyright below the logo */}
               <Copyright />
             </Box>
@@ -72,32 +77,41 @@ export default function AppFooter() {
               Follow Us
             </Typography>
             <Box sx={{ display: "flex", mt: 2 }}>
-              <Box
-                component="a"
-                href="https://www.facebook.com/"
-                sx={iconStyle}
-              >
-                <img
-                  src="https://img.icons8.com/?size=48&id=85024&format=png&color=28282a"
-                  alt="Facebook"
-                />
-              </Box>
-              <Box
-                component="a"
-                href="https://www.instagram.com/"
-                sx={iconStyle}
-              >
-                <img
-                  src="https://img.icons8.com/?size=48&id=85154&format=png&color=28282a"
-                  alt="Instagram"
-                />
-              </Box>
-              <Box component="a" href="https://www.tiktok.com/" sx={iconStyle}>
-                <img
-                  src="https://img.icons8.com/?size=48&id=soupkpLfTkZi&format=png&color=28282a"
-                  alt="TikTok"
-                />
-              </Box>
+              {[
+                { 
+                  href: "https://www.facebook.com/", 
+                  src: "https://img.icons8.com/?size=48&id=85024&format=png&color=28282a", 
+                  alt: "Facebook" 
+                },
+                { 
+                  href: "https://www.instagram.com/", 
+                  src: "https://img.icons8.com/?size=48&id=85154&format=png&color=28282a", 
+                  alt: "Instagram" 
+                },
+                { 
+                  href: "https://www.tiktok.com/", 
+                  src: "https://img.icons8.com/?size=48&id=soupkpLfTkZi&format=png&color=28282a", 
+                  alt: "TikTok" 
+                }
+              ].map((social) => (
+                <Link 
+                  href={social.href} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  sx={{
+                    ...iconStyle,
+                    display: 'inline-flex',
+                    mr: 1
+                  }}
+                  key={social.alt}
+                >
+                  <img 
+                    src={social.src} 
+                    alt={social.alt} 
+                    style={{ width: 48, height: 48 }}
+                  />
+                </Link>
+              ))}
             </Box>
           </Grid>
 
@@ -107,46 +121,22 @@ export default function AppFooter() {
               Navigation
             </Typography>
             <Box component="ul" sx={{ m: 0, listStyle: "none", p: 0 }}>
-              <Box component="li" sx={{ py: 0.5 }}>
-                <Link component={RouterLink} to="/">
-                  Home
-                </Link>
-              </Box>
-              <Box component="li" sx={{ py: 0.5 }}>
-                <Link component={RouterLink} to="/our-story/">
-                  Our Story
-                </Link>
-              </Box>
-              <Box component="li" sx={{ py: 0.5 }}>
-                <Link component={RouterLink} to="/things-todo/">
-                  Things to Do
-                </Link>
-              </Box>
-              <Box component="li" sx={{ py: 0.5 }}>
-                <Link component={RouterLink} to="/srilankan-cuisine/">
-                  Sri Lankan Cuisine
-                </Link>
-              </Box>
-              <Box component="li" sx={{ py: 0.5 }}>
-                <Link component={RouterLink} to="/reservations/">
-                  Reservations
-                </Link>
-              </Box>
-              <Box component="li" sx={{ py: 0.5 }}>
-                <Link component={RouterLink} to="/gallery/">
-                  Gallery
-                </Link>
-              </Box>
-              <Box component="li" sx={{ py: 0.5 }}>
-                <Link component={RouterLink} to="/contact/">
-                  Contact Us
-                </Link>
-              </Box>
-              <Box component="li" sx={{ py: 0.5 }}>
-                <Link component={RouterLink} to="/faq/">
-                  FAQ
-                </Link>
-              </Box>
+              {[
+                { name: "Home", path: "/" },
+                { name: "Our Story", path: "/our-story/" },
+                { name: "Things to Do", path: "/things-todo/" },
+                { name: "Sri Lankan Cuisine", path: "/srilankan-cuisine/" },
+                { name: "Reservations", path: "/reservations/" },
+                { name: "Gallery", path: "/gallery/" },
+                { name: "Contact Us", path: "/contact/" },
+                { name: "FAQ", path: "/faq/" }
+              ].map((item) => (
+                <Box component="li" sx={{ py: 0.5 }} key={item.name}>
+                  <Link component={RouterLink} to={item.path}>
+                    {item.name}
+                  </Link>
+                </Box>
+              ))}
             </Box>
           </Grid>
 
@@ -156,21 +146,17 @@ export default function AppFooter() {
               Legal
             </Typography>
             <Box component="ul" sx={{ m: 0, listStyle: "none", p: 0 }}>
-              <Box component="li" sx={{ py: 0.5 }}>
-                <Link component={RouterLink} to="/privacy-policy/">
-                  Privacy Policy
-                </Link>
-              </Box>
-              <Box component="li" sx={{ py: 0.5 }}>
-                <Link component={RouterLink} to="/terms-of-use/">
-                  Terms of Use
-                </Link>
-              </Box>
-              <Box component="li" sx={{ py: 0.5 }}>
-                <Link component={RouterLink} to="/refund-policy/">
-                  Cancellation and Refund Policy
-                </Link>
-              </Box>
+              {[
+                { name: "Privacy Policy", path: "/privacy-policy/" },
+                { name: "Terms of Use", path: "/terms-of-use/" },
+                { name: "Cancellation and Refund Policy", path: "/refund-policy/" }
+              ].map((item) => (
+                <Box component="li" sx={{ py: 0.5 }} key={item.name}>
+                  <Link component={RouterLink} to={item.path}>
+                    {item.name}
+                  </Link>
+                </Box>
+              ))}
             </Box>
           </Grid>
         </Grid>

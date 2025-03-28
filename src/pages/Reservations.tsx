@@ -204,6 +204,7 @@ import { styled } from "@mui/material/styles";
 import BookingModal from "./BookingModal";
 import { db } from "./firebaseConfig"; // Import Firebase db
 import { collection, getDocs, doc, getDoc } from "firebase/firestore"; // Import Firestore methods
+import { Room, PricingSettings } from "./modules/components/Types";
 
 const RoomCard = styled(Card)(({ theme }) => ({
   display: "flex",
@@ -257,6 +258,10 @@ const DescriptionContainer = styled(Box)(() => ({
   marginBottom: "16px",
 }));
 
+const CapacityContainer = styled(Box)(() => ({
+  marginBottom: "16px",
+}));
+
 const AmenitiesContainer = styled(Box)(() => ({
   marginBottom: "16px",
   minHeight: "24px",
@@ -276,27 +281,6 @@ const DefaultRoomImage = styled(Box)(() => ({
   borderRadius: "8px",
   position: "relative",
 }));
-
-// Room Interface
-interface Room {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  price_extra: number;
-  image: string;
-  isActive: boolean;
-  displayOrder: number;
-  capacity: number;
-  amenities: string[];
-}
-
-interface PricingSettings {
-  lunchPrice: number;
-  dinnerPrice: number;
-  discountRate: number;
-  lastUpdated: number;
-}
 
 function Reservations() {
   const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
@@ -475,11 +459,14 @@ function Reservations() {
                       </Typography>
                     </DescriptionContainer>
 
-                    <AmenitiesContainer>
+                    <CapacityContainer>
+                      {" "}
                       <Typography variant="body2">
                         Capacity: {room.capacity}{" "}
                         {room.capacity > 1 ? "guests" : "guest"}
                       </Typography>
+                    </CapacityContainer>
+                    <AmenitiesContainer>
                       {room.amenities && room.amenities.length > 0 && (
                         <Typography variant="body2">
                           Includes: {room.amenities.join(", ")}

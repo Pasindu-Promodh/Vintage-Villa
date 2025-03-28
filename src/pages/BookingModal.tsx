@@ -29,9 +29,10 @@ import {
   UnavailableDates,
 } from "./modules/components/Types";
 import { addDays, isWithinInterval, parseISO } from "date-fns";
+import "../App.css";
+
 // import { httpsCallable } from "firebase/functions";
 // import { functions } from "./firebaseConfig"; // Import functions from your Firebase config
-
 
 const BookingModal: React.FC<BookingModalProps> = ({
   open,
@@ -95,8 +96,6 @@ const BookingModal: React.FC<BookingModalProps> = ({
       }
     };
 
-    
-
     fetchUnavailableDates();
   }, [selectedRoom.id]);
 
@@ -124,6 +123,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
     if (!start || !end) return true;
 
     // Check every date in the range
+
     let currentDate = start;
     while (currentDate <= end) {
       if (isDateUnavailable(currentDate)) {
@@ -137,10 +137,12 @@ const BookingModal: React.FC<BookingModalProps> = ({
   // Handle date range change with validation
   const handleDateRangeChange = (newValue: [Date | null, Date | null]) => {
     const [start, end] = newValue;
-    
+
     // If the new range includes any unavailable dates, show an error
     if (start && end && !isDateRangeValid(start, end)) {
-      enqueueSnackbar("Selected dates include unavailable periods", { variant: "error" });
+      enqueueSnackbar("Selected dates include unavailable periods", {
+        variant: "error",
+      });
       return;
     }
 
@@ -306,50 +308,49 @@ const BookingModal: React.FC<BookingModalProps> = ({
   };
 
   return (
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-        <DialogTitle>Book {selectedRoom?.title || "Room"}</DialogTitle>
-        <DialogContent>
-          {/* Customer Information */}
-          <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
-            Your Information:
-          </Typography>
-          <TextField
-            label="Full Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            fullWidth
-            margin="dense"
-            required
-          />
-          <TextField
-            label="Phone Number"
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            fullWidth
-            margin="dense"
-            required
-            helperText="Required for booking confirmation"
-          />
-          <TextField
-            label="Email Address"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            fullWidth
-            margin="dense"
-            helperText="Optional"
-          />
+    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+      <DialogTitle>Book {selectedRoom?.title || "Room"}</DialogTitle>
+      <DialogContent>
+        {/* Customer Information */}
+        <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
+          Your Information:
+        </Typography>
+        <TextField
+          label="Full Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          fullWidth
+          margin="dense"
+          required
+        />
+        <TextField
+          label="Phone Number"
+          type="tel"
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          fullWidth
+          margin="dense"
+          required
+          helperText="Required for booking confirmation"
+        />
+        <TextField
+          label="Email Address"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          fullWidth
+          margin="dense"
+          helperText="Optional"
+        />
 
-          <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
-            Select your booking dates:
-          </Typography>
+        <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
+          Select your booking dates:
+        </Typography>
 
-          {/* Date Range Picker */}
-          <LocalizationProvider dateAdapter={AdapterDateFns}>
-            <DateRangePicker
+        {/* Date Range Picker */}
+        <LocalizationProvider dateAdapter={AdapterDateFns}>
+          {/* <DateRangePicker
               value={dateRange}
-              // onChange={(newValue) => setDateRange(newValue)}
               onChange={handleDateRangeChange}
               disablePast
               shouldDisableDate={isDateUnavailable}
@@ -376,95 +377,127 @@ const BookingModal: React.FC<BookingModalProps> = ({
                   />
                 </>
               )}
-            />
-          </LocalizationProvider>
+            /> */}
 
-          {/* Head Count */}
-          <TextField
-            label="Head Count"
-            type="number"
-            InputProps={{ inputProps: { min: 1, max: selectedRoom.capacity } }}
-            value={headCount}
-            onChange={handleHeadCountChange}
-            fullWidth
-            margin="dense"
-          />
-
-          {/* Meal Options */}
-          <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
-            Meal Options:
-          </Typography>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={mealOptions.breakfast}
-                onChange={() =>
-                  setMealOptions((prev) => ({
-                    ...prev,
-                    breakfast: !prev.breakfast,
-                  }))
-                }
-              />
-            }
-            label="Breakfast (Free)"
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={mealOptions.lunch}
-                onChange={() =>
-                  setMealOptions((prev) => ({ ...prev, lunch: !prev.lunch }))
-                }
-              />
-            }
-            label={`Lunch ($${pricing.lunchPrice} per person)`}
-          />
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={mealOptions.dinner}
-                onChange={() =>
-                  setMealOptions((prev) => ({ ...prev, dinner: !prev.dinner }))
-                }
-              />
-            }
-            label={`Dinner ($${pricing.dinnerPrice} per person)`}
-          />
-
-          {/* Price Calculation */}
-          <Typography variant="h6" sx={{ mt: 2 }}>
-            Total Price: ${calculatePrice().toFixed(2)}
-          </Typography>
-          <Typography variant="body2" color="textSecondary">
-            Discount Applied: ${calculateDiscount().toFixed(2)}
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleClose} color="secondary">
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleConfirmBooking}
-            disabled={
-              loading ||
-              !dateRange[0] ||
-              !dateRange[1] ||
-              !name ||
-              !phone ||
-              isDateUnavailable(dateRange[0]) ||
-              isDateUnavailable(dateRange[1])
-            }
-          >
-            {loading ? (
-              <CircularProgress size={24} color="inherit" />
-            ) : (
-              "Confirm Booking"
+          <DateRangePicker
+            value={dateRange}
+            onChange={handleDateRangeChange}
+            disablePast
+            shouldDisableDate={isDateUnavailable}
+            inputFormat="dd/MM/yyyy"
+            
+            className="custom-date-picker" // Add a custom class
+            renderInput={(startProps, endProps) => (
+              <>
+                <TextField
+                  {...startProps}
+                  fullWidth
+                  margin="dense"
+                  label="Check-in Date"
+                  helperText={
+                    startProps.helperText || "Unavailable dates are disabled"
+                  }
+                />
+                <TextField
+                  {...endProps}
+                  fullWidth
+                  margin="dense"
+                  label="Check-out Date"
+                  helperText={
+                    startProps.helperText || "Unavailable dates are disabled"
+                  }
+                />
+              </>
             )}
-          </Button>
-        </DialogActions>
-      </Dialog>
+          />
+        </LocalizationProvider>
+
+        {/* Head Count */}
+        <TextField
+          label="Head Count"
+          type="number"
+          InputProps={{ inputProps: { min: 1, max: selectedRoom.capacity } }}
+          value={headCount}
+          onChange={handleHeadCountChange}
+          fullWidth
+          margin="dense"
+        />
+
+        {/* Meal Options */}
+        <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
+          Meal Options:
+        </Typography>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={mealOptions.breakfast}
+              onChange={() =>
+                setMealOptions((prev) => ({
+                  ...prev,
+                  breakfast: !prev.breakfast,
+                }))
+              }
+            />
+          }
+          label="Breakfast (Free)"
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={mealOptions.lunch}
+              onChange={() =>
+                setMealOptions((prev) => ({ ...prev, lunch: !prev.lunch }))
+              }
+            />
+          }
+          label={`Lunch ($${pricing.lunchPrice} per person)`}
+        />
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={mealOptions.dinner}
+              onChange={() =>
+                setMealOptions((prev) => ({ ...prev, dinner: !prev.dinner }))
+              }
+            />
+          }
+          label={`Dinner ($${pricing.dinnerPrice} per person)`}
+        />
+
+        {/* Price Calculation */}
+        <Typography variant="h6" sx={{ mt: 2 }}>
+          Total Price: ${calculatePrice().toFixed(2)}
+        </Typography>
+        <Typography variant="body2" color="textSecondary">
+          Discount Applied: ${calculateDiscount().toFixed(2)}
+        </Typography>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="secondary">
+          Cancel
+        </Button>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleConfirmBooking}
+          disabled={
+            loading ||
+            !dateRange[0] ||
+            !dateRange[1] ||
+            !name ||
+            !phone ||
+            isDateUnavailable(dateRange[0]) ||
+            isDateUnavailable(dateRange[1])
+          }
+        >
+          {loading ? (
+            <CircularProgress size={24} color="inherit" />
+          ) : (
+            "Confirm Booking"
+          )}
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 

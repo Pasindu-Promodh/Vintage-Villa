@@ -25,3 +25,28 @@ export interface UnavailableDates {
     checkInDate: string;
     checkOutDate: string;
   }
+
+  export interface Room {
+    id: string;
+    title: string;
+    description: string;
+    price: number;
+    price_extra: number;
+    image: string;
+    isActive: boolean;
+    displayOrder: number;
+    capacity: number;
+    amenities: string[];
+  }
+
+  export interface PricingSettings {
+    lunchPrice: number;
+    dinnerPrice: number;
+    discountRate: number;
+    lastUpdated: number;
+  }
+
+  export interface MenuItem {
+    name: string;
+    path: string;
+  }

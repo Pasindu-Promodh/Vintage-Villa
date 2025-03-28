@@ -36,3 +36,6 @@
     transform: rotate(360deg);
   }
 }
+.custom-date-picker .MuiPickersDay-root.Mui-disabled {
+  color: red; /* Desired color for disabled dates */
+}

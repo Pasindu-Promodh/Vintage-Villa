@@ -1,14 +1,12 @@
-import * as React from "react";
 import Box from "@mui/material/Box";
-import Link from "@mui/material/Link";
+import { Drawer, IconButton, Link, List, ListItem } from "@mui/material";
 import AppBar from "../components/AppBar";
 import Toolbar from "../components/Toolbar";
 import { Link as RouterLink, useLocation } from "react-router-dom";
-import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import Drawer from "@mui/material/Drawer";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
+import { useState } from "react";
+import React from "react";
+import { MenuItem } from "../components/Types";
 
 const rightLink = {
   fontSize: 16,
@@ -31,16 +29,16 @@ const rightMenu = [
 ];
 
 function AppAppBar() {
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const location = useLocation(); // Get the current route
 
   const toggleDrawer = (open: boolean) => () => {
     setDrawerOpen(open);
   };
 
-  const menuItems = (menu: any) => (
+  const menuItems = (menu: MenuItem[]) => (
     <List>
-      {menu.map((item: any) => (
+      {menu.map((item) => (
         <ListItem key={item.name}>
           <Link
             color="inherit"
@@ -63,7 +61,6 @@ function AppAppBar() {
       ))}
     </List>
   );
-
   return (
     <div>
       <AppBar position="fixed">
