@@ -52,6 +52,7 @@ export default function IntroductionLayout(
           alt="wonder"
           width="147"
           height="80"
+          loading="lazy"
         />
         {children}
         <Box

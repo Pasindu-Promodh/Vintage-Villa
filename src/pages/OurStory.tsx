@@ -50,7 +50,7 @@ function OurStory() {
           </Grid>
           <Grid item xs={12} md={6}>
             <ImageContainer>
-              <img src={images[0]} alt="Origins of The Vintage Villa" />
+              <img src={images[0]} alt="Origins of The Vintage Villa" loading="lazy"/>
             </ImageContainer>
           </Grid>
         </Grid>
@@ -59,7 +59,7 @@ function OurStory() {
         <Grid container spacing={6} alignItems="center">
           <Grid item xs={12} md={6} order={{ xs: 2, md: 1 }}>
             <ImageContainer>
-              <img src={images[1]} alt="Mission of The Vintage Villa" />
+              <img src={images[1]} alt="Mission of The Vintage Villa" loading="lazy"/>
             </ImageContainer>
           </Grid>
           <Grid item xs={12} md={6} order={{ xs: 1, md: 2 }}>
@@ -128,7 +128,7 @@ function OurStory() {
           </Grid>
           <Grid item xs={12} md={6}>
             <ImageContainer>
-              <img src={images[2]} alt="Values of The Vintage Villa" />
+              <img src={images[2]} alt="Values of The Vintage Villa" loading="lazy"/>
             </ImageContainer>
           </Grid>
         </Grid>

@@ -116,14 +116,14 @@ function SrilankanCuisine() {
                 <StaggeredGridContainer>
                   {section.images.map((img, imgIndex) => (
                     <ImageContainer key={imgIndex}>
-                      <img src={img} alt={section.alt[imgIndex]} />
+                      <img src={img} alt={section.alt[imgIndex]} loading="lazy"/>
                     </ImageContainer>
                   ))}
                 </StaggeredGridContainer>
               ) : (
                 // Render a single image if only one is provided
                 <ImageContainer>
-                  <img src={section.images[0]} alt={section.alt[0]} />
+                  <img src={section.images[0]} alt={section.alt[0]} loading="lazy"/>
                 </ImageContainer>
               )}
             </Grid>

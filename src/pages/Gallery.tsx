@@ -279,6 +279,7 @@ function Gallery() {
                           );
                           // You could set a default image here if needed
                         }}
+                        loading="lazy"
                       />
                     </ImageContainer>
                   </Grid>

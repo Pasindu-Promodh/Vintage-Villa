@@ -64,6 +64,7 @@ export default function AppFooter() {
                   src={"/logo.png"}
                   alt="Vintage Villa Logo"
                   style={{ height: 200, backgroundColor: "#28282a" }}
+                  loading="lazy"
                 />
               </RouterLink>
               {/* Copyright below the logo */}
@@ -109,6 +110,7 @@ export default function AppFooter() {
                     src={social.src} 
                     alt={social.alt} 
                     style={{ width: 48, height: 48 }}
+                    loading="lazy"
                   />
                 </Link>
               ))}

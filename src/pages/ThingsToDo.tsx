@@ -190,7 +190,7 @@ function ThingsToDo() {
                       },
                     }}
                   >
-                    <img src={section.image} alt={altText} />
+                    <img src={section.image} alt={altText} loading="lazy"/>
                     {/* alt generated programmatically */}
                   </Button>
                   <Box className="overlay">More Photos</Box>

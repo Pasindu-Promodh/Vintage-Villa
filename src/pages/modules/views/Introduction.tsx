@@ -1,70 +1,3 @@
-// import * as React from "react";
-// import Button from "../components/Button";
-// import Typography from "../components/Typography";
-// import IntroductionLayout from "./IntroductionLayout";
-// import { Link as RouterLink } from "react-router-dom";
-
-// const backgroundImage = "/images/home/IMG_0325.webp";
-// const backgroundImage1 = "/images/IMG-20241013-WA0016.jpg";
-// const backgroundImage2 = "/images/IMG-20241013-WA0022.jpg";
-// const backgroundImage3 = "/images/IMG-20241013-WA0040.jpg";
-// const backgroundImage4 = "/images/WhatsApp10_f9eff0d2.jpg";
-// const backgroundImage5 = "/images/WhatsApp34_99bde407.jpg";
-
-// export default function Introduction() {
-//   return (
-//     <IntroductionLayout
-//       sxBackground={{
-//         backgroundImage: `url(${backgroundImage4})`,
-//         backgroundColor: "#7fc7d9", // Average color of the background image.
-//         // backgroundColor: "white",
-//         backgroundPosition: "center",
-//       }}
-//     >
-//       {/* Increase the network loading priority of the background image. */}
-//       <img
-//         style={{ display: "none" }}
-//         src={backgroundImage}
-//         alt="increase priority"
-//       />
-//       <Typography
-//         color="inherit"
-//         align="center"
-//         variant="h2"
-//         marked="center"
-//         sx={{ fontFamily: "'Metal', serif" }}
-//       >
-//         THE VINTAGE VILLA KNUCKLES
-//       </Typography>
-//       <Typography
-//         color="inherit"
-//         align="center"
-//         variant="h5"
-//         sx={{ mb: 4, mt: { sx: 4, sm: 10 } }}
-//       >
-//         Vintage Luxury in the Heart of Nature <br />
-//         <br />
-//         Step back in time to a bygone era of elegance and charm. Embrace the
-//         vintage allure of our villa amidst the breathtaking Knuckles Mountain
-//         Range.
-//       </Typography>
-//       <Button
-//         color="secondary"
-//         variant="contained"
-//         size="large"
-//         component={RouterLink}
-//         to="/reservations/"
-//         sx={{ minWidth: 200 }}
-//       >
-//         Reserve now
-//       </Button>
-//       <Typography variant="body2" color="inherit" sx={{ mt: 2 }}>
-//         Discover the experience
-//       </Typography>
-//     </IntroductionLayout>
-//   );
-// }
-
 import * as React from "react";
 import { useState, useEffect } from "react";
 import Button from "../components/Button";
@@ -147,6 +80,7 @@ export default function Introduction() {
         style={{ display: "none" }}
         src={backgroundImages[0]}
         alt="increase priority"
+        loading="lazy"
       />
       <Typography
         color="inherit"
