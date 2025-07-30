@@ -10,14 +10,15 @@ import { getFunctions } from "firebase/functions";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyAgnKGVZog78SxLzLS090FvZ8gxy6mfHZ4",
-  authDomain: "vintagevilla-c5a56.firebaseapp.com",
-  projectId: "vintagevilla-c5a56",
-  storageBucket: "vintagevilla-c5a56.firebasestorage.app",
-  messagingSenderId: "676527874018",
-  appId: "1:676527874018:web:a791894a344f629f2723bb",
-  measurementId: "G-EBJ6XPP26R"
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
+  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
+
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
