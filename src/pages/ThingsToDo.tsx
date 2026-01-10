@@ -50,7 +50,7 @@ const thingsToDoContent = [
     title: "Hiking Trails and Waterfalls",
     description:
       "Embark on unforgettable journeys through the lush hiking trails of the Knuckles Mountain Range. Our hotel provides easy access to some of the most scenic and well-preserved paths, taking you through ancient forests, tea plantations, and captivating landscapes. Along the way, be sure to discover the hidden gems of this region, including breathtaking waterfalls that cascade down from the misty heights.",
-    image: "/images/home/IMG_0325.webp",
+    image: "/images/home/IMG_0325.avif",
     imageOrder: 1,
     packageDetailsFile: "/packages/hiking-trails-and-waterfalls.md",
     available: true,
@@ -60,7 +60,7 @@ const thingsToDoContent = [
     title: "Meemure Village",
     description:
       "Immerse yourself in the culture and traditions of Sri Lanka by visiting the nearby Meemure Village. This picturesque rural hamlet, nestled amidst the mountains, offers a glimpse into the lives of its welcoming residents. Explore the village's rich history, try your hand at traditional crafts, and savor authentic Sri Lankan cuisine prepared by local families.",
-    image: "/images/home/meemure.webp",
+    image: "/images/home/meemure.avif",
     imageOrder: 2,
     packageDetailsFile: "/packages/meemure-village-package.md",
     available: true,
@@ -70,7 +70,7 @@ const thingsToDoContent = [
     title: "Heel-Oya Village",
     description:
       "Immerse yourself in the culture and traditions of Sri Lanka by visiting the nearby Heel-Oya Village. This picturesque rural hamlet, nestled amidst the mountains, offers a glimpse into the lives of its welcoming residents. Explore the village's rich history, try your hand at traditional crafts, and savor authentic Sri Lankan cuisine prepared by local families.",
-    image: "/images/thingstodo/WhatsApp Image 2024-11-15 at 15.30.12_fa144f86.webp",
+    image: "/images/thingstodo/WhatsApp Image 2024-11-15 at 15.30.12_fa144f86.avif",
     imageOrder: 2,
     packageDetailsFile: "/packages/heeloya-village-package.md",
     available: true,
@@ -80,7 +80,7 @@ const thingsToDoContent = [
     title: "Corbets Gap",
     description:
       "Corbett’s Gap, a renowned attraction in the Knuckles Mountain Range, offers breathtaking views of the surrounding peaks. This deep valley, situated in a rain shadow region, features diverse vegetation ranging from wet and dry to montane types. Accessed via a B-grade road from Hunnasgiriya, a favored starting point for trekkers, Corbett’s Gap is named after a British surveyor, Corbett, who mapped the area. Locally known as 'Attala-Wettuwa,' it stands out as one of the most magnificent and sought-after viewpoints in the Knuckles Mountain Range.",
-    image: "/images/home/Corbets-Gap.webp",
+    image: "/images/home/Corbets-Gap.avif",
     imageOrder: 2,
     packageDetailsFile: "/packages/corbets-gap-package.md",
     available: true,
@@ -91,7 +91,7 @@ const thingsToDoContent = [
     description:
       "Just a short drive away, the historic city of Kandy awaits your exploration. Known for its UNESCO-listed Temple of the Tooth and vibrant cultural scene, Kandy offers a fascinating blend of history, spirituality, and art. Stroll around the scenic Kandy Lake, visit the Royal Botanical Gardens, and be captivated by the city's unique atmosphere.",
     image:
-      "/images/home/kandy.webp",
+      "/images/home/kandy.avif",
     imageOrder: 1,
     packageDetailsFile: "/packages/kandy-package.md",
     available: false,

@@ -125,6 +125,7 @@ function AppAppBar() {
               alt="logo"
               sx={{
                 height: 90,
+                width:90
               }}
             />
           </Link>

@@ -9,15 +9,15 @@ import { Link as RouterLink } from "react-router-dom";
 
 const images = [
   {
-    src: "/images/home/IMG-20241013-WA0014.webp",
+    src: "/images/home/IMG-20241013-WA0014.avif",
     text: "Each of our luxury rooms at the vintage-themed villa is a masterpiece of design, offering an immersive journey into a bygone era while pampering you with modern comforts.",
   },
   {
-    src: "/images/home/WhatsApp Image 2024-11-15 at 11.51.38_1a8f3ae6.webp",
+    src: "/images/home/WhatsApp Image 2024-11-15 at 11.51.38_1a8f3ae6.avif",
     text: "Antique furnishings and period-inspired decor transport you to a time of refined elegance. Our vintage rooms are a symphony of muted hues, ornate accents, and soft lighting, creating an ambiance of intimate grandeur.",
   },
   {
-    src: "/images/home/IMG_0555.webp",
+    src: "/images/home/IMG_0555.avif",
     text: "Whether you choose a room with a forest view or a private balcony overlooking the mountains, each luxury space offers a tranquil escape. Allow the gentle rustling of leaves and the scent of fresh mountain air to lull you into a peaceful slumber.",
   },
 ];
@@ -107,6 +107,7 @@ function Luxury() {
                   component="img"
                   src={image.src}
                   alt={image.text}
+                  loading="lazy"
                   sx={{
                     height: "100%",
                     width: "100%",

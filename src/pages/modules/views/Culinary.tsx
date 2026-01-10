@@ -10,13 +10,13 @@ import { Link as RouterLink } from "react-router-dom";
 
 const images = [
   {
-    src: "/images/home/IMG-20241013-WA0012.webp",
+    src: "/images/home/IMG-20241013-WA0012.avif",
   },
   {
-    src: "/images/home/food-6884523.webp",
+    src: "/images/home/food-6884523.avif",
   },
   {
-    src: "/images/home/IMG_0316.webp",
+    src: "/images/home/IMG_0316.avif",
   },
 ];
 
@@ -89,6 +89,7 @@ function Luxury() {
                     component="img"
                     src={image.src}
                     alt={image.src}
+                    loading="lazy"
                     sx={{
                       height: "100%",
                       width: "100%",

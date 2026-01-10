@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" component="main">
   <head>
     <!-- Basic -->
     <meta charset="utf-8" />
@@ -9,32 +9,27 @@
     <!-- Title -->
     <title>Vintage Villa – Luxury Eco Kabana in Knuckles | Book Direct</title>
 
-    <!-- Primary SEO -->
+    <!-- SEO -->
     <meta
       name="description"
       content="Escape to Vintage Villa, a luxury eco kabana in the Knuckles Mountains, Sri Lanka. Stunning views, trekking access, organic food. Book direct for best rates."
     />
     <meta name="robots" content="index, follow" />
     <link rel="canonical" href="https://vintagevilla.lk/" />
+    <meta name="author" content="Vintage Villa" />
 
     <!-- Theme -->
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#1b5e20" />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://vintagevilla.lk/" />
-    <meta
-      property="og:title"
-      content="Vintage Villa – Luxury Eco Kabana in Knuckles"
-    />
+    <meta property="og:title" content="Vintage Villa – Luxury Eco Kabana in Knuckles" />
     <meta
       property="og:description"
       content="Luxury eco-friendly kabana in the Knuckles Mountains. Nature, trekking, privacy, and comfort."
     />
-    <meta
-      property="og:image"
-      content="https://vintagevilla.lk/og-image.webp"
-    />
+    <meta property="og:image" content="https://vintagevilla.lk/og-image.webp" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -43,12 +38,9 @@
       name="twitter:description"
       content="Luxury eco-friendly kabana in the Knuckles Mountains. Nature, trekking, privacy, and comfort."
     />
-    <meta
-      name="twitter:image"
-      content="https://vintagevilla.lk/og-image.webp"
-    />
+    <meta name="twitter:image" content="https://vintagevilla.lk/og-image.webp" />
 
-    <!-- Schema: LodgingBusiness -->
+    <!-- Schema -->
     <script type="application/ld+json">
       {
         "@context": "https://schema.org",
@@ -73,17 +65,7 @@
           "longitude": 80.82028
         },
         "checkinTime": "14:00",
-        "checkoutTime": "11:00",
-        "amenityFeature": [
-          { "@type": "LocationFeatureSpecification", "name": "Mountain View", "value": true },
-          { "@type": "LocationFeatureSpecification", "name": "Organic Food", "value": true },
-          { "@type": "LocationFeatureSpecification", "name": "Hiking Trails", "value": true }
-        ],
-        "makesOffer": {
-          "@type": "Offer",
-          "availability": "https://schema.org/InStock",
-          "url": "https://vintagevilla.lk/reservations/"
-        }
+        "checkoutTime": "11:00"
       }
     </script>
 
@@ -92,29 +74,102 @@
     <link rel="apple-touch-icon" href="/logo192.png" />
     <link rel="manifest" href="/manifest.json" />
 
-    <!-- Fonts (simple & fast) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <!-- Preload fonts (same-origin, fast) -->
     <link
-      href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;600&display=swap"
-      rel="stylesheet"
+      rel="preload"
+      href="/fonts/work-sans/WorkSans-Light.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/work-sans/WorkSans-Regular.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/fonts/work-sans/WorkSans-SemiBold.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
     />
 
-    <!-- LCP Image -->
-    <link rel="preload" as="image" href="/images/home/IMG_0325.webp" fetchpriority="high" />
+    <!-- LCP image preload -->
+    <link
+      rel="preload"
+      as="image"
+      href="/images/home/IMG_0325.avif"
+      fetchpriority="high"
+    />
 
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQW2YJWW91"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag("js", new Date());
-      gtag("config", "G-ZQW2YJWW91");
-    </script>
+    <!-- Critical CSS -->
+    <style>
+      @font-face {
+        font-family: "Work Sans";
+        src: url("/fonts/work-sans/WorkSans-Light.woff2") format("woff2");
+        font-weight: 300;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Work Sans";
+        src: url("/fonts/work-sans/WorkSans-Regular.woff2") format("woff2");
+        font-weight: 400;
+        font-display: swap;
+      }
+
+      @font-face {
+        font-family: "Work Sans";
+        src: url("/fonts/work-sans/WorkSans-SemiBold.woff2") format("woff2");
+        font-weight: 600;
+        font-display: swap;
+      }
+
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        font-family: "Work Sans", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      }
+
+      .hero-bg {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        z-index: -1;
+        opacity: 0;
+      }
+    </style>
   </head>
 
   <body>
+    <!-- LCP element outside React -->
+    <img
+      src="/images/home/IMG_0325.avif"
+      alt="Luxury eco kabana in the Knuckles Mountains at Vintage Villa"
+      class="hero-bg"
+      width="1920"
+      height="1080"
+      fetchpriority="high"
+      decoding="async"
+    />
+
     <noscript>This website requires JavaScript to display content.</noscript>
     <div id="root"></div>
+
+    <!-- Google Analytics (deferred) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQW2YJWW91"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() { dataLayer.push(arguments); }
+      gtag("js", new Date());
+      gtag("config", "G-ZQW2YJWW91");
+    </script>
   </body>
 </html>

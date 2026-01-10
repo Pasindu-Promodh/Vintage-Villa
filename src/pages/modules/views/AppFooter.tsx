@@ -63,7 +63,7 @@ export default function AppFooter() {
                 <img
                   src={"/logo.png"}
                   alt="Vintage Villa Logo"
-                  style={{ height: 200, backgroundColor: "#28282a" }}
+                  style={{ height: 180, width: 180, backgroundColor: "#28282a" }}
                   loading="lazy"
                 />
               </RouterLink>

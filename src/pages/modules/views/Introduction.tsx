@@ -144,11 +144,11 @@ import IntroductionLayout from "./IntroductionLayout";
 import { Link as RouterLink } from "react-router-dom";
 
 const backgroundImages = [
-  "/images/home/IMG_0325.webp", // LCP candidate
-  "/images/home/SlideShow/IMG-20241013-WA0016.webp",
-  "/images/home/SlideShow/IMG-20241013-WA0022.webp",
-  "/images/home/SlideShow/IMG-20241013-WA0040.webp",
-  "/images/home/SlideShow/WhatsApp10_f9eff0d2.webp",
+  "/images/home/IMG_0325.avif", // LCP candidate
+  "/images/home/SlideShow/IMG-20241013-WA0016.avif",
+  "/images/home/SlideShow/IMG-20241013-WA0022.avif",
+  "/images/home/SlideShow/IMG-20241013-WA0040.avif",
+  "/images/home/SlideShow/WhatsApp10_f9eff0d2.avif",
 ];
 
 export default function Introduction() {
@@ -169,6 +169,7 @@ export default function Introduction() {
         backgroundPosition: "center",
         position: "relative",
       }}
+      
     >
       {/* LCP image (correct) */}
       <img

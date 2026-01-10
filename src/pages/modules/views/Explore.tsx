@@ -57,27 +57,27 @@ const ImageIconButton = styled(ButtonBase)(({ theme }) => ({
 
 const images = [
   {
-    url: "./images/home/IMG_0325.webp",
+    url: "./images/home/IMG_0325.avif",
     title: "Hiking",
     width: "40%",
   },
   {
-    url: "/images/home/IMG-20241013-WA0036.webp",
+    url: "/images/home/IMG-20241013-WA0036.avif",
     title: "Waterfalls",
     width: "40%",
   },
   {
-    url: "/images/home/meemure.webp",
+    url: "/images/home/meemure.avif",
     title: "Meemure",
     width: "20%",
   },
   {
-    url: "/images/home/Corbets-Gap.webp",
+    url: "/images/home/Corbets-Gap.avif",
     title: "Corbets Gap",
     width: "38%",
   },
   {
-    url: "/images/home/kandy.webp",
+    url: "/images/home/kandy.avif",
     title: "Kandy",
     width: "38%",
   },
@@ -120,6 +120,7 @@ export default function Explore() {
                   backgroundPosition: "center",
                   backgroundRepeat: "no-repeat",
                   height: "100%", // Make sure the height is set
+                  
                 }}
               />
               <ImageBackdrop className="imageBackdrop" />
