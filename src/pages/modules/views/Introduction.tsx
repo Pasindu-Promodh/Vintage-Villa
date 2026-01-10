@@ -274,6 +274,108 @@
 
 
 
+// import * as React from "react";
+// import { useState, useEffect } from "react";
+// import Button from "../components/Button";
+// import Typography from "../components/Typography";
+// import IntroductionLayout from "./IntroductionLayout";
+// import { Link as RouterLink } from "react-router-dom";
+
+// const backgroundImages = [
+//   "/images/home/IMG_0325-1920w.avif",
+//   "/images/home/SlideShow/IMG-20241013-WA0016.avif",
+//   "/images/home/SlideShow/IMG-20241013-WA0022.avif",
+//   "/images/home/SlideShow/IMG-20241013-WA0040.avif",
+//   "/images/home/SlideShow/WhatsApp10_f9eff0d2.avif",
+// ];
+
+// export default function Introduction() {
+//   const [activeIndex, setActiveIndex] = useState(0);
+
+//   useEffect(() => {
+//     const timer = setInterval(() => {
+//       setActiveIndex((current) => (current + 1) % backgroundImages.length);
+//     }, 5000);
+//     return () => clearInterval(timer);
+//   }, []);
+
+//   return (
+//     <IntroductionLayout
+//       sxBackground={{
+//         backgroundColor: "#7fc7d9",
+//         backgroundPosition: "center",
+//         position: "relative",
+//       }}
+//     >
+//       {/* Slideshow below hero (lazy-load) */}
+//       <div style={{ position: "absolute", inset: 0, zIndex: -2 }}>
+//         {backgroundImages.map((image, index) => (
+//           <div
+//             key={image}
+//             style={{
+//               position: "absolute",
+//               inset: 0,
+//               backgroundImage: `url(${image})`,
+//               backgroundSize: "cover",
+//               backgroundPosition: "center",
+//               opacity: activeIndex === index ? 1 : 0,
+//               transition: "opacity 1.5s ease-in-out",
+//             }}
+//             aria-hidden={activeIndex !== index}
+//           />
+//         ))}
+
+//         {/* Overlay */}
+//         <div style={{ position: "absolute", inset: 0, backgroundColor: "rgba(0,0,0,0.3)" }} />
+//       </div>
+
+//       {/* Page content */}
+//       <Typography
+//         component="h1"
+//         align="center"
+//         sx={{
+//           fontFamily: "'Metal', serif",
+//           fontSize: { xs: "2rem", sm: "3rem" },
+//           fontWeight: 400,
+//           mb: 2,
+//           color: "#fff"
+//         }}
+//       >
+//         Luxury Eco Kabana in the Knuckles Mountains
+//       </Typography>
+
+//       <Typography component="p" align="center" sx={{ mb: 4, maxWidth: 720, mx: "auto", color: "#fff" }}>
+//         Vintage Villa is a secluded eco-friendly retreat near the Knuckles
+//         Mountain Range in Sri Lanka, offering breathtaking views, trekking
+//         access, organic cuisine, and complete privacy in nature.
+//       </Typography>
+
+//       <Button
+//         color="secondary"
+//         variant="contained"
+//         size="large"
+//         component={RouterLink}
+//         to="/reservations/"
+//         sx={{ minWidth: 220 }}
+//       >
+//         Check Availability
+//       </Button>
+
+//       <Typography variant="body2" color="inherit" sx={{ mt: 2 }}>
+//         Book direct for the best experience
+//       </Typography>
+//     </IntroductionLayout>
+//   );
+// }
+
+
+
+
+
+
+
+
+
 import * as React from "react";
 import { useState, useEffect } from "react";
 import Button from "../components/Button";
@@ -291,13 +393,21 @@ const backgroundImages = [
 
 export default function Introduction() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [showSlides, setShowSlides] = useState(false);
 
+  // Lazy-load slideshow after mount
   useEffect(() => {
+    setShowSlides(true);
+  }, []);
+
+  // Auto-rotate slides
+  useEffect(() => {
+    if (!showSlides) return;
     const timer = setInterval(() => {
       setActiveIndex((current) => (current + 1) % backgroundImages.length);
     }, 5000);
     return () => clearInterval(timer);
-  }, []);
+  }, [showSlides]);
 
   return (
     <IntroductionLayout
@@ -307,29 +417,35 @@ export default function Introduction() {
         position: "relative",
       }}
     >
-      {/* Slideshow below hero (lazy-load) */}
-      <div style={{ position: "absolute", inset: 0, zIndex: -2 }}>
-        {backgroundImages.map((image, index) => (
+      {/* Slideshow */}
+      {showSlides && (
+        <div style={{ position: "absolute", inset: 0, zIndex: -2 }}>
+          {backgroundImages.map((image, index) => (
+            <div
+              key={image}
+              style={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: `url(${image})`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                opacity: activeIndex === index ? 1 : 0,
+                transition: "opacity 1.5s ease-in-out",
+              }}
+              aria-hidden={activeIndex !== index}
+            />
+          ))}
           <div
-            key={image}
             style={{
               position: "absolute",
               inset: 0,
-              backgroundImage: `url(${image})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              opacity: activeIndex === index ? 1 : 0,
-              transition: "opacity 1.5s ease-in-out",
+              backgroundColor: "rgba(0,0,0,0.3)",
             }}
-            aria-hidden={activeIndex !== index}
           />
-        ))}
+        </div>
+      )}
 
-        {/* Overlay */}
-        <div style={{ position: "absolute", inset: 0, backgroundColor: "rgba(0,0,0,0.3)" }} />
-      </div>
-
-      {/* Page content */}
+      {/* Main content */}
       <Typography
         component="h1"
         align="center"
@@ -338,13 +454,16 @@ export default function Introduction() {
           fontSize: { xs: "2rem", sm: "3rem" },
           fontWeight: 400,
           mb: 2,
-          color: "#fff"
         }}
       >
         Luxury Eco Kabana in the Knuckles Mountains
       </Typography>
 
-      <Typography component="p" align="center" sx={{ mb: 4, maxWidth: 720, mx: "auto", color: "#fff" }}>
+      <Typography
+        component="p"
+        align="center"
+        sx={{ mb: 4, maxWidth: 720, mx: "auto" }}
+      >
         Vintage Villa is a secluded eco-friendly retreat near the Knuckles
         Mountain Range in Sri Lanka, offering breathtaking views, trekking
         access, organic cuisine, and complete privacy in nature.
