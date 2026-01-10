@@ -136,6 +136,144 @@
 
 
 
+// import * as React from "react";
+// import { useState, useEffect } from "react";
+// import Button from "../components/Button";
+// import Typography from "../components/Typography";
+// import IntroductionLayout from "./IntroductionLayout";
+// import { Link as RouterLink } from "react-router-dom";
+
+// const backgroundImages = [
+//   "/images/home/IMG_0325.avif", // LCP candidate
+//   "/images/home/SlideShow/IMG-20241013-WA0016.avif",
+//   "/images/home/SlideShow/IMG-20241013-WA0022.avif",
+//   "/images/home/SlideShow/IMG-20241013-WA0040.avif",
+//   "/images/home/SlideShow/WhatsApp10_f9eff0d2.avif",
+// ];
+
+// export default function Introduction() {
+//   const [activeIndex, setActiveIndex] = useState(0);
+
+//   useEffect(() => {
+//     const timer = setInterval(() => {
+//       setActiveIndex((current) => (current + 1) % backgroundImages.length);
+//     }, 5000);
+
+//     return () => clearInterval(timer);
+//   }, []);
+
+//   return (
+//     <IntroductionLayout
+//       sxBackground={{
+//         backgroundColor: "#7fc7d9",
+//         backgroundPosition: "center",
+//         position: "relative",
+//       }}
+      
+//     >
+//       {/* LCP image (correct) */}
+//       <img
+//         src={backgroundImages[0]}
+//         alt="Luxury eco kabana in the Knuckles Mountains at Vintage Villa"
+//         loading="eager"
+//         style={{
+//           position: "absolute",
+//           inset: 0,
+//           width: "100%",
+//           height: "100%",
+//           objectFit: "cover",
+//           zIndex: -3,
+//         }}
+//         {...({ fetchpriority: "high" } as any)}
+//       />
+
+//       {/* Slideshow */}
+//       <div
+//         style={{
+//           position: "absolute",
+//           inset: 0,
+//           zIndex: -2,
+//         }}
+//       >
+//         {backgroundImages.map((image, index) => (
+//           <div
+//             key={image}
+//             style={{
+//               position: "absolute",
+//               inset: 0,
+//               backgroundImage: `url(${image})`,
+//               backgroundSize: "cover",
+//               backgroundPosition: "center",
+//               opacity: activeIndex === index ? 1 : 0,
+//               transition: "opacity 1.5s ease-in-out",
+//             }}
+//             aria-hidden={activeIndex !== index}
+//           />
+//         ))}
+
+//         {/* Overlay */}
+//         <div
+//           style={{
+//             position: "absolute",
+//             inset: 0,
+//             backgroundColor: "rgba(0, 0, 0, 0.3)",
+//           }}
+//         />
+//       </div>
+
+//       {/* SEO CRITICAL CONTENT */}
+
+//       {/* H1 — must be unique and descriptive */}
+//       <Typography
+//         component="h1"
+//         // variant="h2"
+//         // color="inherit"
+//         align="center"
+//         sx={{
+//           fontFamily: "'Metal', serif",
+//           fontSize: { xs: "2rem", sm: "3rem" },
+//           fontWeight: 400,
+//           mb: 2,
+//         }}
+//       >
+//         Luxury Eco Kabana in the Knuckles Mountains
+//       </Typography>
+
+//       {/* Supporting copy */}
+//       <Typography
+//         component="p"
+//         align="center"
+//         sx={{ mb: 4, maxWidth: 720, mx: "auto" }}
+//       >
+//         Vintage Villa is a secluded eco-friendly retreat near the Knuckles
+//         Mountain Range in Sri Lanka, offering breathtaking views, trekking
+//         access, organic cuisine, and complete privacy in nature.
+//       </Typography>
+
+//       {/* CTA */}
+//       <Button
+//         color="secondary"
+//         variant="contained"
+//         size="large"
+//         component={RouterLink}
+//         to="/reservations/"
+//         sx={{ minWidth: 220 }}
+//       >
+//         Check Availability
+//       </Button>
+
+//       <Typography variant="body2" color="inherit" sx={{ mt: 2 }}>
+//         Book direct for the best experience
+//       </Typography>
+//     </IntroductionLayout>
+//   );
+// }
+
+
+
+
+
+
 import * as React from "react";
 import { useState, useEffect } from "react";
 import Button from "../components/Button";
@@ -144,7 +282,7 @@ import IntroductionLayout from "./IntroductionLayout";
 import { Link as RouterLink } from "react-router-dom";
 
 const backgroundImages = [
-  "/images/home/IMG_0325.avif", // LCP candidate
+  "/images/home/IMG_0325-1920w.avif",
   "/images/home/SlideShow/IMG-20241013-WA0016.avif",
   "/images/home/SlideShow/IMG-20241013-WA0022.avif",
   "/images/home/SlideShow/IMG-20241013-WA0040.avif",
@@ -158,7 +296,6 @@ export default function Introduction() {
     const timer = setInterval(() => {
       setActiveIndex((current) => (current + 1) % backgroundImages.length);
     }, 5000);
-
     return () => clearInterval(timer);
   }, []);
 
@@ -169,32 +306,9 @@ export default function Introduction() {
         backgroundPosition: "center",
         position: "relative",
       }}
-      
     >
-      {/* LCP image (correct) */}
-      <img
-        src={backgroundImages[0]}
-        alt="Luxury eco kabana in the Knuckles Mountains at Vintage Villa"
-        loading="eager"
-        style={{
-          position: "absolute",
-          inset: 0,
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          zIndex: -3,
-        }}
-        {...({ fetchpriority: "high" } as any)}
-      />
-
-      {/* Slideshow */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: -2,
-        }}
-      >
+      {/* Slideshow below hero (lazy-load) */}
+      <div style={{ position: "absolute", inset: 0, zIndex: -2 }}>
         {backgroundImages.map((image, index) => (
           <div
             key={image}
@@ -212,45 +326,30 @@ export default function Introduction() {
         ))}
 
         {/* Overlay */}
-        <div
-          style={{
-            position: "absolute",
-            inset: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.3)",
-          }}
-        />
+        <div style={{ position: "absolute", inset: 0, backgroundColor: "rgba(0,0,0,0.3)" }} />
       </div>
 
-      {/* SEO CRITICAL CONTENT */}
-
-      {/* H1 — must be unique and descriptive */}
+      {/* Page content */}
       <Typography
         component="h1"
-        // variant="h2"
-        // color="inherit"
         align="center"
         sx={{
           fontFamily: "'Metal', serif",
           fontSize: { xs: "2rem", sm: "3rem" },
           fontWeight: 400,
           mb: 2,
+          color: "#fff"
         }}
       >
         Luxury Eco Kabana in the Knuckles Mountains
       </Typography>
 
-      {/* Supporting copy */}
-      <Typography
-        component="p"
-        align="center"
-        sx={{ mb: 4, maxWidth: 720, mx: "auto" }}
-      >
+      <Typography component="p" align="center" sx={{ mb: 4, maxWidth: 720, mx: "auto", color: "#fff" }}>
         Vintage Villa is a secluded eco-friendly retreat near the Knuckles
         Mountain Range in Sri Lanka, offering breathtaking views, trekking
         access, organic cuisine, and complete privacy in nature.
       </Typography>
 
-      {/* CTA */}
       <Button
         color="secondary"
         variant="contained"

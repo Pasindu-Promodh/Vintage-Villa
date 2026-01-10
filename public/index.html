@@ -1,175 +1,56 @@
 <!DOCTYPE html>
-<html lang="en" component="main">
+<html lang="en">
   <head>
-    <!-- Basic -->
     <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <!-- Title -->
     <title>Vintage Villa – Luxury Eco Kabana in Knuckles | Book Direct</title>
 
     <!-- SEO -->
-    <meta
-      name="description"
-      content="Escape to Vintage Villa, a luxury eco kabana in the Knuckles Mountains, Sri Lanka. Stunning views, trekking access, organic food. Book direct for best rates."
-    />
-    <meta name="robots" content="index, follow" />
+    <meta name="description" content="Escape to Vintage Villa, a luxury eco kabana in the Knuckles Mountains, Sri Lanka. Stunning views, trekking access, organic food. Book direct for best rates." />
     <link rel="canonical" href="https://vintagevilla.lk/" />
-    <meta name="author" content="Vintage Villa" />
+    <meta name="robots" content="index, follow" />
 
-    <!-- Theme -->
-    <meta name="theme-color" content="#1b5e20" />
+    <!-- Preload fonts -->
+    <link rel="preload" href="/fonts/work-sans/WorkSans-Light.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/work-sans/WorkSans-Regular.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/work-sans/WorkSans-SemiBold.woff2" as="font" type="font/woff2" crossorigin>
 
-    <!-- Open Graph -->
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://vintagevilla.lk/" />
-    <meta property="og:title" content="Vintage Villa – Luxury Eco Kabana in Knuckles" />
-    <meta
-      property="og:description"
-      content="Luxury eco-friendly kabana in the Knuckles Mountains. Nature, trekking, privacy, and comfort."
-    />
-    <meta property="og:image" content="https://vintagevilla.lk/og-image.webp" />
-
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Vintage Villa – Luxury Eco Kabana in Knuckles" />
-    <meta
-      name="twitter:description"
-      content="Luxury eco-friendly kabana in the Knuckles Mountains. Nature, trekking, privacy, and comfort."
-    />
-    <meta name="twitter:image" content="https://vintagevilla.lk/og-image.webp" />
-
-    <!-- Schema -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "LodgingBusiness",
-        "name": "Vintage Villa",
-        "url": "https://vintagevilla.lk",
-        "image": "https://vintagevilla.lk/og-image.webp",
-        "description": "Luxury eco-friendly kabana in the Knuckles Mountains, Sri Lanka.",
-        "telephone": "+94-774-010-635",
-        "priceRange": "$$$",
-        "address": {
-          "@type": "PostalAddress",
-          "streetAddress": "Thangappuwa Rd, Rangala",
-          "addressLocality": "Kandy",
-          "addressRegion": "Central Province",
-          "postalCode": "20922",
-          "addressCountry": "LK"
-        },
-        "geo": {
-          "@type": "GeoCoordinates",
-          "latitude": 7.34952,
-          "longitude": 80.82028
-        },
-        "checkinTime": "14:00",
-        "checkoutTime": "11:00"
-      }
-    </script>
-
-    <!-- Icons -->
-    <link rel="icon" href="/favicon.ico" />
-    <link rel="apple-touch-icon" href="/logo192.png" />
-    <link rel="manifest" href="/manifest.json" />
-
-    <!-- Preload fonts (same-origin, fast) -->
-    <link
-      rel="preload"
-      href="/fonts/work-sans/WorkSans-Light.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="/fonts/work-sans/WorkSans-Regular.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-    <link
-      rel="preload"
-      href="/fonts/work-sans/WorkSans-SemiBold.woff2"
-      as="font"
-      type="font/woff2"
-      crossorigin
-    />
-
-    <!-- LCP image preload -->
-    <link
-      rel="preload"
-      as="image"
-      href="/images/home/IMG_0325.avif"
-      fetchpriority="high"
-    />
+    <!-- Preload hero image -->
+    <link rel="preload" href="/images/home/IMG_0325-1335w.avif" as="image" fetchpriority="high">
 
     <!-- Critical CSS -->
     <style>
-      @font-face {
-        font-family: "Work Sans";
-        src: url("/fonts/work-sans/WorkSans-Light.woff2") format("woff2");
-        font-weight: 300;
-        font-display: swap;
-      }
-
-      @font-face {
-        font-family: "Work Sans";
-        src: url("/fonts/work-sans/WorkSans-Regular.woff2") format("woff2");
-        font-weight: 400;
-        font-display: swap;
-      }
-
-      @font-face {
-        font-family: "Work Sans";
-        src: url("/fonts/work-sans/WorkSans-SemiBold.woff2") format("woff2");
-        font-weight: 600;
-        font-display: swap;
-      }
-
-      html,
-      body {
-        margin: 0;
-        padding: 0;
-        height: 100%;
-        font-family: "Work Sans", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      }
-
-      .hero-bg {
-        position: fixed;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        z-index: -1;
-        opacity: 0;
-      }
+      html, body { margin:0; padding:0; height:100%; font-family: 'Work Sans', system-ui, sans-serif; }
+      .hero-bg { position: fixed; inset:0; width:100%; height:100%; object-fit:cover; z-index:-1;opacity: 0; }
     </style>
   </head>
 
   <body>
-    <!-- LCP element outside React -->
-    <img
-      src="/images/home/IMG_0325.avif"
+    <!-- Hero / LCP image -->
+    <img 
+      src="/images/home/IMG_0325-1335w.avif"
+      srcset="/images/home/IMG_0325-800w.avif 800w,
+              /images/home/IMG_0325-1335w.avif 1335w,
+              /images/home/IMG_0325-1920w.avif 1920w"
+      sizes="(max-width:768px) 800px, 1335px"
       alt="Luxury eco kabana in the Knuckles Mountains at Vintage Villa"
       class="hero-bg"
-      width="1920"
-      height="1080"
       fetchpriority="high"
       decoding="async"
+      loading="eager"
     />
 
-    <noscript>This website requires JavaScript to display content.</noscript>
-    <div id="root"></div>
+    <main id="root"></main>
 
-    <!-- Google Analytics (deferred) -->
+    <noscript>This website requires JavaScript to display content.</noscript>
+
+    <!-- Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZQW2YJWW91"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
-      function gtag() { dataLayer.push(arguments); }
-      gtag("js", new Date());
-      gtag("config", "G-ZQW2YJWW91");
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config','G-ZQW2YJWW91');
     </script>
   </body>
 </html>
