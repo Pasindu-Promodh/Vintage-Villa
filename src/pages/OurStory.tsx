@@ -11,7 +11,7 @@ import { styled } from "@mui/system";
 const images = [
   "/images/ourstory/WhatsApp Image 2024-11-15 at 11.42.45_e26825f1.avif",
   "/images/ourstory/IMG-20241013-WA0021.avif",
-  "/images/home/IMG_0325.avif",
+  "/images/home/IMG_0325-800w.avif",
 ];
 
 // Styled Components for visual enhancement

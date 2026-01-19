@@ -10,6 +10,7 @@ import {
   Checkbox,
   Button,
   CircularProgress,
+  Box,
 } from "@mui/material";
 import { LocalizationProvider, DateRangePicker } from "@mui/x-date-pickers-pro";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -75,7 +76,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
         const confirmedBookingsQuery = query(
           bookingsCollection,
           where("roomId", "==", selectedRoom.id),
-          where("status", "==", "confirmed")
+          where("status", "==", "confirmed"),
         );
         const bookingsSnapshot = await getDocs(confirmedBookingsQuery);
 
@@ -83,7 +84,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
           (doc) => ({
             id: doc.id,
             ...doc.data(),
-          })
+          }),
         ) as unknown as Booking[];
 
         setUnavailableDateRanges(datesList);
@@ -151,10 +152,14 @@ const BookingModal: React.FC<BookingModalProps> = ({
 
   const handleHeadCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
+    if (value < 1) {
+      setHeadCount(1);
+      return;
+    }
     if (value > selectedRoom.capacity) {
       enqueueSnackbar(
         `Maximum ${selectedRoom.capacity} people allowed per room.`,
-        { variant: "warning" }
+        { variant: "warning" },
       );
     } else {
       setHeadCount(value);
@@ -166,7 +171,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
     if (!checkInDate || !checkOutDate) return 0;
 
     const days = Math.ceil(
-      (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24)
+      (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24),
     );
 
     if (days <= 1) return 0;
@@ -181,7 +186,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
     if (!checkInDate || !checkOutDate) return 0;
 
     const days = Math.ceil(
-      (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24)
+      (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24),
     );
 
     const dailyRoomCost =
@@ -272,7 +277,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
       // Open WhatsApp in new tab
       window.open(
         `https://wa.me/+94774010635?text=${encodeURIComponent(message)}`,
-        "_blank"
+        "_blank",
       );
 
       enqueueSnackbar("Booking confirmed! Check your WhatsApp for details.", {
@@ -325,7 +330,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
         />
         <TextField
           label="Phone Number"
-          type="tel"
+          type="number"
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           fullWidth
@@ -349,46 +354,15 @@ const BookingModal: React.FC<BookingModalProps> = ({
 
         {/* Date Range Picker */}
         <LocalizationProvider dateAdapter={AdapterDateFns}>
-          {/* <DateRangePicker
-              value={dateRange}
-              onChange={handleDateRangeChange}
-              disablePast
-              shouldDisableDate={isDateUnavailable}
-              inputFormat="dd/MM/yyyy"
-              renderInput={(startProps, endProps) => (
-                <>
-                  <TextField
-                    {...startProps}
-                    fullWidth
-                    margin="dense"
-                    label="Check-in Date"
-                    helperText={
-                      startProps.helperText || "Unavailable dates are disabled"
-                    }
-                  />
-                  <TextField
-                    {...endProps}
-                    fullWidth
-                    margin="dense"
-                    label="Check-out Date"
-                    helperText={
-                      startProps.helperText || "Unavailable dates are disabled"
-                    }
-                  />
-                </>
-              )}
-            /> */}
-
           <DateRangePicker
             value={dateRange}
             onChange={handleDateRangeChange}
             disablePast
             shouldDisableDate={isDateUnavailable}
             inputFormat="dd/MM/yyyy"
-            
             className="custom-date-picker" // Add a custom class
             renderInput={(startProps, endProps) => (
-              <>
+              <Box sx={{ display: "flex", justifyContent:'space-between', gap: 2, width:'100%' }}>
                 <TextField
                   {...startProps}
                   fullWidth
@@ -407,7 +381,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
                     startProps.helperText || "Unavailable dates are disabled"
                   }
                 />
-              </>
+              </Box>
             )}
           />
         </LocalizationProvider>

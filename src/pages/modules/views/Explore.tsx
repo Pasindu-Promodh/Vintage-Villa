@@ -57,7 +57,7 @@ const ImageIconButton = styled(ButtonBase)(({ theme }) => ({
 
 const images = [
   {
-    url: "./images/home/IMG_0325.avif",
+    url: "./images/home/IMG_0325-800w.avif",
     title: "Hiking",
     width: "40%",
   },
