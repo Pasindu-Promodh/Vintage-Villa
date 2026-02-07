@@ -95,7 +95,7 @@ const faqs = [
   {
     question: "What payment methods do you accept?",
     answer:
-      "We accept all major credit cards, debit cards, and cash payments. Payment is required at check-in or before departure.",
+      "We accept cash payments and bank transfers only. Payment must be completed at check-in or before departure.",
   },
   {
     question: "Can I modify or cancel my reservation?",
@@ -105,7 +105,7 @@ const faqs = [
   {
     question: "Is there are parking near the villa?",
     answer:
-      "Yes, there is a private parking free of charge and we are providing jeep to near villa, then ou have to walk 700m to villa (Thangappuwa Heel-Oya trail).",
+      "Yes, there is a private parking free of charge and we are providing jeep to near villa, then you have to walk 350m to villa (Thangappuwa Heel-Oya trail).",
   },
 ];
 
