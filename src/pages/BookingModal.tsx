@@ -41,7 +41,9 @@ const BookingModal: React.FC<BookingModalProps> = ({
   selectedRoom,
   pricing,
 }) => {
-  const [headCount, setHeadCount] = useState(1);
+  // const [headCount, setHeadCount] = useState(1);
+  const [headCount, setHeadCount] = useState<number | "">(1);
+
   const [dateRange, setDateRange] = useState<[Date | null, Date | null]>([
     null,
     null,
@@ -150,7 +152,13 @@ const BookingModal: React.FC<BookingModalProps> = ({
     setDateRange(newValue);
   };
 
-  const handleHeadCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleHeadCountChange2 = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+
+    setHeadCount(value);
+  };
+
+  const handleHeadCountChange1 = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = Number(e.target.value);
     if (value < 1) {
       setHeadCount(1);
@@ -166,9 +174,42 @@ const BookingModal: React.FC<BookingModalProps> = ({
     }
   };
 
+  const handleHeadCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+
+    // Allow clearing the field (for backspace)
+    if (value === "") {
+      setHeadCount("");
+      return;
+    }
+
+    const num = Number(value);
+
+    // Ignore non-numbers
+    if (Number.isNaN(num)) return;
+
+    // Hard limits
+    if (num < 1) {
+      setHeadCount(1);
+      return;
+    }
+
+    if (num > selectedRoom.capacity) {
+      enqueueSnackbar(`Maximum ${selectedRoom.capacity} people allowed.`, {
+        variant: "warning",
+      });
+      setHeadCount(selectedRoom.capacity);
+      return;
+    }
+
+    setHeadCount(num);
+  };
+
   const calculateDiscount = () => {
     const [checkInDate, checkOutDate] = dateRange;
     if (!checkInDate || !checkOutDate) return 0;
+
+    if (headCount === "") return 0;
 
     const days = Math.ceil(
       (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24),
@@ -184,6 +225,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
   const calculatePrice = () => {
     const [checkInDate, checkOutDate] = dateRange;
     if (!checkInDate || !checkOutDate) return 0;
+    if (headCount === "") return 0;
 
     const days = Math.ceil(
       (checkOutDate.getTime() - checkInDate.getTime()) / (1000 * 60 * 60 * 24),
@@ -362,7 +404,14 @@ const BookingModal: React.FC<BookingModalProps> = ({
             inputFormat="dd/MM/yyyy"
             className="custom-date-picker" // Add a custom class
             renderInput={(startProps, endProps) => (
-              <Box sx={{ display: "flex", justifyContent:'space-between', gap: 2, width:'100%' }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 2,
+                  width: "100%",
+                }}
+              >
                 <TextField
                   {...startProps}
                   fullWidth
@@ -388,9 +437,10 @@ const BookingModal: React.FC<BookingModalProps> = ({
 
         {/* Head Count */}
         <TextField
-          label="Head Count"
+          label={`Head Count (must be between 1 and ${selectedRoom.capacity})`}
           type="number"
-          InputProps={{ inputProps: { min: 1, max: selectedRoom.capacity } }}
+          // InputProps={{ inputProps: { min: 1, max: selectedRoom.capacity } }}
+          inputProps={{ min: 1, max: selectedRoom.capacity }}
           value={headCount}
           onChange={handleHeadCountChange}
           fullWidth

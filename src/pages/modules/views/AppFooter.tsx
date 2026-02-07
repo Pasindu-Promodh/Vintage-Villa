@@ -80,7 +80,7 @@ export default function AppFooter() {
             <Box sx={{ display: "flex", mt: 2 }}>
               {[
                 { 
-                  href: "https://www.facebook.com/", 
+                  href: "https://www.facebook.com/profile.php?id=61552415547270", 
                   src: "https://img.icons8.com/?size=48&id=85024&format=png&color=28282a", 
                   alt: "Facebook" 
                 },
