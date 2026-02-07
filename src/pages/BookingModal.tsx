@@ -152,28 +152,6 @@ const BookingModal: React.FC<BookingModalProps> = ({
     setDateRange(newValue);
   };
 
-  const handleHeadCountChange2 = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
-
-    setHeadCount(value);
-  };
-
-  const handleHeadCountChange1 = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
-    if (value < 1) {
-      setHeadCount(1);
-      return;
-    }
-    if (value > selectedRoom.capacity) {
-      enqueueSnackbar(
-        `Maximum ${selectedRoom.capacity} people allowed per room.`,
-        { variant: "warning" },
-      );
-    } else {
-      setHeadCount(value);
-    }
-  };
-
   const handleHeadCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
 
