@@ -29,7 +29,7 @@ import {
   BookingModalProps,
   UnavailableDates,
 } from "./modules/components/Types";
-import { addDays, isWithinInterval, parseISO, eachDayOfInterval, isSameDay } from "date-fns";
+import { addDays, isWithinInterval, parseISO, eachDayOfInterval, isSameDay, isBefore, startOfDay, differenceInCalendarDays } from "date-fns";
 import { MuiTelInput, matchIsValidTel } from "mui-tel-input";
 import { DateRange, RangeKeyDict } from "react-date-range";
 import "react-date-range/dist/styles.css";
@@ -413,19 +413,35 @@ const BookingModal: React.FC<BookingModalProps> = ({
         <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
           Select your booking dates:
         </Typography>
-        <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 1 }}>
-          <Box
-            component="span"
-            sx={{
-              display: "inline-block",
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              backgroundColor: "#c62828",
-              mr: 0.5,
-            }}
-          />
-          Dates marked in red are already booked or unavailable
+        <Typography variant="caption" color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 2, mb: 1 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <Box
+              component="span"
+              sx={{
+                display: "inline-block",
+                width: 10,
+                height: 10,
+                borderRadius: "50%",
+                backgroundColor: "#fdecea",
+                border: "1px solid #c62828",
+              }}
+            />
+            Booked / unavailable
+          </Box>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+            <Box
+              component="span"
+              sx={{
+                display: "inline-block",
+                width: 10,
+                height: 10,
+                borderRadius: "50%",
+                backgroundColor: "#eeeeee",
+                border: "1px solid #9e9e9e",
+              }}
+            />
+            Past date
+          </Box>
         </Typography>
 
         {/* Date Range Calendar */}
@@ -462,14 +478,6 @@ const BookingModal: React.FC<BookingModalProps> = ({
                 width: "100%",
               },
             }),
-            // Recolor "unavailable" days from the default grey to a red
-            // tint that matches the booked-date dot marker below.
-            "& .rdrDayDisabled": {
-              backgroundColor: "#fdecea",
-            },
-            "& .rdrDayDisabled .rdrDayNumber span": {
-              color: "#c62828",
-            },
           }}
         >
           <DateRange
@@ -480,32 +488,57 @@ const BookingModal: React.FC<BookingModalProps> = ({
             moveRangeOnFirstSelection={false}
             months={isMobile ? 1 : 2}
             direction={isMobile ? "vertical" : "horizontal"}
-            rangeColors={[theme.palette.primary.main]}
+            rangeColors={["#99ff96"]}
             showDateDisplay
             dayContentRenderer={(date) => {
               const isBooked = disabledDates.some((d) => isSameDay(d, date));
+              const isPast = isBefore(date, startOfDay(new Date()));
+
+              let backgroundColor: string | undefined;
+              let color: string | undefined;
+
+              if (isBooked) {
+                backgroundColor = "#ffa196";
+                color = "#c62828";
+              } else if (isPast) {
+                backgroundColor = "#eeeeee";
+                color = "#9e9e9e";
+              }
+
               return (
-                <div style={{ position: "relative" }}>
+                <div
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    borderRadius: 4,
+                    backgroundColor,
+                    color,
+                  }}
+                >
                   {date.getDate()}
-                  {isBooked && (
-                    <span
-                      style={{
-                        position: "absolute",
-                        bottom: 2,
-                        left: "50%",
-                        transform: "translateX(-50%)",
-                        width: 4,
-                        height: 4,
-                        borderRadius: "50%",
-                        backgroundColor: "#c62828",
-                      }}
-                    />
-                  )}
                 </div>
               );
             }}
           />
         </Box>
+
+        {dateRange[0] && dateRange[1] && (
+          <Typography
+            variant="body2"
+            sx={{ mt: 1, mb: 1, fontWeight: 500, textAlign: "center" }}
+          >
+            {(() => {
+              const nights = differenceInCalendarDays(
+                dateRange[1],
+                dateRange[0]
+              );
+              return `${nights} night${nights !== 1 ? "s" : ""} selected`;
+            })()}
+          </Typography>
+        )}
 
         {/* Head Count */}
         <TextField
