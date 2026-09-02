@@ -367,8 +367,8 @@ const BookingModal: React.FC<BookingModalProps> = ({
       maxWidth="md"
       fullScreen={isMobile}
     >
-      <DialogTitle>Book {selectedRoom?.title || "Room"}</DialogTitle>
-      <DialogContent sx={{ px: isMobile ? 1.5 : 3 }}>
+      <DialogTitle sx={{ px: isMobile ? 2 : 3 }}>Book {selectedRoom?.title || "Room"}</DialogTitle>
+      <DialogContent sx={{ px: isMobile ? 2 : 3 }}>
         {/* Customer Information */}
         <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
           Your Information:
