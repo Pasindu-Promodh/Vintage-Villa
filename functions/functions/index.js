@@ -1,5 +1,6 @@
 import { onRequest } from "firebase-functions/v2/https";
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
+import { defineSecret } from "firebase-functions/params";
 import admin from "firebase-admin";
 import nodemailer from "nodemailer";
 import corsLib from "cors";
@@ -9,8 +10,17 @@ import { FieldValue } from "firebase-admin/firestore";
 admin.initializeApp();
 const cors = corsLib({ origin: true });
 
-const ADMIN_EMAIL = "pasindugunathilaka96@gmail.com";
-const ADMIN_PASSWORD = "nxre hvfp eaab alsi";
+// Secrets - set these once with:
+//   firebase functions:secrets:set ADMIN_EMAIL
+//   firebase functions:secrets:set ADMIN_PASSWORD
+//   firebase functions:secrets:set CALLMEBOT_PHONE
+//   firebase functions:secrets:set CALLMEBOT_APIKEY
+// Never hardcode credentials directly in this file.
+const adminEmailSecret = defineSecret("ADMIN_EMAIL");
+const adminPasswordSecret = defineSecret("ADMIN_PASSWORD");
+const callmebotPhoneSecret = defineSecret("CALLMEBOT_PHONE");
+const callmebotApikeySecret = defineSecret("CALLMEBOT_APIKEY");
+
 const HOTEL_NAME = "Vintage Villa";
 
 // Enhanced error logging utility
@@ -37,12 +47,11 @@ const logError = async (functionName, error, context = {}) => {
   }
 };
 
-// Get email credentials from environment variables
+// Get email credentials from Firebase secrets (set via `firebase functions:secrets:set`)
 const getEmailTransporter = () => {
   try {
-    // Get credentials from config variables
-    const emailUser = ADMIN_EMAIL;
-    const emailPassword = ADMIN_PASSWORD;
+    const emailUser = adminEmailSecret.value();
+    const emailPassword = adminPasswordSecret.value();
 
     console.log(
       "Email credentials check:",
@@ -52,7 +61,7 @@ const getEmailTransporter = () => {
 
     if (!emailUser || !emailPassword) {
       throw new Error(
-        "Missing email credentials - make sure EMAIL_USER and EMAIL_PASSWORD are set"
+        "Missing email credentials - make sure the ADMIN_EMAIL and ADMIN_PASSWORD secrets are set"
       );
     }
 
@@ -62,8 +71,8 @@ const getEmailTransporter = () => {
       port: 465,
       secure: true,
       auth: {
-        user: ADMIN_EMAIL,
-        pass: ADMIN_PASSWORD,
+        user: emailUser,
+        pass: emailPassword,
       },
     });
   } catch (error) {
@@ -73,8 +82,71 @@ const getEmailTransporter = () => {
   }
 };
 
+// Send a WhatsApp notification to the villa owner via CallMeBot
+// (https://www.callmebot.com/blog/free-api-whatsapp-messages/)
+const sendWhatsAppNotification = async (booking) => {
+  const functionName = "sendWhatsAppNotification";
+  try {
+    const phone = callmebotPhoneSecret.value();
+    const apikey = callmebotApikeySecret.value();
+
+    if (!phone || !apikey) {
+      throw new Error(
+        "Missing CallMeBot config - make sure the CALLMEBOT_PHONE and CALLMEBOT_APIKEY secrets are set"
+      );
+    }
+
+    const checkIn = new Date(booking.checkInDate).toLocaleDateString();
+    const checkOut = new Date(booking.checkOutDate).toLocaleDateString();
+
+    const meals = [];
+    if (booking.mealOptions?.breakfast) meals.push("Breakfast");
+    if (booking.mealOptions?.lunch) meals.push("Lunch");
+    if (booking.mealOptions?.dinner) meals.push("Dinner");
+    const mealsText = meals.length > 0 ? meals.join(", ") : "None";
+
+    const message =
+      `*New Booking - ${HOTEL_NAME}*\n` +
+      `Booking ID: ${booking.id}\n` +
+      `Room: ${booking.roomTitle}\n` +
+      `Check-in: ${checkIn}\n` +
+      `Check-out: ${checkOut}\n` +
+      `Guests: ${booking.headCount}\n` +
+      `Meals: ${mealsText}\n` +
+      `Customer: ${booking.customerName}\n` +
+      `Phone: ${booking.customerPhone}\n` +
+      `Email: ${booking.customerEmail || "Not provided"}\n` +
+      `Discount: $${(booking.discount || 0).toFixed(2)}\n` +
+      `Total: $${(booking.totalPrice || 0).toFixed(2)}`;
+
+    const url = `https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(
+      phone
+    )}&text=${encodeURIComponent(message)}&apikey=${encodeURIComponent(
+      apikey
+    )}`;
+
+    const response = await fetch(url);
+    const responseText = await response.text();
+
+    if (!response.ok) {
+      throw new Error(
+        `CallMeBot request failed with status ${response.status}: ${responseText}`
+      );
+    }
+
+    console.log("WhatsApp notification sent:", responseText);
+    return true;
+  } catch (error) {
+    await logError(functionName, error, { bookingId: booking.id });
+    console.error(`Failed to send WhatsApp notification: ${error.message}`);
+    return false;
+  }
+};
+
 // HTTP Function for Sending Booking Emails
-export const sendBookingEmails = onRequest(async (req, res) => {
+export const sendBookingEmails = onRequest(
+  { secrets: [adminEmailSecret, adminPasswordSecret] },
+  async (req, res) => {
   return cors(req, res, async () => {
     const functionName = "sendBookingEmails";
 
@@ -350,11 +422,15 @@ export const sendBookingEmails = onRequest(async (req, res) => {
       });
     }
   });
-});
+  }
+);
 
 // Firestore Trigger for New Bookings
 export const onNewBooking = onDocumentCreated(
-  "bookings/{bookingId}",
+  {
+    document: "bookings/{bookingId}",
+    secrets: [callmebotPhoneSecret, callmebotApikeySecret],
+  },
   async (event) => {
     const functionName = "onNewBooking";
 
@@ -370,7 +446,8 @@ export const onNewBooking = onDocumentCreated(
       const booking = { id: event.params.bookingId, ...snapshot.data() };
       console.log(`New booking created with ID: ${booking.id}`);
 
-      // Additional processing can be done here
+      // Automatically notify the villa owner on WhatsApp - no manual step needed
+      await sendWhatsAppNotification(booking);
     } catch (error) {
       const context = {
         eventId: event.id,
@@ -385,7 +462,9 @@ export const onNewBooking = onDocumentCreated(
 );
 
 // HTTP Function for Sending Status Change Emails
-export const sendStatusChangeEmail = onRequest(async (req, res) => {
+export const sendStatusChangeEmail = onRequest(
+  { secrets: [adminEmailSecret, adminPasswordSecret] },
+  async (req, res) => {
   return cors(req, res, async () => {
     const functionName = "sendStatusChangeEmail";
 
@@ -538,4 +617,5 @@ export const sendStatusChangeEmail = onRequest(async (req, res) => {
       });
     }
   });
-});
+  }
+);

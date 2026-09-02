@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -11,9 +11,9 @@ import {
   Button,
   CircularProgress,
   Box,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
-import { LocalizationProvider, DateRangePicker } from "@mui/x-date-pickers-pro";
-import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import {
   collection,
   addDoc,
@@ -29,7 +29,11 @@ import {
   BookingModalProps,
   UnavailableDates,
 } from "./modules/components/Types";
-import { addDays, isWithinInterval, parseISO } from "date-fns";
+import { addDays, isWithinInterval, parseISO, eachDayOfInterval, isSameDay } from "date-fns";
+import { MuiTelInput, matchIsValidTel } from "mui-tel-input";
+import { DateRange, RangeKeyDict } from "react-date-range";
+import "react-date-range/dist/styles.css";
+import "react-date-range/dist/theme/default.css";
 import "../App.css";
 
 // import { httpsCallable } from "firebase/functions";
@@ -56,11 +60,15 @@ const BookingModal: React.FC<BookingModalProps> = ({
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [phoneError, setPhoneError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [unavailableDateRanges, setUnavailableDateRanges] = useState<
     UnavailableDates[]
   >([]);
   const [confirmedBookings, setConfirmedBookings] = useState<Booking[]>([]);
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   useEffect(() => {
     const fetchUnavailableDates = async () => {
@@ -137,6 +145,26 @@ const BookingModal: React.FC<BookingModalProps> = ({
     return true;
   };
 
+  // Flat list of individual booked/unavailable dates, for the calendar to
+  // grey out and mark visually.
+  const disabledDates = useMemo(() => {
+    const dates: Date[] = [];
+
+    unavailableDateRanges.forEach((range) => {
+      const start = parseISO(range.startDate);
+      const end = parseISO(range.endDate);
+      dates.push(...eachDayOfInterval({ start, end }));
+    });
+
+    confirmedBookings.forEach((booking) => {
+      const start = parseISO(booking.checkInDate);
+      const end = parseISO(booking.checkOutDate);
+      dates.push(...eachDayOfInterval({ start, end }));
+    });
+
+    return dates;
+  }, [unavailableDateRanges, confirmedBookings]);
+
   // Handle date range change with validation
   const handleDateRangeChange = (newValue: [Date | null, Date | null]) => {
     const [start, end] = newValue;
@@ -150,6 +178,18 @@ const BookingModal: React.FC<BookingModalProps> = ({
     }
 
     setDateRange(newValue);
+  };
+
+  // Adapts react-date-range's selection object into our [start, end] tuple
+  const handleCalendarRangeChange = (ranges: RangeKeyDict) => {
+    const { startDate, endDate } = ranges.selection;
+    handleDateRangeChange([startDate ?? null, endDate ?? null]);
+  };
+
+  const calendarSelectionRange = {
+    startDate: dateRange[0] ?? new Date(),
+    endDate: dateRange[1] ?? dateRange[0] ?? new Date(),
+    key: "selection",
   };
 
   const handleHeadCountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -231,6 +271,14 @@ const BookingModal: React.FC<BookingModalProps> = ({
       return;
     }
 
+    if (!matchIsValidTel(phone)) {
+      setPhoneError(true);
+      enqueueSnackbar("Please enter a valid phone number", {
+        variant: "error",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -275,32 +323,11 @@ const BookingModal: React.FC<BookingModalProps> = ({
       //   }
       // });
 
-      // Prepare WhatsApp message
-      const message = `
-        *Booking Confirmation*:
-        Booking ID: ${bookingId}
-        Room: ${selectedRoom.title}
-        Check-in: ${checkInDate.toLocaleDateString()}
-        Check-out: ${checkOutDate.toLocaleDateString()}
-        Head Count: ${headCount}
-        Customer: ${name}
-        Phone: ${phone}
-        Email: ${email || "Not provided"}
-        Meals: 
-          - Breakfast: ${mealOptions.breakfast ? "Yes" : "No"}
-          - Lunch: ${mealOptions.lunch ? "Yes" : "No"}
-          - Dinner: ${mealOptions.dinner ? "Yes" : "No"}
-        Discount: $${calculateDiscount().toFixed(2)}
-        Total Price: $${calculatePrice().toFixed(2)}
-      `;
+      // WhatsApp notification is now sent automatically in the background
+      // by the onNewBooking Cloud Function as soon as this document is
+      // created in Firestore — no action needed from the customer.
 
-      // Open WhatsApp in new tab
-      window.open(
-        `https://wa.me/+94774010635?text=${encodeURIComponent(message)}`,
-        "_blank",
-      );
-
-      enqueueSnackbar("Booking confirmed! Check your WhatsApp for details.", {
+      enqueueSnackbar("Booking confirmed! We'll be in touch shortly.", {
         variant: "success",
       });
 
@@ -330,12 +357,19 @@ const BookingModal: React.FC<BookingModalProps> = ({
     setEmail("");
     setName("");
     setPhone("");
+    setPhoneError(false);
   };
 
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
+    <Dialog
+      open={open}
+      onClose={handleClose}
+      fullWidth
+      maxWidth="md"
+      fullScreen={isMobile}
+    >
       <DialogTitle>Book {selectedRoom?.title || "Room"}</DialogTitle>
-      <DialogContent>
+      <DialogContent sx={{ px: isMobile ? 2 : 3 }}>
         {/* Customer Information */}
         <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
           Your Information:
@@ -348,15 +382,24 @@ const BookingModal: React.FC<BookingModalProps> = ({
           margin="dense"
           required
         />
-        <TextField
+        <MuiTelInput
           label="Phone Number"
-          type="number"
           value={phone}
-          onChange={(e) => setPhone(e.target.value)}
+          onChange={(newValue) => {
+            setPhone(newValue);
+            setPhoneError(newValue !== "" && !matchIsValidTel(newValue));
+          }}
+          defaultCountry="LK"
+          forceCallingCode
           fullWidth
           margin="dense"
           required
-          helperText="Required for booking confirmation"
+          error={phoneError}
+          helperText={
+            phoneError
+              ? "Enter a valid phone number for the selected country"
+              : "Required for booking confirmation"
+          }
         />
         <TextField
           label="Email Address"
@@ -371,47 +414,99 @@ const BookingModal: React.FC<BookingModalProps> = ({
         <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
           Select your booking dates:
         </Typography>
-
-        {/* Date Range Picker */}
-        <LocalizationProvider dateAdapter={AdapterDateFns}>
-          <DateRangePicker
-            value={dateRange}
-            onChange={handleDateRangeChange}
-            disablePast
-            shouldDisableDate={isDateUnavailable}
-            inputFormat="dd/MM/yyyy"
-            className="custom-date-picker" // Add a custom class
-            renderInput={(startProps, endProps) => (
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  gap: 2,
-                  width: "100%",
-                }}
-              >
-                <TextField
-                  {...startProps}
-                  fullWidth
-                  margin="dense"
-                  label="Check-in Date"
-                  helperText={
-                    startProps.helperText || "Unavailable dates are disabled"
-                  }
-                />
-                <TextField
-                  {...endProps}
-                  fullWidth
-                  margin="dense"
-                  label="Check-out Date"
-                  helperText={
-                    startProps.helperText || "Unavailable dates are disabled"
-                  }
-                />
-              </Box>
-            )}
+        <Typography variant="caption" color="text.secondary" sx={{ display: "block", mb: 1 }}>
+          <Box
+            component="span"
+            sx={{
+              display: "inline-block",
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              backgroundColor: "#c62828",
+              mr: 0.5,
+            }}
           />
-        </LocalizationProvider>
+          Dates marked in red are already booked or unavailable
+        </Typography>
+
+        {/* Date Range Calendar */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
+            overflowX: "hidden",
+            "& .rdrCalendarWrapper": {
+              fontSize: 14,
+              maxWidth: "100%",
+              ...(isMobile && { width: "100%" }),
+            },
+            "& .rdrMonths": {
+              flexWrap: "wrap",
+              justifyContent: "center",
+              ...(isMobile && { width: "100%" }),
+            },
+            // react-date-range hardcodes each month to a fixed em width.
+            // On mobile that's wider than the screen and crops the last
+            // column (Saturday), so force it to shrink to fit there - the
+            // day cells inside are percentage-based, so they scale down
+            // cleanly with it. On desktop, leave the library's own sizing
+            // alone so the two months keep sitting side by side as before.
+            "& .rdrMonth": isMobile
+              ? {
+                  width: "100%",
+                  padding: "0 0.5em 1em 0.5em",
+                }
+              : {},
+            ...(isMobile && {
+              "& .rdrDateDisplayWrapper": {
+                width: "100%",
+              },
+            }),
+            // Recolor "unavailable" days from the default grey to a red
+            // tint that matches the booked-date dot marker below.
+            "& .rdrDayDisabled": {
+              backgroundColor: "#fdecea",
+            },
+            "& .rdrDayDisabled .rdrDayNumber span": {
+              color: "#c62828",
+            },
+          }}
+        >
+          <DateRange
+            ranges={[calendarSelectionRange]}
+            onChange={handleCalendarRangeChange}
+            minDate={new Date()}
+            disabledDates={disabledDates}
+            moveRangeOnFirstSelection={false}
+            months={isMobile ? 1 : 2}
+            direction={isMobile ? "vertical" : "horizontal"}
+            rangeColors={[theme.palette.warning.dark]}
+            showDateDisplay
+            dayContentRenderer={(date) => {
+              const isBooked = disabledDates.some((d) => isSameDay(d, date));
+              return (
+                <div style={{ position: "relative" }}>
+                  {date.getDate()}
+                  {isBooked && (
+                    <span
+                      style={{
+                        position: "absolute",
+                        bottom: 2,
+                        left: "50%",
+                        transform: "translateX(-50%)",
+                        width: 4,
+                        height: 4,
+                        borderRadius: "50%",
+                        backgroundColor: "#c62828",
+                      }}
+                    />
+                  )}
+                </div>
+              );
+            }}
+          />
+        </Box>
 
         {/* Head Count */}
         <TextField
@@ -488,6 +583,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
             !dateRange[1] ||
             !name ||
             !phone ||
+            phoneError ||
             isDateUnavailable(dateRange[0]) ||
             isDateUnavailable(dateRange[1])
           }
