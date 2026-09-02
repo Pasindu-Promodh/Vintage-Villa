@@ -2,6 +2,9 @@ export interface UnavailableDates {
     startDate: string;
     endDate: string;
     reason?: string;
+    // "all" = blocks every room; a specific room id = blocks only that room.
+    // Omitted on older records, which are treated as "all" for backward compatibility.
+    roomId?: string;
   }
 
   export interface BookingModalProps {

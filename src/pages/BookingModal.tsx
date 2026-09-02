@@ -81,6 +81,12 @@ const BookingModal: React.FC<BookingModalProps> = ({
           ...doc.data(),
         })) as UnavailableDates[];
 
+        // Only keep dates that block this specific room, or that block
+        // every room ("all" / older records with no roomId set at all).
+        const relevantDatesList = datesList.filter(
+          (d) => !d.roomId || d.roomId === "all" || d.roomId === selectedRoom.id
+        );
+
         // Fetch confirmed bookings for the specific room
         const bookingsCollection = collection(db, "bookings");
         const confirmedBookingsQuery = query(
@@ -97,7 +103,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
           }),
         ) as unknown as Booking[];
 
-        setUnavailableDateRanges(datesList);
+        setUnavailableDateRanges(relevantDatesList);
         setConfirmedBookings(confirmedBookingsList);
       } catch (err) {
         console.error("Error fetching unavailable dates:", err);
@@ -367,8 +373,8 @@ const BookingModal: React.FC<BookingModalProps> = ({
       maxWidth="md"
       fullScreen={isMobile}
     >
-      <DialogTitle sx={{ px: isMobile ? 2 : 3 }}>Book {selectedRoom?.title || "Room"}</DialogTitle>
-      <DialogContent sx={{ px: isMobile ? 2 : 3 }}>
+      <DialogTitle>Book {selectedRoom?.title || "Room"}</DialogTitle>
+      <DialogContent sx={{ px: isMobile ? 1.5 : 3 }}>
         {/* Customer Information */}
         <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
           Your Information:
