@@ -298,14 +298,13 @@ const BookingModal: React.FC<BookingModalProps> = ({
         status: "pending",
       };
 
-      const bookingRef = await addDoc(collection(db, "bookings"), bookingData);
-      const bookingId = bookingRef.id;
+      await addDoc(collection(db, "bookings"), bookingData);
 
       // Call Cloud Function to send emails
       // const sendBookingEmails = httpsCallable(functions, "sendBookingEmails");
       // await sendBookingEmails({
       //   booking: {
-      //     id: bookingId,
+      //     id: bookingRef.id,
       //     customerName: name,
       //     customerEmail: email,
       //     customerPhone: phone || "Not provided",
@@ -369,7 +368,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
       fullScreen={isMobile}
     >
       <DialogTitle>Book {selectedRoom?.title || "Room"}</DialogTitle>
-      <DialogContent sx={{ px: isMobile ? 2 : 3 }}>
+      <DialogContent sx={{ px: isMobile ? 1.5 : 3 }}>
         {/* Customer Information */}
         <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
           Your Information:
@@ -481,7 +480,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
             moveRangeOnFirstSelection={false}
             months={isMobile ? 1 : 2}
             direction={isMobile ? "vertical" : "horizontal"}
-            rangeColors={[theme.palette.warning.dark]}
+            rangeColors={[theme.palette.primary.main]}
             showDateDisplay
             dayContentRenderer={(date) => {
               const isBooked = disabledDates.some((d) => isSameDay(d, date));
