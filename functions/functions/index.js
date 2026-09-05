@@ -1,6 +1,6 @@
 import { onRequest } from "firebase-functions/v2/https";
 import { onDocumentCreated } from "firebase-functions/v2/firestore";
-import { defineSecret } from "firebase-functions/params";
+import { defineSecret, defineString, defineInt } from "firebase-functions/params";
 import admin from "firebase-admin";
 import nodemailer from "nodemailer";
 import corsLib from "cors";
@@ -13,15 +13,44 @@ const cors = corsLib({ origin: true });
 // Secrets - set these once with:
 //   firebase functions:secrets:set ADMIN_EMAIL
 //   firebase functions:secrets:set ADMIN_PASSWORD
-//   firebase functions:secrets:set CALLMEBOT_PHONE
-//   firebase functions:secrets:set CALLMEBOT_APIKEY
+//   firebase functions:secrets:set GREEN_API_ID_INSTANCE
+//   firebase functions:secrets:set GREEN_API_TOKEN_INSTANCE
+//   firebase functions:secrets:set WHATSAPP_NOTIFY_PHONE
+//   firebase functions:secrets:set SESSION_ALERT_EMAILS
 // Never hardcode credentials directly in this file.
 const adminEmailSecret = defineSecret("ADMIN_EMAIL");
 const adminPasswordSecret = defineSecret("ADMIN_PASSWORD");
-const callmebotPhoneSecret = defineSecret("CALLMEBOT_PHONE");
-const callmebotApikeySecret = defineSecret("CALLMEBOT_APIKEY");
+const greenApiIdInstanceSecret = defineSecret("GREEN_API_ID_INSTANCE");
+const greenApiTokenInstanceSecret = defineSecret("GREEN_API_TOKEN_INSTANCE");
+const whatsappNotifyPhoneSecret = defineSecret("WHATSAPP_NOTIFY_PHONE");
+// Comma-separated list of email addresses to alert when the WhatsApp
+// (Green API) session drops or is restored, e.g.
+// "owner1@example.com,owner2@example.com"
+const sessionAlertEmailsSecret = defineSecret("SESSION_ALERT_EMAILS");
+
+// SMTP host/port for ADMIN_EMAIL - not sensitive, so these are plain
+// params (not secrets). Default to Gmail; override in a .env / .env.<project-id>
+// file in this functions folder if ADMIN_EMAIL isn't a Gmail/Google
+// Workspace address, e.g. for Zoho Mail:
+//   EMAIL_SMTP_HOST=smtp.zoho.com
+//   EMAIL_SMTP_PORT=465
+const emailSmtpHostParam = defineString("EMAIL_SMTP_HOST", {
+  default: "smtp.gmail.com",
+});
+const emailSmtpPortParam = defineInt("EMAIL_SMTP_PORT", { default: 465 });
 
 const HOTEL_NAME = "Vintage Villa";
+
+// Format a date consistently as dd/mm/yyyy for emails and WhatsApp
+// messages, regardless of the server's locale (toLocaleDateString()
+// without a fixed locale/options is unreliable across environments).
+const formatDateDDMMYYYY = (dateInput) => {
+  const date = new Date(dateInput);
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
 
 // Enhanced error logging utility
 const logError = async (functionName, error, context = {}) => {
@@ -52,11 +81,14 @@ const getEmailTransporter = () => {
   try {
     const emailUser = adminEmailSecret.value();
     const emailPassword = adminPasswordSecret.value();
+    const smtpHost = emailSmtpHostParam.value();
+    const smtpPort = Number(emailSmtpPortParam.value());
 
     console.log(
       "Email credentials check:",
       Boolean(emailUser) ? "Email user found" : "Email user MISSING",
-      Boolean(emailPassword) ? "Password found" : "Password MISSING"
+      Boolean(emailPassword) ? "Password found" : "Password MISSING",
+      `SMTP: ${smtpHost}:${smtpPort}`
     );
 
     if (!emailUser || !emailPassword) {
@@ -66,10 +98,9 @@ const getEmailTransporter = () => {
     }
 
     return nodemailer.createTransport({
-      service: "gmail",
-      host: "smtp.gmail.com",
-      port: 465,
-      secure: true,
+      host: smtpHost,
+      port: smtpPort,
+      secure: smtpPort === 465, // true for 465 (SSL), false for 587 (STARTTLS)
       auth: {
         user: emailUser,
         pass: emailPassword,
@@ -82,22 +113,23 @@ const getEmailTransporter = () => {
   }
 };
 
-// Send a WhatsApp notification to the villa owner via CallMeBot
-// (https://www.callmebot.com/blog/free-api-whatsapp-messages/)
+// Send a WhatsApp notification to the villa owner via Green API
+// (https://green-api.com)
 const sendWhatsAppNotification = async (booking) => {
   const functionName = "sendWhatsAppNotification";
   try {
-    const phone = callmebotPhoneSecret.value();
-    const apikey = callmebotApikeySecret.value();
+    const idInstance = greenApiIdInstanceSecret.value();
+    const apiTokenInstance = greenApiTokenInstanceSecret.value();
+    const notifyPhone = whatsappNotifyPhoneSecret.value();
 
-    if (!phone || !apikey) {
+    if (!idInstance || !apiTokenInstance || !notifyPhone) {
       throw new Error(
-        "Missing CallMeBot config - make sure the CALLMEBOT_PHONE and CALLMEBOT_APIKEY secrets are set"
+        "Missing Green API config - make sure the GREEN_API_ID_INSTANCE, GREEN_API_TOKEN_INSTANCE and WHATSAPP_NOTIFY_PHONE secrets are set"
       );
     }
 
-    const checkIn = new Date(booking.checkInDate).toLocaleDateString();
-    const checkOut = new Date(booking.checkOutDate).toLocaleDateString();
+    const checkIn = formatDateDDMMYYYY(booking.checkInDate);
+    const checkOut = formatDateDDMMYYYY(booking.checkOutDate);
 
     const meals = [];
     if (booking.mealOptions?.breakfast) meals.push("Breakfast");
@@ -117,24 +149,31 @@ const sendWhatsAppNotification = async (booking) => {
       `Phone: ${booking.customerPhone}\n` +
       `Email: ${booking.customerEmail || "Not provided"}\n` +
       `Discount: $${(booking.discount || 0).toFixed(2)}\n` +
-      `Total: $${(booking.totalPrice || 0).toFixed(2)}`;
+      `Total: $${(booking.totalPrice || 0).toFixed(2)}` +
+      `https://admin.vintagevilla.lk/booking-management`;
 
-    const url = `https://api.callmebot.com/whatsapp.php?phone=${encodeURIComponent(
-      phone
-    )}&text=${encodeURIComponent(message)}&apikey=${encodeURIComponent(
-      apikey
-    )}`;
+    const url = `https://api.green-api.com/waInstance${idInstance}/sendMessage/${apiTokenInstance}`;
 
-    const response = await fetch(url);
-    const responseText = await response.text();
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        chatId: `${notifyPhone}@c.us`,
+        message,
+      }),
+    });
+
+    const responseData = await response.json();
 
     if (!response.ok) {
       throw new Error(
-        `CallMeBot request failed with status ${response.status}: ${responseText}`
+        `Green API request failed with status ${response.status}: ${JSON.stringify(
+          responseData
+        )}`
       );
     }
 
-    console.log("WhatsApp notification sent:", responseText);
+    console.log("WhatsApp notification sent:", responseData);
     return true;
   } catch (error) {
     await logError(functionName, error, { bookingId: booking.id });
@@ -143,293 +182,189 @@ const sendWhatsAppNotification = async (booking) => {
   }
 };
 
-// HTTP Function for Sending Booking Emails
-export const sendBookingEmails = onRequest(
-  { secrets: [adminEmailSecret, adminPasswordSecret] },
-  async (req, res) => {
-  return cors(req, res, async () => {
-    const functionName = "sendBookingEmails";
+// Send the booking-confirmation emails (to the customer and the admin)
+// automatically in the background - used by the onNewBooking trigger.
+const sendBookingConfirmationEmails = async (booking) => {
+  const functionName = "sendBookingConfirmationEmails";
+  try {
+    const checkInDate = formatDateDDMMYYYY(booking.checkInDate);
+    const checkOutDate = formatDateDDMMYYYY(booking.checkOutDate);
+    const nights = Math.max(
+      1,
+      Math.ceil(
+        (new Date(booking.checkOutDate).getTime() -
+          new Date(booking.checkInDate).getTime()) /
+          (1000 * 60 * 60 * 24)
+      )
+    );
 
-    try {
-      if (req.method !== "POST") {
-        const error = new Error("Method not allowed");
-        await logError(functionName, error, { method: req.method });
-        return res.status(405).json({
-          data: {
-            error: "Method not allowed",
-            message: "Only POST requests are accepted",
-          },
-        });
-      }
+    const meals = [];
+    if (booking.mealOptions?.breakfast) meals.push("Breakfast");
+    if (booking.mealOptions?.lunch) meals.push("Lunch");
+    if (booking.mealOptions?.dinner) meals.push("Dinner");
+    const mealsText = meals.length > 0 ? meals.join(", ") : "None";
 
-      // Extract booking data from the request with detailed error logging
-      const { booking } = req.body.data || {};
+    const customerEmailContent = `
+      <h2>Booking Confirmation</h2>
+      <p>Dear ${booking.customerName},</p>
+      <p>Thank you for booking with us. Your reservation details:</p>
 
-      if (!booking) {
-        const error = new Error("No booking data provided");
-        await logError(functionName, error, { body: req.body });
-        return res.status(400).json({
-          data: { error: "No booking data provided", receivedBody: req.body },
-        });
-      }
+      <h3>Booking Details</h3>
+      <p><strong>Booking Reference:</strong> ${booking.id}</p>
+      <p><strong>Room:</strong> ${booking.roomTitle}</p>
+      <p><strong>Check-in Date:</strong> ${checkInDate}</p>
+      <p><strong>Check-out Date:</strong> ${checkOutDate}</p>
+      <p><strong>Duration:</strong> ${nights} night(s)</p>
+      <p><strong>Guests:</strong> ${booking.headCount}</p>
+      <p><strong>Meals Included:</strong> ${mealsText}</p>
 
-      // Validate required fields
-      const requiredFields = [
-        "id",
-        "customerName",
-        "customerEmail",
-        "customerPhone",
-        "checkInDate",
-        "checkOutDate",
-        "roomTitle",
-        "headCount",
-        "mealOptions",
-        "totalPrice",
-        "discount",
-      ];
+      <h3>Price Summary</h3>
+      <p><strong>Subtotal:</strong> $${(
+        (booking.totalPrice || 0) + (booking.discount || 0)
+      ).toFixed(2)}</p>
+      <p><strong>Discount Applied:</strong> $${(booking.discount || 0).toFixed(
+        2
+      )}</p>
+      <p><strong>Total:</strong> $${(booking.totalPrice || 0).toFixed(2)}</p>
 
-      const missingFields = requiredFields.filter(
-        (field) => booking[field] === undefined
-      );
-      if (missingFields.length > 0) {
-        const error = new Error("Missing required fields");
-        const context = {
-          missingFields,
-          receivedFields: Object.keys(booking),
-          booking: JSON.stringify(booking),
-        };
+      <p>For any questions, contact us.</p>
+      <p>Best regards,<br>${HOTEL_NAME}</p>
+    `;
 
-        await logError(functionName, error, context);
-        return res.status(400).json({
-          data: {
-            error: "Missing required fields",
-            missingFields,
-            receivedFields: Object.keys(booking),
-          },
-        });
-      }
+    const adminEmailContent = `
+      <h2>New Booking Notification</h2>
+      <p>A new booking has been made:</p>
 
-      // Format dates with error handling
-      let checkInDate, checkOutDate, nights;
-      try {
-        checkInDate = new Date(booking.checkInDate);
-        checkOutDate = new Date(booking.checkOutDate);
+      <h3>Booking Details</h3>
+      <p><strong>Booking Reference:</strong> ${booking.id}</p>
+      <p><strong>Room:</strong> ${booking.roomTitle}</p>
+      <p><strong>Check-in Date:</strong> ${checkInDate}</p>
+      <p><strong>Check-out Date:</strong> ${checkOutDate}</p>
+      <p><strong>Guests:</strong> ${booking.headCount}</p>
+      <p><strong>Meals:</strong> ${mealsText}</p>
 
-        if (isNaN(checkInDate.getTime()) || isNaN(checkOutDate.getTime())) {
-          throw new Error("Invalid date format");
-        }
+      <h3>Customer Info</h3>
+      <p><strong>Name:</strong> ${booking.customerName}</p>
+      <p><strong>Email:</strong> ${booking.customerEmail}</p>
+      <p><strong>Phone:</strong> ${booking.customerPhone}</p>
 
-        nights = Math.ceil(
-          (checkOutDate.getTime() - checkInDate.getTime()) /
-            (1000 * 60 * 60 * 24)
-        );
+      <h3>Price Summary</h3>
+      <p><strong>Subtotal:</strong> $${(
+        (booking.totalPrice || 0) + (booking.discount || 0)
+      ).toFixed(2)}</p>
+      <p><strong>Discount:</strong> $${(booking.discount || 0).toFixed(2)}</p>
+      <p><strong>Total:</strong> $${(booking.totalPrice || 0).toFixed(2)}</p>
+      <p>https://admin.vintagevilla.lk/booking-management</p>
+    `;
 
-        if (nights <= 0) {
-          const error = new Error("Check-out date must be after check-in date");
-          const context = {
-            checkIn: booking.checkInDate,
-            checkOut: booking.checkOutDate,
-            calculatedNights: nights,
-          };
+    const emailUser = adminEmailSecret.value();
+    const transporter = getEmailTransporter();
 
-          await logError(functionName, error, context);
-          return res.status(400).json({
-            data: {
-              error: "Check-out date must be after check-in date",
-              checkIn: booking.checkInDate,
-              checkOut: booking.checkOutDate,
-            },
-          });
-        }
-
-        checkInDate = checkInDate.toLocaleDateString();
-        checkOutDate = checkOutDate.toLocaleDateString();
-      } catch (err) {
-        const context = {
-          receivedDates: {
-            checkInDate: booking.checkInDate,
-            checkOutDate: booking.checkOutDate,
-          },
-        };
-
-        await logError(functionName, err, context);
-        return res.status(400).json({
-          data: {
-            error: "Invalid date format",
-            message: err.message,
-            receivedDates: {
-              checkInDate: booking.checkInDate,
-              checkOutDate: booking.checkOutDate,
-            },
-          },
-        });
-      }
-
-      // Format meal options
-      const meals = [];
-      if (booking.mealOptions.breakfast) meals.push("Breakfast");
-      if (booking.mealOptions.lunch) meals.push("Lunch");
-      if (booking.mealOptions.dinner) meals.push("Dinner");
-      const mealsText = meals.length > 0 ? meals.join(", ") : "None";
-
-      // Email content for customer
-      const customerEmailContent = `
-        <h2>Booking Confirmation</h2>
-        <p>Dear ${booking.customerName},</p>
-        <p>Thank you for booking with us. Your reservation details:</p>
-        
-        <h3>Booking Details</h3>
-        <p><strong>Booking Reference:</strong> ${booking.id}</p>
-        <p><strong>Room:</strong> ${booking.roomTitle}</p>
-        <p><strong>Check-in Date:</strong> ${checkInDate}</p>
-        <p><strong>Check-out Date:</strong> ${checkOutDate}</p>
-        <p><strong>Duration:</strong> ${nights} night(s)</p>
-        <p><strong>Guests:</strong> ${booking.headCount}</p>
-        <p><strong>Meals Included:</strong> ${mealsText}</p>
-        
-        <h3>Price Summary</h3>
-        <p><strong>Subtotal:</strong> $${(
-          booking.totalPrice + booking.discount
-        ).toFixed(2)}</p>
-        <p><strong>Discount Applied:</strong> $${booking.discount.toFixed(
-          2
-        )}</p>
-        <p><strong>Total:</strong> $${booking.totalPrice.toFixed(2)}</p>
-        
-        <p>For any questions, contact us.</p>
-        <p>Best regards,<br>${HOTEL_NAME}</p>
-      `;
-
-      // Email content for admin
-      const adminEmailContent = `
-        <h2>New Booking Notification</h2>
-        <p>A new booking has been made:</p>
-        
-        <h3>Booking Details</h3>
-        <p><strong>Booking Reference:</strong> ${booking.id}</p>
-        <p><strong>Room:</strong> ${booking.roomTitle}</p>
-        <p><strong>Check-in Date:</strong> ${checkInDate}</p>
-        <p><strong>Check-out Date:</strong> ${checkOutDate}</p>
-        <p><strong>Guests:</strong> ${booking.headCount}</p>
-        <p><strong>Meals:</strong> ${mealsText}</p>
-        
-        <h3>Customer Info</h3>
-        <p><strong>Name:</strong> ${booking.customerName}</p>
-        <p><strong>Email:</strong> ${booking.customerEmail}</p>
-        <p><strong>Phone:</strong> ${booking.customerPhone}</p>
-        
-        <h3>Price Summary</h3>
-        <p><strong>Subtotal:</strong> $${(
-          booking.totalPrice + booking.discount
-        ).toFixed(2)}</p>
-        <p><strong>Discount:</strong> $${booking.discount.toFixed(2)}</p>
-        <p><strong>Total:</strong> $${booking.totalPrice.toFixed(2)}</p>
-      `;
-
-      // Create email transporter with error handling
-      let transporter;
-      try {
-        transporter = getEmailTransporter();
-      } catch (err) {
-        await logError(functionName, err, { stage: "creating_transporter" });
-        return res.status(500).json({
-          data: {
-            error: "Email configuration error",
-            message: "Failed to configure email service",
-          },
-        });
-      }
-
-      // Send emails with detailed error handling
-      try {
-        // Send customer email
-        await transporter.sendMail({
-          from: `"${HOTEL_NAME}" <${ADMIN_EMAIL}>`,
-          to: booking.customerEmail,
-          subject: "Booking Confirmation",
-          html: customerEmailContent,
-        });
-
-        // Send admin email
-        await transporter.sendMail({
-          from: `"Booking System" <${ADMIN_EMAIL}>`,
-          to: ADMIN_EMAIL,
-          subject: `New Booking: ${booking.roomTitle} (${checkInDate} - ${checkOutDate})`,
-          html: adminEmailContent,
-        });
-      } catch (err) {
-        const context = {
-          stage: "sending_emails",
-          customerEmail: booking.customerEmail,
-          adminEmail: ADMIN_EMAIL,
-        };
-
-        await logError(functionName, err, context);
-        return res.status(500).json({
-          data: {
-            error: "Failed to send emails",
-            message: err.message,
-          },
-        });
-      }
-
-      // Update booking status in Firestore with error handling
-      try {
-        await admin.firestore().collection("bookings").doc(booking.id).update({
-          status: "confirmed",
-          emailSent: true,
-          emailSentAt: FieldValue.serverTimestamp(),
-        });
-      } catch (err) {
-        const context = {
-          stage: "updating_booking_status",
-          bookingId: booking.id,
-        };
-
-        await logError(functionName, err, context);
-        // Continue execution instead of returning error, as emails were sent successfully
-        console.warn(
-          `Failed to update booking status for ${booking.id}: ${err.message}`
-        );
-      }
-
-      // Return success response with data property for httpsCallable
-      return res.status(200).json({
-        data: {
-          success: true,
-          message: "Emails sent successfully",
-          bookingId: booking.id,
-        },
-      });
-    } catch (error) {
-      // Catch-all error handler for unexpected errors
-      const context = {
-        path: req.path,
-        body: JSON.stringify(req.body).substring(0, 500), // Limit size
-        headers: req.headers,
-        timestamp: new Date().toISOString(),
-      };
-
-      await logError(functionName, error, context);
-
-      // Return error response with data property for httpsCallable
-      return res.status(500).json({
-        data: {
-          error: "Failed to process booking",
-          message: error.message,
-          code: error.code || "UNKNOWN_ERROR",
-        },
+    if (booking.customerEmail) {
+      await transporter.sendMail({
+        from: `"${HOTEL_NAME}" <${emailUser}>`,
+        to: booking.customerEmail,
+        subject: "Booking Confirmation",
+        html: customerEmailContent,
       });
     }
-  });
+
+    await transporter.sendMail({
+      from: `"Booking System" <${emailUser}>`,
+      to: emailUser,
+      subject: `New Booking: ${booking.roomTitle} (${checkInDate} - ${checkOutDate})`,
+      html: adminEmailContent,
+    });
+
+    console.log(`Booking confirmation emails sent for booking ${booking.id}`);
+    return true;
+  } catch (error) {
+    await logError(functionName, error, { bookingId: booking.id });
+    console.error(`Failed to send booking confirmation emails: ${error.message}`);
+    return false;
   }
-);
+};
+
+// Alert the villa owner by email whenever the WhatsApp (Green API)
+// session's connection state changes - either dropping (logged out,
+// blocked, etc.) or being restored back to authorized.
+const sendSessionStateAlert = async (stateInstance) => {
+  const functionName = "sendSessionStateAlert";
+  const isRestored = stateInstance === "authorized";
+
+  try {
+    const recipientsRaw = sessionAlertEmailsSecret.value();
+    if (!recipientsRaw) {
+      throw new Error(
+        "Missing SESSION_ALERT_EMAILS secret - set it to a comma-separated list of alert recipient emails"
+      );
+    }
+    const recipients = recipientsRaw
+      .split(",")
+      .map((e) => e.trim())
+      .filter(Boolean);
+
+    if (recipients.length === 0) {
+      throw new Error("SESSION_ALERT_EMAILS is set but contains no valid addresses");
+    }
+
+    const emailUser = adminEmailSecret.value();
+    const transporter = getEmailTransporter();
+
+    const subject = isRestored
+      ? `✅ WhatsApp notifications are back up - ${HOTEL_NAME}`
+      : `⚠️ WhatsApp notifications are down - ${HOTEL_NAME}`;
+
+    const html = isRestored
+      ? `
+        <h2>WhatsApp Session Restored</h2>
+        <p>The WhatsApp connection used to send booking notifications is
+        authorized again and back online.</p>
+        <p>New booking notifications will resume going to WhatsApp as normal.</p>
+      `
+      : `
+        <h2>WhatsApp Session Disconnected</h2>
+        <p>The WhatsApp connection used to send booking notifications has
+        dropped and is no longer authorized.</p>
+        <p><strong>Reported state:</strong> ${stateInstance}</p>
+        <p>New booking notifications will not reach WhatsApp until the
+        session is reconnected. Log in to your Green API console and
+        re-scan the QR code to restore the connection.</p>
+        <p>Email notifications for new bookings are unaffected and will
+        continue to be sent normally.</p>
+      `;
+
+    await transporter.sendMail({
+      from: `"${HOTEL_NAME} Booking System" <${emailUser}>`,
+      to: recipients.join(", "),
+      subject,
+      html,
+    });
+
+    console.log(
+      `Session ${isRestored ? "restored" : "drop"} alert emailed to: ${recipients.join(
+        ", "
+      )} (state: ${stateInstance})`
+    );
+    return true;
+  } catch (error) {
+    await logError(functionName, error, { stateInstance });
+    console.error(`Failed to send session ${isRestored ? "restored" : "drop"} alert: ${error.message}`);
+    return false;
+  }
+};
 
 // Firestore Trigger for New Bookings
 export const onNewBooking = onDocumentCreated(
   {
     document: "bookings/{bookingId}",
-    secrets: [callmebotPhoneSecret, callmebotApikeySecret],
+    secrets: [
+      greenApiIdInstanceSecret,
+      greenApiTokenInstanceSecret,
+      whatsappNotifyPhoneSecret,
+      adminEmailSecret,
+      adminPasswordSecret,
+    ],
   },
   async (event) => {
     const functionName = "onNewBooking";
@@ -446,8 +381,13 @@ export const onNewBooking = onDocumentCreated(
       const booking = { id: event.params.bookingId, ...snapshot.data() };
       console.log(`New booking created with ID: ${booking.id}`);
 
-      // Automatically notify the villa owner on WhatsApp - no manual step needed
-      await sendWhatsAppNotification(booking);
+      // Automatically notify the villa owner on WhatsApp and send
+      // confirmation emails - no manual step needed. Run both even if
+      // one fails, so a WhatsApp outage doesn't block email and vice versa.
+      await Promise.allSettled([
+        sendWhatsAppNotification(booking),
+        sendBookingConfirmationEmails(booking),
+      ]);
     } catch (error) {
       const context = {
         eventId: event.id,
@@ -511,8 +451,8 @@ export const sendStatusChangeEmail = onRequest(
       const booking = { id: bookingId, ...bookingDoc.data() };
 
       // Format dates
-      const checkInDate = new Date(booking.checkInDate).toLocaleDateString();
-      const checkOutDate = new Date(booking.checkOutDate).toLocaleDateString();
+      const checkInDate = formatDateDDMMYYYY(booking.checkInDate);
+      const checkOutDate = formatDateDDMMYYYY(booking.checkOutDate);
 
       // Status message mapping
       const statusMessages = {
@@ -542,6 +482,7 @@ export const sendStatusChangeEmail = onRequest(
 
       // Create email transporter with error handling
       let transporter;
+      const emailUser = adminEmailSecret.value();
       try {
         transporter = getEmailTransporter();
       } catch (err) {
@@ -558,7 +499,7 @@ export const sendStatusChangeEmail = onRequest(
       try {
         // Send status update email to customer
         await transporter.sendMail({
-          from: `"${HOTEL_NAME}" <${ADMIN_EMAIL}>`,
+          from: `"${HOTEL_NAME}" <${emailUser}>`,
           to: booking.customerEmail,
           subject: `Booking Status Update: ${newStatus.toUpperCase()}`,
           html: statusEmailContent,
@@ -617,5 +558,37 @@ export const sendStatusChangeEmail = onRequest(
       });
     }
   });
+  }
+);
+
+// HTTP endpoint for Green API to call whenever the WhatsApp session's
+// connection state changes (configure this URL as the "Webhook URL" in
+// your Green API instance settings, with "Incoming webhook" /
+// "stateInstanceChanged" notifications enabled). Emails everyone in
+// SESSION_ALERT_EMAILS both when the session drops AND when it's
+// restored back to authorized - Green API only fires this webhook type
+// on an actual state change, so there's no risk of spamming an email on
+// every routine check.
+export const whatsappSessionWebhook = onRequest(
+  { secrets: [adminEmailSecret, adminPasswordSecret, sessionAlertEmailsSecret] },
+  async (req, res) => {
+    const functionName = "whatsappSessionWebhook";
+
+    try {
+      const { typeWebhook, stateInstance } = req.body || {};
+
+      console.log("Green API webhook received:", typeWebhook, stateInstance);
+
+      if (typeWebhook === "stateInstanceChanged" && stateInstance) {
+        await sendSessionStateAlert(stateInstance);
+      }
+
+      // Always acknowledge receipt so Green API doesn't retry/spam this endpoint
+      return res.status(200).json({ received: true });
+    } catch (error) {
+      await logError(functionName, error, { body: req.body });
+      // Still return 200 - this is a webhook receiver, not a client-facing API
+      return res.status(200).json({ received: true, error: error.message });
+    }
   }
 );
