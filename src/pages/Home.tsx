@@ -5,7 +5,7 @@ import AppFooter from "./modules/views/AppFooter";
 import Introduction from "./modules/views/Introduction";
 import Luxury from "./modules/views/Luxury";
 import Location from "./modules/views/Location";
-import JoinUs from "./modules/views/JoinUs";
+// import JoinUs from "./modules/views/JoinUs"; // Hidden: newsletter signup isn't wired to anything real yet. Component kept as-is for when it is.
 import AppAppBar from "./modules/views/AppAppBar";
 import withRoot from "./modules/withRoot";
 import Culinary from "./modules/views/Culinary";
@@ -21,7 +21,7 @@ function Index() {
       <Culinary />
       <Location />
       <Testimonials />
-      <JoinUs />
+      {/* <JoinUs /> */}
       <ProductSmokingHero />
       <AppFooter />
     </React.Fragment>

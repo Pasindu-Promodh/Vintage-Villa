@@ -11,8 +11,7 @@ function Terms() {
   const [markdown, setMarkdown] = useState("");
 
   useEffect(() => {
-    import("../md/refund.md")
-      .then((content) => fetch(content.default))
+    fetch("/md/refund.md")
       .then((response) => response.text())
       .then((responseText) => setMarkdown(responseText));
   }, []);

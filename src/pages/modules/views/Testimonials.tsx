@@ -42,8 +42,8 @@ function Testimonials() {
     },
   ];
 
-  const googleReviewsUrl = "https://maps.app.goo.gl/2rJ9nF5UJASXmK4V8";
-  const tripAdvisorUrl = "https://www.tripadvisor.com/Hotel_Review-g17782726-d27123668-Reviews-The_Vintage_Villa_Knuckles-Thangappuwa_Kandy_District_Central_Province.html?m=19905";
+  const googleReviewsUrl = "https://www.google.com/maps/place/The+Vintage+Villa+Knuckles/@7.3493892,80.8202894,1087m/data=!3m1!1e3!4m24!1m12!3m11!1s0x3ae4a1c18fbb805f:0x6e2b430eceb4c37f!2sThe+Vintage+Villa+Knuckles!5m2!4m1!1i2!8m2!3d7.3493892!4d80.8202894!9m1!1b1!16s%2Fg%2F11vc2_6ksq!3m10!1s0x3ae4a1c18fbb805f:0x6e2b430eceb4c37f!5m2!4m1!1i2!8m2!3d7.3493892!4d80.8202894!9m1!1b1!16s%2Fg%2F11vc2_6ksq?entry=ttu&g_ep=EgoyMDI2MDkwOC4wIKXMDSoASAFQAw%3D%3D";
+  const tripAdvisorUrl = "https://www.tripadvisor.com/Hotel_Review-g17782726-d27123668-Reviews-The_Vintage_Villa_Knuckles-Thangappuwa_Kandy_District_Central_Province.html";
 
   return (
     <Box

@@ -11,8 +11,7 @@ function Privacy() {
   const [markdown, setMarkdown] = useState("");
 
   useEffect(() => {
-    import("../md/privacy.md")
-      .then((content) => fetch(content.default))
+    fetch("/md/privacy.md")
       .then((response) => response.text())
       .then((responseText) => setMarkdown(responseText));
   }, []);
