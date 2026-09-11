@@ -1,2 +1,7 @@
 node_modules/
 *.local
+
+# Never commit environment / secret files
+.env
+.env.*
+!.env.example

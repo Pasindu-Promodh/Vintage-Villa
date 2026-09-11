@@ -15,7 +15,7 @@ function Terms() {
       .then((content) => fetch(content.default))
       .then((response) => response.text())
       .then((responseText) => setMarkdown(responseText));
-  });
+  }, []);
 
   if (!markdown) {
     return <div />;

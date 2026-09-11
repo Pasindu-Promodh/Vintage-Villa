@@ -1,0 +1,37 @@
+rules_version = '2';
+
+// Vintage Villa Cloud Storage security rules.
+//
+//  - Gallery images and thumbnails are world-readable (the public site
+//    displays them).
+//  - Only an admin (a user with an allow-list doc at admins/{uid} in
+//    Firestore) may upload, overwrite or delete objects.
+//  - Everything outside photos/ and thumbnails/ is denied.
+//
+// Deploy:  firebase deploy --only storage:rules
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isAdmin() {
+      return request.auth != null
+        && firestore.exists(
+             /databases/(default)/documents/admins/$(request.auth.uid)
+           );
+    }
+
+    match /photos/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /thumbnails/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+  }
+}

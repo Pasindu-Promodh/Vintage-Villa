@@ -25,11 +25,10 @@ import {
 import { db } from "./firebaseConfig";
 import { enqueueSnackbar } from "notistack";
 import {
-  Booking,
   BookingModalProps,
   UnavailableDates,
 } from "./modules/components/Types";
-import { addDays, isWithinInterval, parseISO, eachDayOfInterval, isSameDay, isBefore, startOfDay, differenceInCalendarDays } from "date-fns";
+import { addDays, isWithinInterval, parseISO, eachDayOfInterval, isSameDay, isBefore, startOfDay, differenceInCalendarDays, format } from "date-fns";
 import { MuiTelInput, matchIsValidTel } from "mui-tel-input";
 import { DateRange, RangeKeyDict } from "react-date-range";
 import "react-date-range/dist/styles.css";
@@ -65,7 +64,11 @@ const BookingModal: React.FC<BookingModalProps> = ({
   const [unavailableDateRanges, setUnavailableDateRanges] = useState<
     UnavailableDates[]
   >([]);
-  const [confirmedBookings, setConfirmedBookings] = useState<Booking[]>([]);
+  // Non-PII { startDate, endDate } ranges for this room's confirmed
+  // bookings, read from the public "booked_ranges" mirror.
+  const [bookedRanges, setBookedRanges] = useState<
+    { startDate: string; endDate: string }[]
+  >([]);
 
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -87,24 +90,24 @@ const BookingModal: React.FC<BookingModalProps> = ({
           (d) => !d.roomId || d.roomId === "all" || d.roomId === selectedRoom.id
         );
 
-        // Fetch confirmed bookings for the specific room
-        const bookingsCollection = collection(db, "bookings");
-        const confirmedBookingsQuery = query(
-          bookingsCollection,
+        // Fetch confirmed-booking date ranges for this room from the
+        // public, PII-free "booked_ranges" mirror (kept in sync by the
+        // syncBookedRange Cloud Function).
+        const bookedRangesQuery = query(
+          collection(db, "booked_ranges"),
           where("roomId", "==", selectedRoom.id),
-          where("status", "==", "confirmed"),
         );
-        const bookingsSnapshot = await getDocs(confirmedBookingsQuery);
+        const bookedRangesSnapshot = await getDocs(bookedRangesQuery);
 
-        const confirmedBookingsList: Booking[] = bookingsSnapshot.docs.map(
-          (doc) => ({
-            id: doc.id,
-            ...doc.data(),
-          }),
-        ) as unknown as Booking[];
+        const bookedRangesList = bookedRangesSnapshot.docs
+          .map((doc) => doc.data() as { startDate?: string; endDate?: string })
+          .filter(
+            (r): r is { startDate: string; endDate: string } =>
+              Boolean(r.startDate) && Boolean(r.endDate),
+          );
 
         setUnavailableDateRanges(relevantDatesList);
-        setConfirmedBookings(confirmedBookingsList);
+        setBookedRanges(bookedRangesList);
       } catch (err) {
         console.error("Error fetching unavailable dates:", err);
         enqueueSnackbar("Could not fetch unavailable dates", {
@@ -118,21 +121,19 @@ const BookingModal: React.FC<BookingModalProps> = ({
 
   // Updated isDateUnavailable function to use fetched unavailable dates
   const isDateUnavailable = (date: Date) => {
-    // Check predefined unavailable dates
-    const isInUnavailableRange = unavailableDateRanges.some((range) => {
+    const allRanges = [
+      ...unavailableDateRanges.map((r) => ({
+        startDate: r.startDate,
+        endDate: r.endDate,
+      })),
+      ...bookedRanges,
+    ];
+
+    return allRanges.some((range) => {
       const start = parseISO(range.startDate);
       const end = parseISO(range.endDate);
       return isWithinInterval(date, { start, end });
     });
-
-    // Check confirmed bookings
-    const isInConfirmedBooking = confirmedBookings.some((booking) => {
-      const checkInDate = parseISO(booking.checkInDate);
-      const checkOutDate = parseISO(booking.checkOutDate);
-      return isWithinInterval(date, { start: checkInDate, end: checkOutDate });
-    });
-
-    return isInUnavailableRange || isInConfirmedBooking;
   };
 
   // Check if the entire date range is valid (no disabled dates in between)
@@ -155,21 +156,22 @@ const BookingModal: React.FC<BookingModalProps> = ({
   // grey out and mark visually.
   const disabledDates = useMemo(() => {
     const dates: Date[] = [];
+    const ranges = [
+      ...unavailableDateRanges.map((r) => ({
+        startDate: r.startDate,
+        endDate: r.endDate,
+      })),
+      ...bookedRanges,
+    ];
 
-    unavailableDateRanges.forEach((range) => {
+    ranges.forEach((range) => {
       const start = parseISO(range.startDate);
       const end = parseISO(range.endDate);
-      dates.push(...eachDayOfInterval({ start, end }));
-    });
-
-    confirmedBookings.forEach((booking) => {
-      const start = parseISO(booking.checkInDate);
-      const end = parseISO(booking.checkOutDate);
-      dates.push(...eachDayOfInterval({ start, end }));
+      if (start <= end) dates.push(...eachDayOfInterval({ start, end }));
     });
 
     return dates;
-  }, [unavailableDateRanges, confirmedBookings]);
+  }, [unavailableDateRanges, bookedRanges]);
 
   // Handle date range change with validation
   const handleDateRangeChange = (newValue: [Date | null, Date | null]) => {
@@ -270,8 +272,32 @@ const BookingModal: React.FC<BookingModalProps> = ({
 
   const handleConfirmBooking = async () => {
     const [checkInDate, checkOutDate] = dateRange;
-    if (!checkInDate || !checkOutDate || !name || !phone) {
+    if (!checkInDate || !checkOutDate || !name.trim() || !phone) {
       enqueueSnackbar("Please fill in all required fields", {
+        variant: "error",
+      });
+      return;
+    }
+
+    const nights = differenceInCalendarDays(checkOutDate, checkInDate);
+    if (nights < 1) {
+      enqueueSnackbar(
+        "Please select at least a one-night stay (check-out must be after check-in).",
+        { variant: "error" },
+      );
+      return;
+    }
+
+    const guests = typeof headCount === "number" ? headCount : 0;
+    if (!Number.isInteger(guests) || guests < 1) {
+      enqueueSnackbar("Please enter the number of guests.", {
+        variant: "error",
+      });
+      return;
+    }
+
+    if (isDateRangeValid(checkInDate, checkOutDate) === false) {
+      enqueueSnackbar("Selected dates include unavailable periods", {
         variant: "error",
       });
       return;
@@ -291,10 +317,12 @@ const BookingModal: React.FC<BookingModalProps> = ({
       const bookingData = {
         roomId: selectedRoom.id,
         roomTitle: selectedRoom.title,
-        checkInDate: checkInDate.toISOString(),
-        checkOutDate: checkOutDate.toISOString(),
-        headCount,
-        customerName: name,
+        // Stored as a plain calendar date (no time / timezone) so the day
+        // can't shift when it's read back on the server or in the admin app.
+        checkInDate: format(checkInDate, "yyyy-MM-dd"),
+        checkOutDate: format(checkOutDate, "yyyy-MM-dd"),
+        headCount: guests,
+        customerName: name.trim(),
         customerEmail: email || "Not provided",
         customerPhone: phone,
         mealOptions,
@@ -619,8 +647,10 @@ const BookingModal: React.FC<BookingModalProps> = ({
             loading ||
             !dateRange[0] ||
             !dateRange[1] ||
-            !name ||
+            differenceInCalendarDays(dateRange[1], dateRange[0]) < 1 ||
+            !name.trim() ||
             !phone ||
+            headCount === "" ||
             phoneError ||
             isDateUnavailable(dateRange[0]) ||
             isDateUnavailable(dateRange[1])

@@ -29,6 +29,25 @@ const ScrollToTop = () => {
   return null;
 };
 
+const NotFound = () => (
+  <div
+    style={{
+      minHeight: "60vh",
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      textAlign: "center",
+      padding: 48,
+      fontFamily: "sans-serif",
+    }}
+  >
+    <h1>404 — Page not found</h1>
+    <p>The page you’re looking for doesn’t exist.</p>
+    <a href="/">Return home</a>
+  </div>
+);
+
 function App() {
   return (
     <React.Fragment>
@@ -66,8 +85,11 @@ function App() {
             <Route path="/faq">
               <FAQ />
             </Route>
-            <Route path="/">
+            <Route exact path="/">
               <Home />
+            </Route>
+            <Route path="*">
+              <NotFound />
             </Route>
           </Switch>
         </Router>

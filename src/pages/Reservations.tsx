@@ -102,6 +102,7 @@ function Reservations() {
   const [pricingSettings, setPricingSettings] = useState<PricingSettings>();
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [pricingError, setPricingError] = useState("");
 
   // Fetch rooms from Firestore
   useEffect(() => {
@@ -133,12 +134,19 @@ function Reservations() {
         const pricingDoc = await getDoc(doc(db, "settings", "pricing"));
 
         if (pricingDoc.exists()) {
-          const data = pricingDoc.data() as PricingSettings;
-          setPricingSettings(data);
+          setPricingSettings(pricingDoc.data() as PricingSettings);
+        } else {
+          setPricingError(
+            "Online booking is temporarily unavailable. Please contact us to reserve."
+          );
         }
       } catch (err) {
         console.error("Error fetching pricing settings:", err);
-        setError("Failed to load pricing settings. Please try again.");
+        // Don't blank out the whole page - the rooms still render, we just
+        // can't price a booking, so disable the booking action instead.
+        setPricingError(
+          "Online booking is temporarily unavailable. Please contact us to reserve."
+        );
       }
     };
 
@@ -154,7 +162,7 @@ function Reservations() {
   // Handle image click to go to the gallery page with the tag
   const handleImageClick = (tag: string) => {
     // Navigate to the gallery page and pass the tag as a query parameter
-    window.location.href = `/gallery?tag=${tag}`;
+    window.location.href = `/gallery?tag=${encodeURIComponent(tag)}`;
   };
 
   return (
@@ -175,6 +183,12 @@ function Reservations() {
 
         {/* Room Packages Section */}
         <SectionTitle variant="h4">Our Room Packages</SectionTitle>
+
+        {pricingError && !loading && (
+          <Box sx={{ textAlign: "center", mb: 4 }}>
+            <Typography color="error">{pricingError}</Typography>
+          </Box>
+        )}
 
         {loading ? (
           <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
@@ -303,8 +317,9 @@ function Reservations() {
                         color="primary"
                         fullWidth
                         onClick={() => handleOpen(room)}
+                        disabled={!pricingSettings}
                       >
-                        Book Now
+                        {pricingSettings ? "Book Now" : "Booking Unavailable"}
                       </Button>
                     </Box>
                   </ContentContainer>
@@ -314,12 +329,12 @@ function Reservations() {
           </Grid>
         )}
 
-        {selectedRoom && (
+        {selectedRoom && pricingSettings && (
           <BookingModal
             open={modalOpen}
             handleClose={() => setModalOpen(false)}
             selectedRoom={selectedRoom}
-            pricing={pricingSettings!}
+            pricing={pricingSettings}
           />
         )}
 

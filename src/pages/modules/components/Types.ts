@@ -24,11 +24,6 @@ export interface UnavailableDates {
     }
   }
 
-  export interface Booking {
-    checkInDate: string;
-    checkOutDate: string;
-  }
-
   export interface Room {
     id: string;
     title: string;

@@ -77,7 +77,7 @@ function Gallery() {
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [tags, setTags] = useState<Tag[]>([]);
   const [open, setOpen] = useState(false);
-  const [selectedImage, setSelectedImage] = useState<Photo | null>();
+  const [selectedImage, setSelectedImage] = useState<Photo | null>(null);
   const [selectedTag, setSelectedTag] = useState("All"); // Default to All and update after tags are loaded
   const [loading, setLoading] = useState(true);
 

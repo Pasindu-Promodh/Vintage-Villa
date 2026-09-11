@@ -1,0 +1,112 @@
+rules_version = '2';
+
+// Vintage Villa Firestore security rules.
+//
+// Access model:
+//  - The public marketing site (unauthenticated) may READ rooms, pricing,
+//    tags, photos, unavailable_dates and the non-PII booked_ranges mirror,
+//    and may CREATE a pending booking.
+//  - Everything else (reading customer PII, editing/deleting anything,
+//    managing rooms/photos/tags/availability) requires an admin: a user
+//    with an allow-list doc at admins/{uid}.
+//  - errorLogs, booked_ranges and the bookings/{id}/emails subcollection
+//    are written only by Cloud Functions via the Admin SDK, which bypasses
+//    these rules.
+//
+// Deploy:  firebase deploy --only firestore:rules
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Admin allow-list. Create one doc per admin (id = the user's uid) from
+    // the Firebase console. A signed-in user may only check their OWN doc
+    // (that's how the admin app decides whether to show the dashboard) -
+    // they can't list the collection or read anyone else's entry. No
+    // client may write here; add/remove admins from the console.
+    match /admins/{uid} {
+      allow get: if isSignedIn() && request.auth.uid == uid;
+      allow list, write: if false;
+    }
+
+    // Publicly readable content the marketing site renders.
+    match /rooms/{roomId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /settings/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /tags/{tagId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /photos/{photoId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /unavailable_dates/{docId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // Non-PII mirror of confirmed bookings, maintained by the
+    // syncBookedRange Cloud Function. Public calendar reads it; no client
+    // may write it.
+    match /booked_ranges/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
+    // Bookings hold customer PII. Anyone may create a pending booking from
+    // the public site; only admins may read, list, edit or delete them.
+    match /bookings/{bookingId} {
+      allow create: if
+        request.resource.data.roomId is string &&
+        request.resource.data.roomTitle is string &&
+        request.resource.data.checkInDate is string &&
+        request.resource.data.checkOutDate is string &&
+        request.resource.data.customerName is string &&
+        request.resource.data.customerName.size() > 0 &&
+        request.resource.data.customerName.size() < 200 &&
+        request.resource.data.customerPhone is string &&
+        request.resource.data.customerPhone.size() > 0 &&
+        request.resource.data.status == 'pending' &&
+        request.resource.data.headCount is number &&
+        request.resource.data.headCount >= 1 &&
+        request.resource.data.totalPrice is number &&
+        request.resource.data.totalPrice >= 0;
+
+      allow read, update, delete: if isAdmin();
+
+      // Email audit log - written only by the Cloud Function (Admin SDK).
+      match /emails/{emailId} {
+        allow read: if isAdmin();
+        allow write: if false;
+      }
+    }
+
+    // Written only by Cloud Functions via the Admin SDK.
+    match /errorLogs/{logId} {
+      allow read, write: if false;
+    }
+
+    // Anything not matched above is denied.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
