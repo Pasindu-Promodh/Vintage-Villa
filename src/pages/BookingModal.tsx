@@ -29,6 +29,7 @@ import {
   UnavailableDates,
 } from "./modules/components/Types";
 import { addDays, isWithinInterval, parseISO, eachDayOfInterval, isSameDay, isBefore, startOfDay, differenceInCalendarDays, format } from "date-fns";
+import isEmail from "validator/lib/isEmail";
 import { MuiTelInput, matchIsValidTel } from "mui-tel-input";
 import { DateRange, RangeKeyDict } from "react-date-range";
 import "react-date-range/dist/styles.css";
@@ -60,6 +61,21 @@ const BookingModal: React.FC<BookingModalProps> = ({
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [phoneError, setPhoneError] = useState(false);
+  // How the guest wants to be contacted about this booking. WhatsApp is
+  // checked by default since the phone number is always required anyway;
+  // email is opt-in. At least one must stay checked - see
+  // toggleContactMethod below.
+  const [contactMethods, setContactMethods] = useState({
+    email: false,
+    whatsapp: true,
+  });
+  const toggleContactMethod = (method: "email" | "whatsapp") => {
+    setContactMethods((prev) => {
+      const next = { ...prev, [method]: !prev[method] };
+      // Never allow unchecking the last remaining method.
+      return next.email || next.whatsapp ? next : prev;
+    });
+  };
   const [loading, setLoading] = useState(false);
   const [unavailableDateRanges, setUnavailableDateRanges] = useState<
     UnavailableDates[]
@@ -311,9 +327,30 @@ const BookingModal: React.FC<BookingModalProps> = ({
       return;
     }
 
+    if (!contactMethods.email && !contactMethods.whatsapp) {
+      enqueueSnackbar("Please select at least one contact method.", {
+        variant: "error",
+      });
+      return;
+    }
+
+    if (contactMethods.email && !isEmail(email.trim())) {
+      enqueueSnackbar("Please enter a valid email address.", {
+        variant: "error",
+      });
+      return;
+    }
+
     setLoading(true);
 
     try {
+      const preferredContactMethod =
+        contactMethods.email && contactMethods.whatsapp
+          ? "both"
+          : contactMethods.email
+          ? "email"
+          : "whatsapp";
+
       const bookingData = {
         roomId: selectedRoom.id,
         roomTitle: selectedRoom.title,
@@ -323,8 +360,9 @@ const BookingModal: React.FC<BookingModalProps> = ({
         checkOutDate: format(checkOutDate, "yyyy-MM-dd"),
         headCount: guests,
         customerName: name.trim(),
-        customerEmail: email || "Not provided",
+        customerEmail: email.trim(),
         customerPhone: phone,
+        preferredContactMethod,
         mealOptions,
         discount: calculateDiscount(),
         totalPrice: calculatePrice(),
@@ -391,6 +429,7 @@ const BookingModal: React.FC<BookingModalProps> = ({
     setName("");
     setPhone("");
     setPhoneError(false);
+    setContactMethods({ email: false, whatsapp: true });
   };
 
   return (
@@ -415,6 +454,31 @@ const BookingModal: React.FC<BookingModalProps> = ({
           margin="dense"
           required
         />
+
+        <Typography variant="body2" sx={{ mt: 1.5, mb: 0.5 }}>
+          How should we contact you about this booking?
+        </Typography>
+        <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={contactMethods.email}
+                onChange={() => toggleContactMethod("email")}
+              />
+            }
+            label="Email"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={contactMethods.whatsapp}
+                onChange={() => toggleContactMethod("whatsapp")}
+              />
+            }
+            label="WhatsApp"
+          />
+        </Box>
+
         <MuiTelInput
           label="Phone Number"
           value={phone}
@@ -431,6 +495,8 @@ const BookingModal: React.FC<BookingModalProps> = ({
           helperText={
             phoneError
               ? "Enter a valid phone number for the selected country"
+              : contactMethods.whatsapp
+              ? "Required — please make sure this number has WhatsApp, since you selected it as a contact method"
               : "Required for booking confirmation"
           }
         />
@@ -441,7 +507,12 @@ const BookingModal: React.FC<BookingModalProps> = ({
           onChange={(e) => setEmail(e.target.value)}
           fullWidth
           margin="dense"
-          helperText="Optional"
+          required={contactMethods.email}
+          helperText={
+            contactMethods.email
+              ? "Required, since you selected email as a contact method"
+              : "Optional"
+          }
         />
 
         <Typography variant="subtitle1" gutterBottom sx={{ mt: 2 }}>
@@ -652,6 +723,8 @@ const BookingModal: React.FC<BookingModalProps> = ({
             !phone ||
             headCount === "" ||
             phoneError ||
+            (!contactMethods.email && !contactMethods.whatsapp) ||
+            (contactMethods.email && !isEmail(email.trim())) ||
             isDateUnavailable(dateRange[0]) ||
             isDateUnavailable(dateRange[1])
           }

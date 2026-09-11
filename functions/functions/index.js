@@ -84,14 +84,124 @@ const formatDateDDMMYYYY = (dateInput) => {
   return `${day}/${month}/${year}`;
 };
 
-// Whole-day count between two stored calendar dates, timezone-safe.
-const nightsBetween = (checkInInput, checkOutInput) => {
-  const toUTCms = (value) => {
-    const datePart = String(value).split("T")[0];
-    const [year, month, day] = datePart.split("-").map(Number);
-    return Date.UTC(year, (month || 1) - 1, day || 1);
-  };
-  return Math.round((toUTCms(checkOutInput) - toUTCms(checkInInput)) / 86400000);
+// Per-status subject line, heading and opening paragraph for customer
+// emails - keeps the wording honest about what's actually happened
+// (a brand-new booking is "pending", not "confirmed").
+const getStatusEmailCopy = (status, booking) => {
+  const name = booking.customerName || "Guest";
+  switch (status) {
+    case "pending":
+      return {
+        subject: `Booking Received - ${booking.roomTitle}`,
+        heading: "Thank You For Your Booking Request!",
+        intro:
+          `Thank you for choosing ${HOTEL_NAME}, ${name}! We've received ` +
+          "your booking request and it is currently <strong>pending " +
+          "confirmation</strong>. Our team will check availability and " +
+          "get back to you shortly.",
+      };
+    case "confirmed":
+      return {
+        subject: `Booking Confirmed - ${booking.roomTitle}`,
+        heading: "Your Booking Is Confirmed!",
+        intro:
+          `Great news, ${name} - your booking at ${HOTEL_NAME} has been ` +
+          "<strong>confirmed</strong>. We look forward to welcoming you!",
+      };
+    case "cancelled":
+      return {
+        subject: `Booking Cancelled - ${booking.roomTitle}`,
+        heading: "Your Booking Has Been Cancelled",
+        intro:
+          `Dear ${name}, your booking at ${HOTEL_NAME} has been ` +
+          "<strong>cancelled</strong>. We're sorry for any inconvenience " +
+          "this may cause - please don't hesitate to reach out if you " +
+          "have questions or would like to make a new reservation.",
+      };
+    case "completed":
+      return {
+        subject: "Thank You For Staying With Us!",
+        heading: "Thank You For Staying With Us!",
+        intro:
+          `Dear ${name}, thank you for staying at ${HOTEL_NAME}! We hope ` +
+          "you had a wonderful time and that everything met your " +
+          "expectations.",
+      };
+    default:
+      return {
+        subject: `Booking Update - ${booking.roomTitle}`,
+        heading: "Booking Status Update",
+        intro:
+          `Dear ${name}, your booking status has been updated to ` +
+          `<strong>${String(status).toUpperCase()}</strong>.`,
+      };
+  }
+};
+
+// Builds the subject + HTML body for a customer-facing status email.
+// Shared by the "just booked" email (status "pending") and every later
+// status-change email, so the wording and layout stay consistent and
+// only need to be maintained in one place.
+const buildStatusEmailContent = (status, booking, options = {}) => {
+  const {customMessage, reviewUrl} = options;
+  const checkInDate = formatDateDDMMYYYY(booking.checkInDate);
+  const checkOutDate = formatDateDDMMYYYY(booking.checkOutDate);
+  const {subject, heading, intro} = getStatusEmailCopy(status, booking);
+
+  const meals = [];
+  if (booking.mealOptions?.breakfast) meals.push("Breakfast");
+  if (booking.mealOptions?.lunch) meals.push("Lunch");
+  if (booking.mealOptions?.dinner) meals.push("Dinner");
+  const mealsText = meals.length > 0 ? meals.join(", ") : "None";
+
+  const reviewBlock =
+    status === "completed" && reviewUrl ?
+      `
+        <h3>How Was Your Stay?</h3>
+        <p>We'd love to hear about your experience. If you have a moment,
+        please consider leaving us a review:</p>
+        <p><a href="${reviewUrl}">${reviewUrl}</a></p>
+      ` :
+      "";
+
+  const html = `
+    <h2>${heading}</h2>
+    <p>${intro}</p>
+    ${customMessage ? `<p>${customMessage}</p>` : ""}
+
+    <h3>Booking Details</h3>
+    <p><strong>Booking Reference:</strong> ${booking.id}</p>
+    <p><strong>Room:</strong> ${booking.roomTitle}</p>
+    <p><strong>Check-in Date:</strong> ${checkInDate}</p>
+    <p><strong>Check-out Date:</strong> ${checkOutDate}</p>
+    <p><strong>Guests:</strong> ${booking.headCount}</p>
+    <p><strong>Meals Included:</strong> ${mealsText}</p>
+
+    <h3>Price Summary</h3>
+    <p><strong>Subtotal:</strong> $${(
+    (booking.totalPrice || 0) + (booking.discount || 0)
+  ).toFixed(2)}</p>
+    <p><strong>Discount Applied:</strong> $${(booking.discount || 0).toFixed(2)}</p>
+    <p><strong>Total:</strong> $${(booking.totalPrice || 0).toFixed(2)}</p>
+    ${reviewBlock}
+    <p>If you have any questions, please don't hesitate to contact us.</p>
+    <p>Best regards,<br>${HOTEL_NAME}</p>
+  `;
+
+  return {subject, html};
+};
+
+// Reads the guest-review link from settings/general (managed from the
+// admin dashboard's Room Management page). Returns null if it's not set.
+const getReviewUrl = async () => {
+  try {
+    const snap = await admin.firestore().collection("settings").doc("general").get();
+    const reviewUrl = snap.exists ? snap.data().reviewUrl : null;
+    return reviewUrl || null;
+  } catch (err) {
+    console.error("Failed to read review URL from settings/general:", err);
+    return null;
+  }
 };
 
 // Enhanced error logging utility
@@ -226,17 +336,16 @@ const sendWhatsAppNotification = async (booking) => {
   }
 };
 
-// Send the booking-confirmation emails (to the customer and the admin)
-// automatically in the background - used by the onNewBooking trigger.
+// Send the "booking received" emails (to the customer and the admin)
+// automatically in the background - used by the onNewBooking trigger. The
+// customer email uses the shared "pending" template (a new booking is
+// never auto-confirmed - an admin still has to confirm it), so this never
+// tells the guest their stay is booked before it actually is.
 const sendBookingConfirmationEmails = async (booking) => {
   const functionName = "sendBookingConfirmationEmails";
   try {
     const checkInDate = formatDateDDMMYYYY(booking.checkInDate);
     const checkOutDate = formatDateDDMMYYYY(booking.checkOutDate);
-    const nights = Math.max(
-        1,
-        nightsBetween(booking.checkInDate, booking.checkOutDate),
-    );
 
     // The public site stores "Not provided" (not an empty string) when the
     // guest skips the optional email field - treat that as no email.
@@ -251,36 +360,13 @@ const sendBookingConfirmationEmails = async (booking) => {
     if (booking.mealOptions?.dinner) meals.push("Dinner");
     const mealsText = meals.length > 0 ? meals.join(", ") : "None";
 
-    const customerEmailContent = `
-      <h2>Booking Confirmation</h2>
-      <p>Dear ${booking.customerName},</p>
-      <p>Thank you for booking with us. Your reservation details:</p>
-
-      <h3>Booking Details</h3>
-      <p><strong>Booking Reference:</strong> ${booking.id}</p>
-      <p><strong>Room:</strong> ${booking.roomTitle}</p>
-      <p><strong>Check-in Date:</strong> ${checkInDate}</p>
-      <p><strong>Check-out Date:</strong> ${checkOutDate}</p>
-      <p><strong>Duration:</strong> ${nights} night(s)</p>
-      <p><strong>Guests:</strong> ${booking.headCount}</p>
-      <p><strong>Meals Included:</strong> ${mealsText}</p>
-
-      <h3>Price Summary</h3>
-      <p><strong>Subtotal:</strong> $${(
-    (booking.totalPrice || 0) + (booking.discount || 0)
-  ).toFixed(2)}</p>
-      <p><strong>Discount Applied:</strong> $${(booking.discount || 0).toFixed(
-      2,
-  )}</p>
-      <p><strong>Total:</strong> $${(booking.totalPrice || 0).toFixed(2)}</p>
-
-      <p>For any questions, contact us.</p>
-      <p>Best regards,<br>${HOTEL_NAME}</p>
-    `;
+    const {subject: customerSubject, html: customerEmailContent} =
+      buildStatusEmailContent("pending", booking);
 
     const adminEmailContent = `
       <h2>New Booking Notification</h2>
-      <p>A new booking has been made:</p>
+      <p>A new booking has been made and is <strong>pending
+      confirmation</strong>:</p>
 
       <h3>Booking Details</h3>
       <p><strong>Booking Reference:</strong> ${booking.id}</p>
@@ -294,6 +380,7 @@ const sendBookingConfirmationEmails = async (booking) => {
       <p><strong>Name:</strong> ${booking.customerName}</p>
       <p><strong>Email:</strong> ${booking.customerEmail}</p>
       <p><strong>Phone:</strong> ${booking.customerPhone}</p>
+      <p><strong>Preferred Contact:</strong> ${booking.preferredContactMethod || "whatsapp"}</p>
 
       <h3>Price Summary</h3>
       <p><strong>Subtotal:</strong> $${(
@@ -311,7 +398,7 @@ const sendBookingConfirmationEmails = async (booking) => {
       await transporter.sendMail({
         from: `"${HOTEL_NAME}" <${emailUser}>`,
         to: customerEmail,
-        subject: "Booking Confirmation",
+        subject: customerSubject,
         html: customerEmailContent,
       });
     }
@@ -319,7 +406,7 @@ const sendBookingConfirmationEmails = async (booking) => {
     await transporter.sendMail({
       from: `"Booking System" <${emailUser}>`,
       to: emailUser,
-      subject: `New Booking: ${booking.roomTitle} (${checkInDate} - ${checkOutDate})`,
+      subject: `New Booking (Pending): ${booking.roomTitle} (${checkInDate} - ${checkOutDate})`,
       html: adminEmailContent,
     });
 
@@ -574,36 +661,16 @@ export const sendStatusChangeEmail = onCall(
           );
         }
 
-        const checkInDate = formatDateDDMMYYYY(booking.checkInDate);
-        const checkOutDate = formatDateDDMMYYYY(booking.checkOutDate);
+        // The review link only matters for a "completed" email - skip the
+        // extra Firestore read otherwise.
+        const reviewUrl =
+          newStatus === "completed" ? await getReviewUrl() : null;
 
-        const statusMessages = {
-          pending: "Your booking is currently pending confirmation.",
-          confirmed: "Great news! Your booking has been confirmed.",
-          cancelled:
-          "Your booking has been cancelled. We're sorry for any inconvenience.",
-          completed:
-          "Your stay with us has been marked as completed. We hope you enjoyed your visit!",
-        };
-
-        const statusEmailContent = `
-        <h2>Booking Status Update</h2>
-        <p>Dear ${booking.customerName},</p>
-        <p><strong>Your booking status has been updated to: ${String(
-      newStatus,
-  ).toUpperCase()}</strong></p>
-        <p>${statusMessages[newStatus] || ""}</p>
-        ${customMessage ? `<p>${customMessage}</p>` : ""}
-
-        <h3>Booking Details</h3>
-        <p><strong>Booking Reference:</strong> ${booking.id}</p>
-        <p><strong>Room:</strong> ${booking.roomTitle}</p>
-        <p><strong>Check-in Date:</strong> ${checkInDate}</p>
-        <p><strong>Check-out Date:</strong> ${checkOutDate}</p>
-
-        <p>If you have any questions regarding this update, please don't hesitate to contact us.</p>
-        <p>Best regards,<br>${HOTEL_NAME}</p>
-      `;
+        const {subject, html: statusEmailContent} = buildStatusEmailContent(
+            newStatus,
+            booking,
+            {customMessage, reviewUrl},
+        );
 
         const emailUser = adminEmailSecret.value();
         const transporter = getEmailTransporter();
@@ -611,7 +678,7 @@ export const sendStatusChangeEmail = onCall(
         await transporter.sendMail({
           from: `"${HOTEL_NAME}" <${emailUser}>`,
           to: recipient,
-          subject: `Booking Status Update: ${String(newStatus).toUpperCase()}`,
+          subject,
           html: statusEmailContent,
         });
 

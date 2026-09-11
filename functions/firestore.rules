@@ -71,6 +71,17 @@ service cloud.firestore {
       allow write: if false;
     }
 
+    // A new booking must carry a valid preferred contact method, and an
+    // email address whenever that method includes email. The phone number
+    // is always required (checked below, regardless of method).
+    function hasValidContactMethod(data) {
+      return data.preferredContactMethod in ['email', 'whatsapp', 'both'] &&
+        (
+          data.preferredContactMethod == 'whatsapp' ||
+          (data.customerEmail is string && data.customerEmail.size() > 0)
+        );
+    }
+
     // Bookings hold customer PII. Anyone may create a pending booking from
     // the public site; only admins may read, list, edit or delete them.
     match /bookings/{bookingId} {
@@ -84,6 +95,7 @@ service cloud.firestore {
         request.resource.data.customerName.size() < 200 &&
         request.resource.data.customerPhone is string &&
         request.resource.data.customerPhone.size() > 0 &&
+        hasValidContactMethod(request.resource.data) &&
         request.resource.data.status == 'pending' &&
         request.resource.data.headCount is number &&
         request.resource.data.headCount >= 1 &&
