@@ -1,0 +1,11 @@
+[build.environment]
+  # functions/ holds Firebase Cloud Functions deploy config (.firebaserc,
+  # firebase.json) - a separate deployable unit from this site, not part
+  # of what Netlify builds or publishes here. It legitimately contains the
+  # Firebase project ID and storage bucket name in plain text (required
+  # for `firebase deploy` to work) - these are public identifiers, not
+  # secrets, but they happen to match the VITE_FIREBASE_PROJECT_ID /
+  # VITE_FIREBASE_STORAGE_BUCKET env var values, which trips Netlify's
+  # secrets scanner. Excluding the path avoids that false positive without
+  # disabling scanning elsewhere.
+  SECRETS_SCAN_OMIT_PATHS = "functions/**"
